@@ -408,33 +408,66 @@ function CategoryCard({
   onManageProducts?: () => void;
 }) {
   return (
-    <div
-      className="rounded-2xl overflow-hidden group transition-all duration-300 hover:-translate-y-1"
-      style={{
-        background: "rgba(255,255,255,0.03)",
-        border: "1px solid rgba(255,255,255,0.07)",
-        boxShadow: "0 4px 24px rgba(0,0,0,0.3)",
-      }}
-    >
-      <div
-        className="h-36 relative overflow-hidden"
-        style={{
-          background:
-            "linear-gradient(135deg, rgba(124,58,237,0.15), rgba(79,70,229,0.08))",
-        }}
-      >
-        {cat.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={cat.image}
-            alt={cat.name}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
+    <div className="rounded-2xl overflow-hidden group transition-all duration-300 hover:-translate-y-1 bg-white/[0.03] border border-white/10 shadow-lg flex flex-col justify-between">
+      <div>
+        <div className="h-36 relative overflow-hidden bg-gradient-to-br from-violet-950/40 via-slate-900 to-indigo-950/30">
+          {cat.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={cat.image}
+              alt={cat.name}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-slate-600">
+              <svg
+                className="w-10 h-10"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1}
+                  d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776"
+                />
+              </svg>
+            </div>
+          )}
+        </div>
+        <div className="p-4 space-y-1">
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="text-sm font-bold text-slate-100 truncate" title={cat.name}>
+              {cat.name}
+            </h2>
+            {cat.productCount !== undefined && (
+              <span className="text-[11px] font-semibold text-slate-400 bg-white/5 px-2 py-0.5 rounded-md shrink-0">
+                {cat.productCount} items
+              </span>
+            )}
+          </div>
+          <p className="text-[11px] font-mono text-violet-400/80 truncate">
+            /{cat.slug}
+          </p>
+          {cat.description && (
+            <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed pt-1" title={cat.description}>
+              {cat.description}
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Card Actions */}
+      <div className="p-4 pt-0 space-y-2">
+        {showSubBtn ? (
+          <button
+            type="button"
+            onClick={onManageSub}
+            className="w-full px-3 py-2 text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 transition-all bg-violet-500/15 hover:bg-violet-500/25 text-violet-300 border border-violet-500/30 shadow-xs whitespace-nowrap"
+          >
             <svg
-              className="w-10 h-10"
-              style={{ color: "rgba(148,163,184,0.2)" }}
+              className="w-3.5 h-3.5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -442,106 +475,49 @@ function CategoryCard({
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={1}
-                d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776"
+                strokeWidth={2}
+                d="M4 6h16M4 12h10M4 18h7"
               />
             </svg>
-          </div>
-        )}
-      </div>
-      <div className="p-4">
-        <h3 className="text-sm font-bold" style={{ color: "#e2e8f0" }}>
-          {cat.name}
-        </h3>
-        <p
-          className="text-[11px] font-mono mt-0.5"
-          style={{ color: "rgba(148,163,184,0.4)" }}
-        >
-          {cat.slug}
-        </p>
-        {cat.description && (
-          <p
-            className="text-xs mt-1.5 line-clamp-2"
-            style={{ color: "rgba(148,163,184,0.5)" }}
-          >
-            {cat.description}
-          </p>
-        )}
-        {cat.productCount !== undefined && (
-          <p
-            className="text-xs mt-1"
-            style={{ color: "rgba(148,163,184,0.4)" }}
-          >
-            {cat.productCount} products
-          </p>
-        )}
-        <div className="flex items-center gap-2 mt-4">
-          {showSubBtn && (
-            <button
-              onClick={onManageSub}
-              className="flex-1 px-3 py-2 text-xs font-bold rounded-xl flex items-center justify-center gap-1 transition-colors"
-              style={{
-                background: "rgba(167,139,250,0.12)",
-                color: "#a78bfa",
-                border: "1px solid rgba(167,139,250,0.2)",
-              }}
-            >
-              <svg
-                className="w-3.5 h-3.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h10M4 18h7"
-                />
-              </svg>
-              Sub-categories
-            </button>
-          )}
-          {!showSubBtn && (
-            <button
-              onClick={onManageProducts}
-              className="flex-1 px-3 py-2 text-xs font-bold rounded-xl flex items-center justify-center gap-1 transition-colors"
-              style={{
-                background: "rgba(52,211,153,0.1)",
-                color: "#34d399",
-                border: "1px solid rgba(52,211,153,0.2)",
-              }}
-            >
-              <svg
-                className="w-3.5 h-3.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z"
-                />
-              </svg>
-              Products
-            </button>
-          )}
+            Sub-categories
+          </button>
+        ) : (
           <button
+            type="button"
+            onClick={onManageProducts}
+            className="w-full px-3 py-2 text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 transition-all bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 shadow-xs whitespace-nowrap"
+          >
+            <svg
+              className="w-3.5 h-3.5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z"
+              />
+            </svg>
+            View Products
+          </button>
+        )}
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
             onClick={onEdit}
-            className="flex-1 px-3 py-2 text-xs font-bold rounded-xl transition-colors"
-            style={{
-              background: "rgba(255,255,255,0.06)",
-              color: "rgba(226,232,240,0.7)",
-            }}
+            aria-label={`Edit category ${cat.name}`}
+            className="flex-1 px-3 py-1.5 text-xs font-semibold rounded-xl transition-all bg-white/[0.05] hover:bg-white/[0.1] text-slate-200 border border-white/10"
           >
             Edit
           </button>
           <button
+            type="button"
             onClick={onDelete}
-            className="flex-1 px-3 py-2 text-xs font-bold rounded-xl transition-colors"
-            style={{ background: "rgba(248,113,113,0.1)", color: "#f87171" }}
+            aria-label={`Delete category ${cat.name}`}
+            className="flex-1 px-3 py-1.5 text-xs font-semibold rounded-xl transition-all bg-rose-950/30 hover:bg-rose-900/40 text-rose-400 border border-rose-500/20"
           >
             Delete
           </button>
@@ -694,8 +670,7 @@ function CategoriesContent() {
           {isSubView && (
             <button
               onClick={closeSubPanel}
-              className="flex items-center gap-1.5 text-sm transition-colors"
-              style={{ color: "rgba(148,163,184,0.6)" }}
+              className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-slate-200 transition-colors"
             >
               <svg
                 className="w-4 h-4"
@@ -713,31 +688,27 @@ function CategoriesContent() {
               Categories
             </button>
           )}
-          {isSubView && <span className="text-slate-300">/</span>}
+          {isSubView && <span className="text-slate-600">/</span>}
           <div>
-            <p className="text-sm font-semibold" style={{ color: "#e2e8f0" }}>
-              {isSubView ? (
-                <span className="flex items-center gap-2">
-                  <span className="" style={{ color: "rgba(148,163,184,0.5)" }}>
-                    {selectedParent.name}
-                  </span>
-                  <span className="text-slate-500">&gt;</span>
-                  Sub-categories
+            {isSubView ? (
+              <div className="flex items-center gap-1.5 text-xs text-slate-400">
+                <span className="font-semibold text-slate-200">
+                  {selectedParent.name}
                 </span>
-              ) : (
-                "Categories"
-              )}
-            </p>
+                <span className="text-slate-600">&gt;</span>
+                <span>Sub-categories</span>
+              </div>
+            ) : null}
             <p className="text-xs text-slate-400 font-medium mt-0.5">
               {activeList.length} {isSubView ? "sub-categor" : "categor"}
-              {activeList.length !== 1 ? "ies" : "y"}
+              {activeList.length !== 1 ? "ies" : "y"} in catalog
             </p>
           </div>
         </div>
 
         <button
           onClick={() => setModal("new")}
-          className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl text-sm font-bold hover:from-violet-700 hover:to-indigo-700 transition-all hover:shadow-lg hover:shadow-violet-300/40 hover:-translate-y-0.5"
+          className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl text-xs font-bold hover:from-violet-700 hover:to-indigo-700 transition-all hover:shadow-lg hover:shadow-violet-300/40 hover:-translate-y-0.5"
         >
           <svg
             className="w-4 h-4"
