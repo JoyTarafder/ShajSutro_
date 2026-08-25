@@ -361,7 +361,7 @@ export default function AdminSidebar() {
                   <Link
                     href="/admin/applications"
                     onClick={closeMobileSidebar}
-                    className={`relative flex items-center gap-2.5 pl-11 pr-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                    className={`relative flex items-center gap-2.5 pl-11 pr-3 py-2.5 min-h-[44px] rounded-2xl text-sm font-semibold transition-all duration-200 ${
                       pathname === "/admin/applications" ||
                       pathname.startsWith("/admin/applications/")
                         ? "bg-teal-500/20 text-teal-300 font-bold border-l-2 border-teal-400"
@@ -392,7 +392,7 @@ export default function AdminSidebar() {
                   <Link
                     href="/admin/promo-codes"
                     onClick={closeMobileSidebar}
-                    className={`relative flex items-center gap-2.5 pl-11 pr-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                    className={`relative flex items-center gap-2.5 pl-11 pr-3 py-2.5 min-h-[44px] rounded-2xl text-sm font-semibold transition-all duration-200 ${
                       pathname === "/admin/promo-codes" ||
                       pathname.startsWith("/admin/promo-codes/")
                         ? "bg-rose-500/20 text-rose-300 font-bold border-l-2 border-rose-400"
