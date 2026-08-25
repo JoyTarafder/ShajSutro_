@@ -92,13 +92,13 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="mt-16 pt-8 border-t border-charcoal-200 flex justify-center">
+        <div className="mt-12 pt-8 border-t border-charcoal-200/80 flex justify-center">
           <Image
             src="/images/sslcommerz.png"
             alt="We Accept SSLCommerz Payments"
             width={700}
             height={100}
-            className="w-full max-w-md sm:max-w-2xl md:max-w-3xl h-auto object-contain opacity-75 hover:opacity-100 transition-opacity duration-300"
+            className="w-full max-w-sm sm:max-w-md md:max-w-lg h-auto object-contain opacity-60 hover:opacity-90 transition-opacity duration-300"
           />
         </div>
         <div className="mt-8 pt-6 border-t border-charcoal-100/50 flex justify-center">
