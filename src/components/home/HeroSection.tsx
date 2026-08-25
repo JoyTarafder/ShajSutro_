@@ -66,9 +66,9 @@ export default function HeroSection() {
           {/* Text content side */}
           <div className="lg:col-span-6 order-2 lg:order-1 space-y-8 lg:space-y-10 animate-fade-up">
             {/* Tagline Badge */}
-            <div className="inline-flex items-center gap-2.5 px-4.5 py-2 bg-white/70 backdrop-blur-md rounded-full border border-charcoal-100 shadow-soft transition-colors duration-300 hover:border-charcoal-200">
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-white/70 backdrop-blur-md rounded-full border border-charcoal-100 shadow-soft transition-colors duration-300 hover:border-charcoal-200">
               <span className="w-1.5 h-1.5 rounded-full bg-accent-500 animate-ping" />
-              <span className="text-[10px] font-bold text-charcoal-600 tracking-[0.2em] uppercase">
+              <span className="text-xs font-semibold text-charcoal-700 tracking-wider uppercase">
                 Spring / Summer 2026
               </span>
             </div>

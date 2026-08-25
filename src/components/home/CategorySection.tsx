@@ -60,7 +60,9 @@ export default function CategorySection() {
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="flex items-end justify-between mb-8 sm:mb-10">
           <div>
-            <span className="section-label">Gallery Showcase</span>
+            <span className="text-xs font-semibold uppercase tracking-wider text-accent-600 mb-2 block">
+              Gallery Showcase
+            </span>
             <h2 className="section-title">Product Gallery</h2>
             <p className="section-subtitle sm:mt-2">
               Explore our high-fashion curated collections & lookbook gallery

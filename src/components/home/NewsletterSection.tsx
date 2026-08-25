@@ -55,7 +55,7 @@ export default function NewsletterSection() {
         {/* Headings */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 mb-3">
           <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-amber-400">
+          <span className="text-xs font-semibold uppercase tracking-wider text-amber-400">
             Newsletter
           </span>
         </div>
@@ -97,7 +97,7 @@ export default function NewsletterSection() {
                   setStatus("idle");
                   setErrorMessage("");
                 }}
-                className="mt-1 text-[11px] text-emerald-400 hover:text-emerald-300 font-medium underline underline-offset-4 transition-colors"
+                className="mt-1 text-xs text-emerald-400 hover:text-emerald-300 font-medium underline underline-offset-4 transition-colors"
               >
                 Subscribe another email
               </button>
@@ -136,9 +136,9 @@ export default function NewsletterSection() {
           </form>
         )}
 
-        <p className="mt-7 text-[10px] text-gray-500 font-light text-center">
+        <p className="mt-7 text-xs text-gray-400 font-light text-center">
           By subscribing, you agree to our{" "}
-          <a href="/privacy-policy" className="text-gray-400 hover:text-white transition-colors duration-300 underline underline-offset-4 font-normal">
+          <a href="/privacy-policy" className="text-gray-300 hover:text-white transition-colors duration-300 underline underline-offset-4 font-normal">
             Privacy Policy
           </a>
           . Unsubscribe at any time.
