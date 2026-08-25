@@ -1324,12 +1324,7 @@ function OrdersContent() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr
-                  style={{
-                    borderBottom: "1px solid rgba(255,255,255,0.05)",
-                    background: "rgba(255,255,255,0.02)",
-                  }}
-                >
+                <tr className="border-b border-white/5 bg-white/[0.02]">
                   {[
                     "Order",
                     "Customer",
@@ -1343,46 +1338,32 @@ function OrdersContent() {
                   ].map((h) => (
                     <th
                       key={h}
-                      className="text-left text-[11px] font-bold uppercase tracking-[0.08em] px-6 py-4 whitespace-nowrap"
-                      style={{ color: "rgba(148,163,184,0.5)" }}
+                      className="text-left text-[11px] font-bold uppercase tracking-[0.08em] px-4 py-3.5 whitespace-nowrap text-slate-400"
                     >
                       {h}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-white/[0.03]">
                 {orders.map((order) => (
                   <tr
                     key={order._id}
                     className="hover:bg-violet-900/10 transition-colors duration-100 group cursor-pointer"
-                    style={{
-                      borderBottom: "1px solid rgba(255,255,255,0.035)",
-                    }}
                     onClick={() => setSelectedOrder(order)}
                   >
-                    <td className="px-6 py-4">
-                      <span
-                        className="font-mono text-[11px] font-bold px-2.5 py-1.5 rounded-lg"
-                        style={{
-                          background: "rgba(167,139,250,0.12)",
-                          color: "#a78bfa",
-                          border: "1px solid rgba(167,139,250,0.2)",
-                        }}
-                      >
+                    <td className="px-4 py-3.5">
+                      <span className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-violet-500/10 text-violet-300 border border-violet-500/20">
                         #{order._id.slice(-8).toUpperCase()}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-3.5">
                       {order.user ? (
-                        <div>
-                          <p
-                            className="text-sm font-semibold"
-                            style={{ color: "#e2e8f0" }}
-                          >
+                        <div className="min-w-0 max-w-[160px]">
+                          <p className="text-sm font-semibold text-slate-100 truncate">
                             {order.user.name}
                           </p>
-                          <p className="text-xs text-slate-400">
+                          <p className="text-xs text-slate-400 truncate mt-0.5">
                             {order.user.email}
                           </p>
                         </div>
@@ -1392,25 +1373,26 @@ function OrdersContent() {
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="max-w-[160px] space-y-0.5">
+                    <td className="px-4 py-3.5">
+                      <div className="min-w-0 max-w-[220px] space-y-1">
                         {order.items.slice(0, 2).map((item, i) => (
                           <p
                             key={i}
-                            className="text-xs text-slate-300 truncate"
+                            className="text-xs text-slate-300 line-clamp-1 leading-snug"
+                            title={`${item.quantity}× ${item.name}`}
                           >
-                            <span className="font-bold">{item.quantity}×</span>{" "}
+                            <span className="font-bold text-slate-100">{item.quantity}×</span>{" "}
                             {item.name}
                           </p>
                         ))}
                         {order.items.length > 2 && (
-                          <p className="text-xs text-slate-500">
-                            +{order.items.length - 2} more
+                          <p className="text-xs text-slate-500 font-medium">
+                            +{order.items.length - 2} more items
                           </p>
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-xs text-slate-400 font-medium max-w-[220px]">
+                    <td className="px-4 py-3.5 text-xs text-slate-400 font-medium max-w-[180px]">
                       {(() => {
                         const addr = order.shippingAddress;
                         if (!addr)
@@ -1429,7 +1411,7 @@ function OrdersContent() {
                           <div className="space-y-0.5 leading-snug">
                             {addressLine ? (
                               <p
-                                className="font-semibold text-slate-200 line-clamp-2"
+                                className="font-semibold text-slate-200 line-clamp-1"
                                 title={addressLine}
                               >
                                 {addressLine}
@@ -1451,12 +1433,12 @@ function OrdersContent() {
                         );
                       })()}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-3.5 whitespace-nowrap">
                       <span className="text-sm font-black text-slate-100">
                         ৳{order.total.toFixed(2)}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-3.5">
                       {(() => {
                         const statusKey =
                           order.paymentStatus === "refunded"
@@ -1475,7 +1457,7 @@ function OrdersContent() {
                           PAYMENT_STATUS_STYLE["pending_verification"];
                         return (
                           <span
-                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap ${ps.badge}`}
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${ps.badge}`}
                           >
                             <span
                               className={`w-1.5 h-1.5 rounded-full ${ps.dot}`}
@@ -1486,7 +1468,7 @@ function OrdersContent() {
                       })()}
                     </td>
                     <td
-                      className="px-6 py-4"
+                      className="px-4 py-3.5"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <StatusSelect
@@ -1495,24 +1477,22 @@ function OrdersContent() {
                         onUpdate={handleStatusUpdate}
                       />
                     </td>
-                    <td className="px-6 py-4 text-xs text-slate-400 font-medium whitespace-nowrap">
+                    <td className="px-4 py-3.5 text-xs text-slate-300 font-medium whitespace-nowrap min-w-[100px]">
                       {new Date(order.createdAt).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
                         year: "numeric",
                       })}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-3.5">
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedOrder(order);
                         }}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity px-3 py-1.5 text-xs font-bold rounded-lg"
-                        style={{
-                          background: "rgba(255,255,255,0.08)",
-                          color: "rgba(226,232,240,0.7)",
-                        }}
+                        aria-label={`View details for order #${order._id.slice(-8).toUpperCase()}`}
+                        className="px-3 py-1.5 text-xs font-semibold text-slate-200 bg-white/[0.06] hover:bg-white/[0.12] hover:text-white border border-white/10 rounded-xl transition-all shadow-sm flex items-center gap-1"
                       >
                         Details
                       </button>
