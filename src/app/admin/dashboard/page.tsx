@@ -127,7 +127,7 @@ function DashboardContent() {
       key: "_id",
       label: "Order",
       render: (row: RecentOrder) => (
-        <span className="font-mono text-[11px] font-bold px-2.5 py-1.5 rounded-lg" style={{ background: "rgba(167,139,250,0.12)", color: "#a78bfa", border: "1px solid rgba(167,139,250,0.2)" }}>
+        <span className="font-mono text-xs font-bold px-2.5 py-1.5 rounded-xl" style={{ background: "rgba(167,139,250,0.12)", color: "#a78bfa", border: "1px solid rgba(167,139,250,0.2)" }}>
           #{row._id.slice(-8).toUpperCase()}
         </span>
       ),
@@ -170,7 +170,7 @@ function DashboardContent() {
         const s = STATUS_BADGE[row.status];
         return (
           <span
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold capitalize"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold capitalize"
             style={s ? { background: s.bg, color: s.text } : { background: "rgba(255,255,255,0.06)", color: "rgba(148,163,184,0.7)" }}
           >
             {s && <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />}
@@ -469,7 +469,7 @@ function DashboardContent() {
                     )}
                     <div className="min-w-0">
                       <p className="text-xs font-bold text-slate-200 truncate">{p.name}</p>
-                      <p className="text-[11px] text-slate-400 font-medium">৳{fmt(p.totalRevenue)} total revenue</p>
+                      <p className="text-xs text-slate-400 font-medium">৳{fmt(p.totalRevenue)} total revenue</p>
                     </div>
                   </div>
                   <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-violet-900/30 text-violet-300 border border-violet-500/30 shrink-0">
@@ -520,7 +520,7 @@ function DashboardContent() {
                         <div className="flex items-center gap-2 mt-0.5">
                           <span className="text-xs text-slate-400 font-medium">৳{fmt(p.price)}</span>
                           <span className="text-slate-600 text-xs">•</span>
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold border ${
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-bold border ${
                             isOut
                               ? "bg-rose-900/30 text-rose-400 border-rose-500/30"
                               : "bg-amber-900/30 text-amber-400 border-amber-500/30"
