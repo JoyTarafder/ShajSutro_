@@ -41,10 +41,10 @@ export default function Footer() {
             >
               ShajSutro
             </Link>
-            <p className="mt-4 text-sm text-charcoal-400 leading-relaxed font-light max-w-sm sm:max-w-none">
+            <p className="mt-3 text-xs sm:text-sm text-charcoal-400 leading-relaxed font-light max-w-sm sm:max-w-none">
               Thoughtfully crafted clothing for the modern wardrobe. Quality over quantity.
             </p>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 mt-4">
               {[
                 {
                   label: "Instagram",
@@ -62,7 +62,7 @@ export default function Footer() {
                 <a
                   key={social.label}
                   href="#"
-                  className="p-2.5 text-charcoal-300 hover:text-charcoal-900 rounded-full hover:bg-white border border-transparent hover:border-charcoal-200 transition-all duration-300"
+                  className="p-2.5 text-charcoal-400 hover:text-charcoal-950 rounded-full hover:bg-white border border-transparent hover:border-charcoal-200 transition-all duration-300"
                   aria-label={social.label}
                 >
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -75,13 +75,13 @@ export default function Footer() {
 
           {Object.entries(footerLinks).map(([title, links]) => (
             <div key={title} className="text-center sm:text-left">
-              <h3 className="text-[13px] font-semibold text-charcoal-900 mb-5 tracking-wide">{title}</h3>
+              <h3 className="text-xs font-semibold text-charcoal-900 mb-4 tracking-wide uppercase">{title}</h3>
               <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-charcoal-400 hover:text-charcoal-900 transition-colors duration-300 font-light"
+                      className="text-xs sm:text-sm text-charcoal-500 hover:text-charcoal-950 transition-colors duration-300 font-light"
                     >
                       {link.label}
                     </Link>
@@ -98,7 +98,7 @@ export default function Footer() {
             alt="We Accept SSLCommerz Payments"
             width={700}
             height={100}
-            className="w-full max-w-sm sm:max-w-md md:max-w-lg h-auto object-contain opacity-60 hover:opacity-90 transition-opacity duration-300"
+            className="w-full max-w-md sm:max-w-lg md:max-w-xl h-auto object-contain opacity-80 hover:opacity-100 transition-opacity duration-300"
           />
         </div>
         <div className="mt-8 pt-6 border-t border-charcoal-100/50 flex justify-center">

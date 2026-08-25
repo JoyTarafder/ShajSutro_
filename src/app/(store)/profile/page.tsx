@@ -258,36 +258,36 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-warm-50">
-      <div className="max-w-6xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 py-8 sm:py-10">
 
         {/* ── Top header ── */}
-        <div className="mb-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-charcoal-400 mb-1">My Account</p>
+        <div className="mb-5 sm:mb-6">
+          <p className="text-xs font-semibold uppercase tracking-wider text-emerald-800 mb-1">My Account</p>
           <h1 className="text-2xl sm:text-3xl font-semibold text-charcoal-950 tracking-tight">
             Hello, {user.name.split(" ")[0]}
           </h1>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-7">
+        <div className="flex flex-col lg:flex-row gap-6">
 
           {/* ── Sidebar ── */}
-          <aside className="lg:w-64 shrink-0 space-y-3">
+          <aside className="lg:w-60 shrink-0 space-y-3">
             {/* Avatar card */}
-            <div className="bg-white rounded-2xl border border-charcoal-100 p-6 flex flex-col items-center text-center gap-3 shadow-2xs">
+            <div className="bg-white rounded-2xl border border-charcoal-100 p-4 sm:p-5 flex flex-col items-center text-center gap-2.5 shadow-2xs">
               {avatarImg ? (
-                <div className="w-16 h-16 rounded-full overflow-hidden border border-charcoal-150 shadow-sm bg-warm-50 shrink-0">
+                <div className="w-14 h-14 rounded-full overflow-hidden border border-charcoal-150 shadow-sm bg-warm-50 shrink-0">
                   <img src={avatarImg} alt={user.name} className="w-full h-full object-cover" />
                 </div>
               ) : (
-                <div className="w-16 h-16 rounded-full bg-emerald-950 flex items-center justify-center text-white text-xl font-semibold tracking-wide select-none shrink-0 shadow-xs">
+                <div className="w-14 h-14 rounded-full bg-emerald-950 flex items-center justify-center text-white text-lg font-semibold tracking-wide select-none shrink-0 shadow-xs">
                   {initials(user.name)}
                 </div>
               )}
               <div>
-                <p className="font-semibold text-charcoal-950 text-sm">{user.name}</p>
-                <p className="text-xs text-charcoal-400 mt-0.5 font-light">{user.email}</p>
+                <p className="font-semibold text-charcoal-950 text-xs sm:text-sm">{user.name}</p>
+                <p className="text-xs text-charcoal-400 font-light truncate max-w-[180px]">{user.email}</p>
               </div>
-              <span className="text-xs font-medium px-3 py-1 rounded-full bg-warm-50 border border-charcoal-100 text-charcoal-600 uppercase tracking-wide">
+              <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-warm-50 border border-charcoal-100 text-charcoal-600 uppercase tracking-wide">
                 {user.role}
               </span>
             </div>
@@ -1291,7 +1291,7 @@ function AccountTab({
                 </button>
               )}
             </div>
-            <p className="text-[10px] text-charcoal-400 font-light">JPG, PNG, WEBP or GIF. Max size 1.5MB.</p>
+            <p className="text-xs text-charcoal-400 font-light">JPG, PNG, WEBP or GIF. Max size 1.5MB.</p>
             {uploadError && (
               <p className="text-xs font-semibold text-red-600 mt-1">{uploadError}</p>
             )}
