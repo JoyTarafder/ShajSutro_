@@ -1074,52 +1074,52 @@ function UsersContent() {
   };
 
   return (
-    <div className="p-4 sm:p-8 space-y-6">
+    <div className="p-4 sm:p-8 space-y-6 max-w-7xl mx-auto">
       {toast && <Toast msg={toast.msg} type={toast.type} />}
 
+      {/* Header & Controls Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <p
-          className="text-sm font-medium"
-          style={{ color: "rgba(148,163,184,0.6)" }}
-        >
-          {pagination.total} registered account
-          {pagination.total !== 1 ? "s" : ""}
-        </p>
-        <div className="flex items-center gap-3">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight">
+            Users &amp; Roles
+          </h2>
+          <p className="text-xs text-slate-400 mt-1">
+            {users.length} registered {users.length !== 1 ? "accounts" : "account"} in platform
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3">
           <div className="relative w-full sm:w-64">
-            <svg
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4"
-              style={{ color: "rgba(148,163,184,0.5)" }}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.75}
-                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-              />
-            </svg>
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                />
+              </svg>
+            </div>
             <input
               type="text"
-              placeholder="Search name or email…"
+              placeholder="Filter users by name or email…"
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm focus:outline-none transition-all"
-              style={{
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.08)",
-                color: "#f1f5f9",
-              }}
+              className="w-full pl-10 pr-4 py-2 bg-slate-950/80 border border-white/10 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500/60 transition-colors"
             />
           </div>
           <button
+            type="button"
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl text-sm font-bold hover:from-violet-700 hover:to-indigo-700 transition-all whitespace-nowrap"
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl text-xs font-bold hover:from-violet-700 hover:to-indigo-700 transition-all shadow-xs whitespace-nowrap"
           >
             <svg
               className="w-4 h-4"
@@ -1139,30 +1139,16 @@ function UsersContent() {
         </div>
       </div>
 
-      <div
-        className="rounded-2xl overflow-hidden"
-        style={{
-          background: "rgba(255,255,255,0.025)",
-          border: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
+      {/* Users Table Container */}
+      <div className="bg-white/[0.02] border border-white/8 rounded-2xl overflow-hidden shadow-lg">
         {loading ? (
           <div className="flex items-center justify-center py-24">
-            <div
-              className="w-8 h-8 border-2 rounded-full animate-spin"
-              style={{
-                borderColor: "rgba(255,255,255,0.08)",
-                borderTopColor: "#7c3aed",
-              }}
-            />
+            <div className="w-8 h-8 border-2 border-white/10 border-t-violet-500 rounded-full animate-spin" />
           </div>
         ) : users.length === 0 ? (
-          <div
-            className="flex flex-col items-center justify-center py-24"
-            style={{ color: "rgba(148,163,184,0.4)" }}
-          >
+          <div className="flex flex-col items-center justify-center py-24 text-slate-400">
             <svg
-              className="w-12 h-12 mb-3"
+              className="w-12 h-12 mb-3 text-slate-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -1178,253 +1164,106 @@ function UsersContent() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr
-                  style={{
-                    borderBottom: "1px solid rgba(255,255,255,0.05)",
-                    background: "rgba(255,255,255,0.02)",
-                  }}
-                >
-                  <th
-                    className="text-left text-[11px] font-bold uppercase tracking-[0.08em] px-6 py-4"
-                    style={{ color: "rgba(148,163,184,0.5)" }}
-                  >
-                    User
-                  </th>
-                  <th
-                    className="text-left text-[11px] font-bold uppercase tracking-[0.08em] px-6 py-4"
-                    style={{ color: "rgba(148,163,184,0.5)" }}
-                  >
-                    Role
-                  </th>
-                  <th
-                    className="text-left text-[11px] font-bold uppercase tracking-[0.08em] px-6 py-4"
-                    style={{ color: "rgba(148,163,184,0.5)" }}
-                  >
-                    Status
-                  </th>
-                  <th className="px-6 py-4" />
+            <table className="w-full text-left border-collapse">
+              <thead className="bg-white/[0.02] border-b border-white/8 text-slate-400 uppercase font-bold tracking-wider text-[11px]">
+                <tr>
+                  <th className="px-5 py-3.5">User</th>
+                  <th className="px-5 py-3.5">Role</th>
+                  <th className="px-5 py-3.5">Status</th>
+                  <th className="px-5 py-3.5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-white/5">
                 {users.map((user) => (
                   <tr
                     key={user._id}
-                    className={`hover:bg-violet-900/10 transition-colors duration-100 group ${user.isBlocked ? "opacity-50" : ""}`}
-                    style={{
-                      borderBottom: "1px solid rgba(255,255,255,0.035)",
-                    }}
+                    className={`hover:bg-white/[0.02] transition-colors h-16 ${user.isBlocked ? "opacity-60" : ""}`}
                   >
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-3.5">
                       <div
                         onClick={() => setSelectedUserId(user._id)}
                         className="flex items-center gap-3 cursor-pointer group/user"
                         title="Click to view user details"
                       >
                         <Avatar name={user.name} />
-                        <div>
-                          <p
-                            className="text-sm font-semibold group-hover/user:text-violet-300 transition-colors"
-                            style={{ color: "#e2e8f0" }}
-                          >
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-slate-100 group-hover/user:text-violet-300 transition-colors truncate">
                             {user.name}
                           </p>
-                          <p className="text-xs text-slate-400">{user.email}</p>
+                          <p className="text-xs text-slate-400 truncate mt-0.5">{user.email}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-3.5 whitespace-nowrap">
                       <span
-                        className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold capitalize"
-                        style={
+                        className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold capitalize border ${
                           user.role === "admin"
-                            ? {
-                                background: "rgba(167,139,250,0.12)",
-                                color: "#a78bfa",
-                                border: "1px solid rgba(167,139,250,0.2)",
-                              }
+                            ? "bg-violet-950/40 text-violet-300 border-violet-500/30"
                             : user.role === "sub-admin"
-                              ? {
-                                  background: "rgba(56,189,248,0.12)",
-                                  color: "#38bdf8",
-                                  border: "1px solid rgba(56,189,248,0.2)",
-                                }
-                              : {
-                                  background: "rgba(255,255,255,0.06)",
-                                  color: "rgba(148,163,184,0.7)",
-                                }
-                        }
+                              ? "bg-sky-950/40 text-sky-300 border-sky-500/30"
+                              : "bg-white/[0.04] text-slate-400 border-white/10"
+                        }`}
                       >
-                        {user.role === "admin" && (
-                          <svg
-                            className="w-3 h-3 mr-1"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        )}
-                        {user.role === "sub-admin" && (
-                          <svg
-                            className="w-3 h-3 mr-1"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        )}
-                        {user.role === "sub-admin" ? "Sub-Admin" : user.role}
+                        {user.role === "sub-admin" ? "Sub-Admin" : user.role === "admin" ? "Admin" : "Customer"}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-3.5 whitespace-nowrap">
                       {user.isBlocked ? (
-                        <span
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold"
-                          style={{
-                            background: "rgba(248,113,113,0.12)",
-                            color: "#f87171",
-                            border: "1px solid rgba(248,113,113,0.2)",
-                          }}
-                        >
-                          <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-950/40 text-rose-400 border border-rose-500/30">
+                          <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
                           Blocked
                         </span>
                       ) : (
-                        <span
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold"
-                          style={{
-                            background: "rgba(52,211,153,0.12)",
-                            color: "#34d399",
-                            border: "1px solid rgba(52,211,153,0.2)",
-                          }}
-                        >
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950/40 text-emerald-400 border border-emerald-500/30">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                           Active
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end">
+                    <td className="px-5 py-3.5 text-right whitespace-nowrap">
+                      <div className="flex items-center gap-2 justify-end">
                         <button
+                          type="button"
                           onClick={() => setSelectedUserId(user._id)}
                           title="View user details and analytics"
-                          className="px-3 py-1.5 text-xs font-bold rounded-lg transition-colors border"
-                          style={{
-                            background: "rgba(124,58,237,0.15)",
-                            color: "#a78bfa",
-                            borderColor: "rgba(124,58,237,0.3)",
-                          }}
+                          className="px-3 py-1.5 text-xs font-semibold rounded-xl transition-all border bg-violet-950/30 text-violet-300 border-violet-500/20 hover:bg-violet-900/40"
                         >
                           Details
                         </button>
                         {user.role === "user" && (
                           <button
+                            type="button"
                             onClick={() => handleBlock(user)}
                             disabled={actionLoading === user._id + "-block"}
-                            title={
-                              user.isBlocked ? "Unblock user" : "Block user"
-                            }
-                            className="px-3 py-1.5 text-xs font-bold rounded-lg transition-colors disabled:opacity-60"
-                            style={
+                            title={user.isBlocked ? "Unblock user" : "Block user"}
+                            className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-all border disabled:opacity-50 ${
                               user.isBlocked
-                                ? {
-                                    background: "rgba(52,211,153,0.12)",
-                                    color: "#34d399",
-                                    border: "1px solid rgba(52,211,153,0.2)",
-                                  }
-                                : {
-                                    background: "rgba(251,146,60,0.12)",
-                                    color: "#fb923c",
-                                    border: "1px solid rgba(251,146,60,0.2)",
-                                  }
-                            }
+                                ? "bg-emerald-950/30 text-emerald-400 border-emerald-500/20 hover:bg-emerald-900/40"
+                                : "bg-amber-950/30 text-amber-400 border-amber-500/20 hover:bg-amber-900/40"
+                            }`}
                           >
-                            {actionLoading === user._id + "-block" ? (
-                              <svg
-                                className="w-3.5 h-3.5 animate-spin"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                              >
-                                <circle
-                                  className="opacity-25"
-                                  cx="12"
-                                  cy="12"
-                                  r="10"
-                                  stroke="currentColor"
-                                  strokeWidth="4"
-                                />
-                                <path
-                                  className="opacity-75"
-                                  fill="currentColor"
-                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                                />
-                              </svg>
-                            ) : user.isBlocked ? (
-                              "Unblock"
-                            ) : (
-                              "Block"
-                            )}
+                            {actionLoading === user._id + "-block" ? "..." : user.isBlocked ? "Unblock" : "Block"}
                           </button>
                         )}
                         <button
+                          type="button"
                           onClick={() => handleRoleChange(user)}
                           disabled={actionLoading === user._id + "-role"}
-                          title="Click to change user role"
-                          className="px-3 py-1.5 text-xs font-bold rounded-lg transition-colors disabled:opacity-60"
-                          style={{
-                            background: "rgba(255,255,255,0.06)",
-                            color: "rgba(226,232,240,0.7)",
-                          }}
+                          title="Click to switch user role"
+                          className="px-3 py-1.5 text-xs font-semibold rounded-xl transition-all bg-white/[0.05] hover:bg-white/[0.1] text-slate-200 border border-white/10 disabled:opacity-50"
                         >
-                          {actionLoading === user._id + "-role" ? (
-                            <svg
-                              className="w-3.5 h-3.5 animate-spin"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
-                              <circle
-                                className="opacity-25"
-                                cx="12"
-                                cy="12"
-                                r="10"
-                                stroke="currentColor"
-                                strokeWidth="4"
-                              />
-                              <path
-                                className="opacity-75"
-                                fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                              />
-                            </svg>
-                          ) : (
-                            `Role: ${user.role === "sub-admin" ? "Sub-Admin" : user.role === "admin" ? "Admin" : "Customer"}`
-                          )}
+                          {actionLoading === user._id + "-role" ? "..." : "Change Role"}
                         </button>
-                        <button
-                          onClick={() => setToDelete(user)}
-                          disabled={user.role === "admin"}
-                          title={
-                            user.role === "admin"
-                              ? "Cannot delete admin accounts"
-                              : "Delete user"
-                          }
-                          className="px-3 py-1.5 text-xs font-bold rounded-lg transition-colors disabled:opacity-0 disabled:cursor-not-allowed"
-                          style={{
-                            background: "rgba(248,113,113,0.12)",
-                            color: "#f87171",
-                          }}
-                        >
-                          Delete
-                        </button>
+                        {user.role !== "admin" && (
+                          <button
+                            type="button"
+                            onClick={() => setToDelete(user)}
+                            title="Delete user account"
+                            className="px-3 py-1.5 text-xs font-semibold rounded-xl transition-all bg-rose-950/30 hover:bg-rose-900/40 text-rose-400 border border-rose-500/20"
+                          >
+                            Delete
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
