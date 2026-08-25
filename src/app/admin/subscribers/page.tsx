@@ -181,44 +181,44 @@ export default function AdminSubscribersPage() {
   };
 
   return (
-    <div className="p-6 lg:p-8 space-y-8 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-8 space-y-6 max-w-7xl mx-auto">
       {/* Top Title & Header Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-2">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-400">
+            <span className="text-xs font-semibold text-emerald-400 tracking-wide">
               Newsletter Directory & Mailer
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight">
             Subscribers List
-          </h1>
+          </h2>
           <p className="text-xs text-slate-400 mt-1">
-            Manage subscribers and send 1-click promotional emails & offer blasts.
+            Manage subscribers and send promotional emails & offer blasts.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           <button
+            type="button"
             onClick={() => {
               setShowBroadcastModal(true);
               setBroadcastResult(null);
               setBroadcastError(null);
             }}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white text-xs font-bold shadow-lg shadow-violet-600/30 border border-violet-400/30 flex items-center gap-2.5 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+            className="px-4 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold border border-violet-400/20 shadow-xs flex items-center gap-2 transition-all"
           >
-            <div className="w-5 h-5 rounded-lg bg-white/15 border border-white/25 flex items-center justify-center text-amber-300 shrink-0 shadow-sm">
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
-              </svg>
-            </div>
+            <svg className="w-4 h-4 text-violet-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+            </svg>
             <span className="whitespace-nowrap">Broadcast Promo Mail</span>
           </button>
 
           <button
+            type="button"
             onClick={fetchSubscribers}
-            className="px-4 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-2 transition-all"
+            className="px-4 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-slate-200 text-xs font-semibold flex items-center gap-2 transition-all"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -227,9 +227,10 @@ export default function AdminSubscribersPage() {
           </button>
 
           <button
+            type="button"
             onClick={handleExportCSV}
             disabled={subscribers.length === 0}
-            className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold flex items-center gap-2 transition-all disabled:opacity-50"
+            className="px-4 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-slate-200 text-xs font-semibold flex items-center gap-2 transition-all disabled:opacity-40"
           >
             <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -240,14 +241,14 @@ export default function AdminSubscribersPage() {
       </div>
 
       {/* Overview Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <div className="p-5 rounded-2xl bg-gradient-to-br from-slate-900/90 via-slate-900/40 to-slate-950/80 border border-slate-800/80 shadow-xl relative overflow-hidden">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Total Subscribers</p>
-              <h3 className="text-2xl font-black text-white mt-1">{totalSubscribers}</h3>
+              <p className="text-xs font-medium text-slate-400">Total Subscribers</p>
+              <p className="text-2xl font-bold text-slate-100 mt-1">{totalSubscribers}</p>
             </div>
-            <div className="w-11 h-11 rounded-2xl bg-emerald-500/15 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
@@ -255,13 +256,13 @@ export default function AdminSubscribersPage() {
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-gradient-to-br from-slate-900/90 via-slate-900/40 to-slate-950/80 border border-slate-800/80 shadow-xl relative overflow-hidden">
+        <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Active Subscribers</p>
-              <h3 className="text-2xl font-black text-emerald-400 mt-1">{activeSubscribers}</h3>
+              <p className="text-xs font-medium text-slate-400">Active Subscribers</p>
+              <p className="text-2xl font-bold text-emerald-400 mt-1">{activeSubscribers}</p>
             </div>
-            <div className="w-11 h-11 rounded-2xl bg-teal-500/15 border border-teal-500/20 text-teal-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -269,13 +270,13 @@ export default function AdminSubscribersPage() {
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-gradient-to-br from-slate-900/90 via-slate-900/40 to-slate-950/80 border border-slate-800/80 shadow-xl relative overflow-hidden">
+        <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Inactive Subscribers</p>
-              <h3 className="text-2xl font-black text-slate-300 mt-1">{totalSubscribers - activeSubscribers}</h3>
+              <p className="text-xs font-medium text-slate-400">Inactive Subscribers</p>
+              <p className="text-2xl font-bold text-slate-300 mt-1">{totalSubscribers - activeSubscribers}</p>
             </div>
-            <div className="w-11 h-11 rounded-2xl bg-slate-800/60 border border-slate-700/50 text-slate-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-slate-400 flex items-center justify-center">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
               </svg>
@@ -285,8 +286,13 @@ export default function AdminSubscribersPage() {
       </div>
 
       {/* Filter and Search */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/[0.02] border border-white/8 rounded-2xl p-4">
         <div className="relative w-full sm:w-80">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
           <input
             type="text"
             value={search}
@@ -295,35 +301,32 @@ export default function AdminSubscribersPage() {
               setPage(1);
             }}
             placeholder="Search email address..."
-            className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/60 pl-9"
+            className="w-full bg-slate-950/80 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500/60 transition-colors"
           />
-          <svg className="w-4 h-4 text-slate-500 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
         </div>
 
         <p className="text-xs text-slate-400">
-          Showing <span className="font-semibold text-white">{subscribers.length}</span> of <span className="font-semibold text-white">{totalSubscribers}</span> subscribers
+          Showing <span className="font-semibold text-slate-200">{subscribers.length}</span> of <span className="font-semibold text-slate-200">{totalSubscribers}</span> subscribers
         </p>
       </div>
 
       {/* Subscribers Table */}
-      <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl overflow-hidden shadow-2xl">
+      <div className="bg-white/[0.02] border border-white/8 rounded-2xl overflow-hidden shadow-lg">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-950/80 border-b border-slate-800 text-slate-400 uppercase font-extrabold tracking-wider">
+            <thead className="bg-white/[0.02] border-b border-white/8 text-slate-400 uppercase font-bold tracking-wider text-[11px]">
               <tr>
-                <th className="px-6 py-4">#</th>
-                <th className="px-6 py-4">Email Address</th>
-                <th className="px-6 py-4">Subscription Date</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4 text-right">Actions</th>
+                <th className="px-5 py-3.5">#</th>
+                <th className="px-5 py-3.5">Email Address</th>
+                <th className="px-5 py-3.5">Subscription Date</th>
+                <th className="px-5 py-3.5">Status</th>
+                <th className="px-5 py-3.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y divide-white/5">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-slate-500">
+                  <td colSpan={5} className="px-5 py-12 text-center text-slate-500">
                     <div className="inline-flex items-center gap-2">
                       <span className="w-4 h-4 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
                       Loading subscribers...
@@ -332,25 +335,25 @@ export default function AdminSubscribersPage() {
                 </tr>
               ) : subscribers.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-slate-500">
+                  <td colSpan={5} className="px-5 py-12 text-center text-slate-500">
                     No subscribers found.
                   </td>
                 </tr>
               ) : (
                 subscribers.map((sub, index) => (
-                  <tr key={sub._id} className="hover:bg-slate-800/30 transition-colors">
-                    <td className="px-6 py-4 text-slate-500 font-mono">
+                  <tr key={sub._id} className="hover:bg-white/[0.02] transition-colors">
+                    <td className="px-5 py-3.5 text-slate-500 font-mono">
                       {(page - 1) * 20 + index + 1}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs">
                           {sub.email.charAt(0).toUpperCase()}
                         </div>
-                        <span className="font-bold text-slate-200">{sub.email}</span>
+                        <span className="font-semibold text-slate-200">{sub.email}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-slate-400 font-mono">
+                    <td className="px-5 py-3.5 text-slate-400 font-mono whitespace-nowrap">
                       {new Date(sub.subscribedAt).toLocaleString("en-US", {
                         month: "short",
                         day: "numeric",
@@ -359,25 +362,41 @@ export default function AdminSubscribersPage() {
                         minute: "2-digit",
                       })}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-3.5">
                       <button
+                        type="button"
+                        role="switch"
+                        aria-checked={sub.isActive}
                         onClick={() => handleToggleStatus(sub._id)}
                         disabled={actionLoading === sub._id}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold border transition-all ${
+                        title={sub.isActive ? "Click to deactivate subscriber" : "Click to activate subscriber"}
+                        className={`inline-flex items-center gap-2 px-3 py-1 rounded-xl text-xs font-semibold border transition-all ${
                           sub.isActive
-                            ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/25"
-                            : "bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700"
+                            ? "bg-emerald-950/40 text-emerald-400 border-emerald-500/30 hover:bg-emerald-900/50"
+                            : "bg-white/[0.04] text-slate-400 border-white/10 hover:bg-white/[0.08]"
                         }`}
                       >
-                        <span className={`w-1.5 h-1.5 rounded-full ${sub.isActive ? "bg-emerald-400" : "bg-slate-500"}`} />
-                        {sub.isActive ? "Active VIP" : "Inactive"}
+                        <span
+                          className={`relative inline-block w-6 h-3.5 rounded-full transition-colors ${
+                            sub.isActive ? "bg-emerald-500" : "bg-slate-700"
+                          }`}
+                        >
+                          <span
+                            className={`absolute top-0.5 left-0.5 w-2.5 h-2.5 bg-white rounded-full transition-transform ${
+                              sub.isActive ? "translate-x-2.5" : "translate-x-0"
+                            }`}
+                          />
+                        </span>
+                        <span>{sub.isActive ? "Active" : "Inactive"}</span>
                       </button>
                     </td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-5 py-3.5 text-right">
                       <button
+                        type="button"
                         onClick={() => handleDelete(sub._id)}
                         disabled={actionLoading === sub._id}
-                        className="px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-400 text-xs font-semibold transition-all disabled:opacity-50"
+                        aria-label={`Delete subscriber ${sub.email}`}
+                        className="px-3 py-1.5 rounded-xl bg-rose-950/30 hover:bg-rose-900/40 border border-rose-500/20 text-rose-400 text-xs font-semibold transition-all disabled:opacity-50"
                       >
                         Delete
                       </button>
@@ -391,21 +410,23 @@ export default function AdminSubscribersPage() {
 
         {/* Pagination Footer */}
         {totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-slate-800 flex items-center justify-between bg-slate-950/60">
+          <div className="px-6 py-4 border-t border-white/8 flex items-center justify-between bg-white/[0.01]">
             <button
+              type="button"
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs text-slate-300 disabled:opacity-50 hover:bg-slate-700 transition"
+              className="px-4 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-xs font-semibold text-slate-200 disabled:opacity-40 transition-colors"
             >
               Previous
             </button>
-            <span className="text-xs text-slate-400 font-semibold">
-              Page {page} of {totalPages}
+            <span className="text-xs text-slate-400 font-medium">
+              Page <span className="font-bold text-slate-200">{page}</span> of <span className="font-bold text-slate-200">{totalPages}</span>
             </span>
             <button
+              type="button"
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs text-slate-300 disabled:opacity-50 hover:bg-slate-700 transition"
+              className="px-4 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-xs font-semibold text-slate-200 disabled:opacity-40 transition-colors"
             >
               Next
             </button>
