@@ -227,13 +227,13 @@ function ShopContent() {
 
   // ── Filter panel (shared desktop + mobile) ──
   const FiltersPanel = () => (
-    <div className="space-y-9">
+    <div className="space-y-7">
       {categories.length > 0 && !initialBadge && (
         <div>
-          <h3 className="text-xs font-semibold text-emerald-950 mb-4 tracking-[0.12em] uppercase">
+          <h2 className="text-xs font-bold text-emerald-950 mb-3.5 tracking-wider uppercase">
             Categories
-          </h3>
-          <div className="space-y-2">
+          </h2>
+          <div className="space-y-1.5">
             {categories.map((cat) => {
               const isSelected = selectedCategories.includes(cat.slug);
               return (
@@ -241,33 +241,33 @@ function ShopContent() {
                   key={cat._id}
                   type="button"
                   onClick={() => toggleCategory(cat.slug)}
-                  className={`w-full flex items-center gap-3 rounded-xl px-3 py-2.5 border transition-all duration-300 transform active:scale-[0.98] ${
+                  className={`w-full flex items-center justify-between rounded-xl px-3 py-2 border transition-all duration-200 ${
                     isSelected
-                      ? "border-emerald-200/80 bg-emerald-500/5 shadow-inner"
-                      : "border-transparent hover:border-emerald-100 hover:bg-emerald-50/20"
+                      ? "border-emerald-300 bg-emerald-500/10 text-emerald-950 font-semibold"
+                      : "border-transparent text-emerald-900/70 hover:border-emerald-100 hover:bg-emerald-50/30"
                   }`}
                 >
-                  <span
-                    className={`w-4 h-4 rounded border flex items-center justify-center transition-all duration-300 ${
-                      isSelected
-                        ? "bg-emerald-600 border-emerald-600 scale-105 shadow-sm shadow-emerald-500/20"
-                        : "border-emerald-200 bg-white"
-                    }`}
-                    aria-hidden="true"
-                  >
-                    {isSelected && (
-                      <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3.5} d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                  </span>
-                  <span className={`text-sm font-medium transition-colors ${
-                    isSelected ? "text-emerald-950 font-semibold" : "text-emerald-900/70"
-                  }`}>
-                    {cat.name}
-                  </span>
-                  <span className={`ml-auto text-[10px] font-semibold px-2 py-0.5 rounded-full transition-colors ${
-                    isSelected ? "bg-emerald-500/10 text-emerald-800" : "bg-emerald-50 text-emerald-600/70"
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span
+                      className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${
+                        isSelected
+                          ? "bg-emerald-600 border-emerald-600 shadow-xs"
+                          : "border-emerald-200 bg-white"
+                      }`}
+                      aria-hidden="true"
+                    >
+                      {isSelected && (
+                        <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </span>
+                    <span className="text-xs font-medium truncate">
+                      {cat.name}
+                    </span>
+                  </div>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                    isSelected ? "bg-emerald-600/15 text-emerald-900" : "bg-emerald-100/50 text-emerald-700"
                   }`}>
                     {cat.productCount}
                   </span>
@@ -279,13 +279,13 @@ function ShopContent() {
       )}
 
       <div>
-        <h3 className="text-xs font-semibold text-emerald-950 mb-4 tracking-[0.12em] uppercase">
+        <h2 className="text-xs font-bold text-emerald-950 mb-3.5 tracking-wider uppercase">
           Price Range
-        </h3>
-        <div className="grid grid-cols-2 gap-3 mb-4">
+        </h2>
+        <div className="grid grid-cols-2 gap-3 mb-5">
           <div>
-            <label className="block text-[10px] text-emerald-900/55 font-semibold uppercase tracking-wider mb-1.5">
-              Min Price
+            <label className="block text-xs text-emerald-900/60 font-medium mb-1.5">
+              Min Price (৳)
             </label>
             <input
               type="number"
@@ -293,12 +293,12 @@ function ShopContent() {
               max={priceRange[1]}
               value={priceRange[0]}
               onChange={(e) => setPriceMin(Number(e.target.value))}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-emerald-100 bg-white/80 focus:bg-white text-sm text-emerald-950 focus:outline-none focus:ring-2 focus:ring-emerald-400/30 transition-all shadow-sm"
+              className="w-full px-3 py-2 rounded-xl border border-emerald-200/80 bg-white text-xs text-emerald-950 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 transition-all shadow-xs"
             />
           </div>
           <div>
-            <label className="block text-[10px] text-emerald-900/55 font-semibold uppercase tracking-wider mb-1.5">
-              Max Price
+            <label className="block text-xs text-emerald-900/60 font-medium mb-1.5">
+              Max Price (৳)
             </label>
             <input
               type="number"
@@ -306,12 +306,12 @@ function ShopContent() {
               max={maxPrice}
               value={priceRange[1]}
               onChange={(e) => setPriceMax(Number(e.target.value))}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-emerald-100 bg-white/80 focus:bg-white text-sm text-emerald-950 focus:outline-none focus:ring-2 focus:ring-emerald-400/30 transition-all shadow-sm"
+              className="w-full px-3 py-2 rounded-xl border border-emerald-200/80 bg-white text-xs text-emerald-950 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 transition-all shadow-xs"
             />
           </div>
         </div>
 
-        <div className="relative h-6 flex items-center">
+        <div className="relative h-6 flex items-center mt-2 mb-1">
           <input
             type="range"
             min={0}
@@ -319,7 +319,7 @@ function ShopContent() {
             step={50}
             value={priceRange[0]}
             onChange={(e) => setPriceMin(Number(e.target.value))}
-            className="absolute w-full accent-emerald-700 h-1 bg-emerald-100 rounded-lg appearance-none cursor-pointer"
+            className="absolute w-full accent-emerald-700 h-1 bg-emerald-200 rounded-lg appearance-none cursor-pointer"
           />
           <input
             type="range"
@@ -328,22 +328,19 @@ function ShopContent() {
             step={50}
             value={priceRange[1]}
             onChange={(e) => setPriceMax(Number(e.target.value))}
-            className="absolute w-full accent-emerald-700 h-1 bg-transparent appearance-none cursor-pointer pointer-events-none"
-            style={{
-              pointerEvents: "auto",
-            }}
+            className="absolute w-full accent-emerald-700 h-1 bg-transparent appearance-none cursor-pointer"
           />
         </div>
-        <div className="flex justify-between text-xs text-emerald-900/50 mt-1.5 font-medium">
+        <div className="flex justify-between text-xs text-emerald-900/60 mt-2 font-medium">
           <span>৳0</span>
           <span>৳{maxPrice}</span>
         </div>
       </div>
 
       <div>
-        <h3 className="text-xs font-semibold text-emerald-950 mb-4 tracking-[0.12em] uppercase">
+        <h2 className="text-xs font-bold text-emerald-950 mb-3.5 tracking-wider uppercase">
           Sizes
-        </h3>
+        </h2>
         <div className="grid grid-cols-3 gap-2">
           {SIZES.map((size) => {
             const isSelected = selectedSizes.includes(size);
@@ -352,10 +349,10 @@ function ShopContent() {
                 key={size}
                 type="button"
                 onClick={() => toggleSize(size)}
-                className={`px-3.5 py-2.5 text-xs font-semibold rounded-xl border transition-all duration-300 transform active:scale-95 ${
+                className={`py-2 text-xs font-semibold rounded-xl border transition-all ${
                   isSelected
-                    ? "bg-emerald-950 text-white border-emerald-950 shadow-soft-md scale-105"
-                    : "border-emerald-100 bg-white/60 text-charcoal-500 hover:border-emerald-300 hover:bg-white hover:text-emerald-950 hover:shadow-soft"
+                    ? "bg-emerald-950 text-white border-emerald-950 shadow-xs"
+                    : "border-emerald-200/80 bg-white text-emerald-900/80 hover:border-emerald-300 hover:bg-emerald-50/50"
                 }`}
               >
                 {size}
@@ -367,8 +364,9 @@ function ShopContent() {
 
       {hasActiveFilters && (
         <button
+          type="button"
           onClick={clearFilters}
-          className="w-full text-xs font-bold uppercase tracking-wider text-emerald-700 hover:text-white hover:bg-emerald-700 border border-emerald-200 rounded-xl py-3 hover:shadow-soft-md transition-all duration-300"
+          className="w-full text-xs font-semibold text-emerald-800 hover:text-white hover:bg-emerald-800 border border-emerald-300 rounded-xl py-2.5 transition-all"
         >
           Clear all filters
         </button>
@@ -388,50 +386,45 @@ function ShopContent() {
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-emerald-200/20 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute top-[25%] right-[-10%] w-[40%] h-[40%] bg-teal-200/10 rounded-full blur-[100px] pointer-events-none" />
 
-      {/* ─── Premium Upgraded Hero Section ─── */}
-      <div className="relative overflow-hidden border-b border-emerald-100/50 bg-gradient-to-r from-emerald-50/70 via-emerald-100/40 to-teal-50/50 py-6 md:py-20">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
-        
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-8 animate-fade-in">
-          <div className="max-w-2xl space-y-2 md:space-y-4">
-            <div className="hidden md:inline-flex items-center gap-2 rounded-full border border-emerald-200/80 bg-white/70 px-3 py-1 text-xs font-semibold text-emerald-700 backdrop-blur-sm shadow-soft/30">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+      {/* ─── Hero Section ─── */}
+      <div className="relative overflow-hidden border-b border-emerald-100/50 bg-gradient-to-r from-emerald-50/70 via-emerald-100/40 to-teal-50/50 py-8 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="max-w-2xl space-y-2 md:space-y-3">
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200/80 bg-white/70 px-3 py-1 text-xs font-semibold text-emerald-800 backdrop-blur-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
               Curated Collection
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-emerald-950 leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-emerald-950 leading-tight">
               {headingText}
-              <span className="hidden md:block text-emerald-600 font-light text-2xl md:text-3xl mt-2 tracking-wide font-sans">
-                Elevated essentials for everyday living.
-              </span>
             </h1>
-            <p className="hidden md:block text-emerald-900/60 text-sm md:text-base font-light max-w-lg leading-relaxed">
+            <p className="text-emerald-900/70 text-xs sm:text-sm font-normal max-w-lg leading-relaxed">
               Explore ShajSutro&apos;s premium lineup of products designed to combine style, longevity, and exceptional quality checks.
             </p>
           </div>
           
-          {/* Floating glassmorphic stat card */}
-          <div className="hidden md:flex flex-shrink-0 bg-white/40 backdrop-blur-md border border-white/60 shadow-glass rounded-3xl p-6 md:w-80 flex-col gap-4">
+          {/* Glassmorphic stat card */}
+          <div className="hidden md:flex flex-shrink-0 bg-white/60 backdrop-blur-md border border-emerald-100 rounded-2xl p-5 md:w-72 flex-col gap-3 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-                <svg className="w-5 h-5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="h-9 w-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                <svg className="w-4 h-4 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                 </svg>
               </div>
               <div>
-                <p className="text-xs font-semibold text-emerald-950 uppercase tracking-wider">Quality Verified</p>
-                <p className="text-[11px] text-emerald-900/60 leading-tight">100% genuine products</p>
+                <p className="text-xs font-semibold text-emerald-950">Quality Verified</p>
+                <p className="text-xs text-emerald-900/60 leading-normal">100% genuine products</p>
               </div>
             </div>
-            <div className="h-px bg-emerald-100/50" />
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-emerald-900/65 font-light">Status:</span>
-              <span className="font-semibold text-emerald-800 bg-emerald-100/50 px-2.5 py-1 rounded-full text-xs flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+            <div className="h-px bg-emerald-100" />
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-emerald-900/60">Status:</span>
+              <span className="font-semibold text-emerald-800 bg-emerald-100/60 px-2.5 py-0.5 rounded-full text-xs flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                 Active Store
               </span>
             </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-emerald-900/65 font-light">Available:</span>
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-emerald-900/60">Available:</span>
               <span className="font-semibold text-emerald-950">
                 {loading ? "Counting..." : `${filteredProducts.length} items`}
               </span>
@@ -440,11 +433,11 @@ function ShopContent() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12 relative z-10">
-        <div className="flex gap-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+        <div className="flex gap-8">
           {/* Glassmorphic Filters Sidebar (Desktop) */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="sticky top-28 bg-white/45 backdrop-blur-md border border-white/60 shadow-glass rounded-[28px] p-6">
+            <div className="sticky top-28 bg-white/70 backdrop-blur-md border border-emerald-100 rounded-2xl p-5 shadow-xs">
               <FiltersPanel />
             </div>
           </aside>

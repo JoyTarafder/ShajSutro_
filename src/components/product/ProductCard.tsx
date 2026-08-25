@@ -66,17 +66,18 @@ export default function ProductCard({ product }: ProductCardProps) {
           ) : null}
 
           <div
-            className={`absolute inset-x-0 bottom-0 p-3 sm:p-4 transition-all duration-300 ease-premium ${
-              isHovered ? "opacity-100 translate-y-0" : "opacity-100 sm:opacity-0 translate-y-0 sm:translate-y-3"
+            className={`absolute inset-x-0 bottom-0 p-3 transition-all duration-300 ease-premium pointer-events-none ${
+              isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0"
             }`}
           >
             <button
+              type="button"
               onClick={handleAddToCart}
               disabled={isAddingToCart}
-              className={`w-full py-2.5 sm:py-3 text-xs sm:text-sm font-bold rounded-xl transition-all duration-300 ${
+              className={`w-full py-2.5 text-xs font-semibold rounded-xl transition-all duration-300 pointer-events-auto shadow-md ${
                 isAddingToCart
                   ? "bg-emerald-600 text-white"
-                  : "bg-white/95 backdrop-blur-md text-charcoal-950 hover:bg-charcoal-950 hover:text-white shadow-md active:scale-95"
+                  : "bg-white/95 backdrop-blur-md text-charcoal-950 hover:bg-charcoal-950 hover:text-white active:scale-95"
               }`}
             >
               {isAddingToCart ? (
