@@ -69,7 +69,7 @@ export default function RevenueChart({ data }: RevenueChartProps) {
     <ResponsiveContainer width="100%" height={220}>
       <AreaChart
         data={chartData}
-        margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
+        margin={{ top: 10, right: 15, left: 10, bottom: 15 }}
       >
         <defs>
           <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
@@ -84,16 +84,19 @@ export default function RevenueChart({ data }: RevenueChartProps) {
         />
         <XAxis
           dataKey="date"
-          tick={{ fontSize: 11, fill: "rgba(148,163,184,0.6)", fontWeight: 500 }}
+          tick={{ fontSize: 11, fill: "rgba(148,163,184,0.7)", fontWeight: 500 }}
           axisLine={false}
           tickLine={false}
+          dy={8}
+          interval="preserveStartEnd"
         />
         <YAxis
-          tick={{ fontSize: 11, fill: "rgba(148,163,184,0.6)", fontWeight: 500 }}
+          tick={{ fontSize: 11, fill: "rgba(148,163,184,0.7)", fontWeight: 500 }}
           axisLine={false}
           tickLine={false}
-          tickFormatter={(v: number) => `৳${v}`}
-          width={48}
+          tickFormatter={(v: number) => `৳${v >= 1000 ? `${(v/1000).toFixed(0)}k` : v}`}
+          width={50}
+          dx={-6}
         />
         <Tooltip
           content={<CustomTooltip />}

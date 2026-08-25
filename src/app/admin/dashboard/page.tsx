@@ -330,12 +330,12 @@ function DashboardContent() {
           {/* Monthly Growth Widget */}
           <div className="rounded-2xl border p-5 flex items-center justify-between" style={{ background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.07)", backdropFilter: "blur(16px)" }}>
             <div className="space-y-1">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">📅 Monthly Sales Growth</span>
+              <span className="text-xs font-semibold text-slate-400">📅 Monthly Sales Growth</span>
               <div className="flex items-baseline gap-2">
                 <span className="text-xl font-extrabold text-slate-100">৳{fmt(growth.thisMonthRevenue)}</span>
                 <span className="text-xs text-slate-400">this month</span>
               </div>
-              <p className="text-[11px] text-slate-500">vs ৳{fmt(growth.lastMonthRevenue)} last month</p>
+              <p className="text-xs text-slate-500">vs ৳{fmt(growth.lastMonthRevenue)} last month</p>
             </div>
             <div className={`px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1 border ${
               growth.monthlyGrowth >= 0
@@ -350,12 +350,12 @@ function DashboardContent() {
           {/* Weekly Growth Widget */}
           <div className="rounded-2xl border p-5 flex items-center justify-between" style={{ background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.07)", backdropFilter: "blur(16px)" }}>
             <div className="space-y-1">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">⚡ Weekly Sales Growth</span>
+              <span className="text-xs font-semibold text-slate-400">⚡ Weekly Sales Growth</span>
               <div className="flex items-baseline gap-2">
                 <span className="text-xl font-extrabold text-slate-100">৳{fmt(growth.thisWeekRevenue)}</span>
                 <span className="text-xs text-slate-400">this week (7d)</span>
               </div>
-              <p className="text-[11px] text-slate-500">vs ৳{fmt(growth.lastWeekRevenue)} previous week</p>
+              <p className="text-xs text-slate-500">vs ৳{fmt(growth.lastWeekRevenue)} previous week</p>
             </div>
             <div className={`px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1 border ${
               growth.weeklyGrowth >= 0
@@ -507,8 +507,8 @@ function DashboardContent() {
                 const isOut = p.stock === 0;
 
                 return (
-                  <div key={p._id} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-colors">
-                    <div className="flex items-center gap-3 min-w-0">
+                  <div key={p._id} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-colors">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
                       {img ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={img} alt={p.name} className="w-10 h-10 rounded-lg object-cover shrink-0 border border-white/10" />
@@ -517,21 +517,25 @@ function DashboardContent() {
                       )}
                       <div className="min-w-0">
                         <p className="text-xs font-bold text-slate-200 truncate">{p.name}</p>
-                        <p className="text-[11px] text-slate-400 font-medium">৳{fmt(p.price)}</p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-xs text-slate-400 font-medium">৳{fmt(p.price)}</span>
+                          <span className="text-slate-600 text-xs">•</span>
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold border ${
+                            isOut
+                              ? "bg-rose-900/30 text-rose-400 border-rose-500/30"
+                              : "bg-amber-900/30 text-amber-400 border-amber-500/30"
+                          }`}>
+                            {isOut ? "Out of Stock" : `${p.stock} left`}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className={`px-3 py-1 rounded-full text-xs font-extrabold border ${
-                        isOut
-                          ? "bg-rose-900/30 text-rose-400 border-rose-500/30 animate-pulse"
-                          : "bg-amber-900/30 text-amber-400 border-amber-500/30"
-                      }`}>
-                        {isOut ? "Out of Stock" : `Only ${p.stock} Left`}
-                      </span>
-                      <Link href="/admin/products" className="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-300 bg-white/5 hover:bg-white/10 border border-white/10 transition-colors">
-                        Restock
-                      </Link>
-                    </div>
+                    <Link
+                      href="/admin/products"
+                      className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-200 bg-white/5 hover:bg-white/10 hover:text-white border border-white/10 transition-colors shrink-0"
+                    >
+                      Restock
+                    </Link>
                   </div>
                 );
               })}

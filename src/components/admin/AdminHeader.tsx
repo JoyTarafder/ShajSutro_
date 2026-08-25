@@ -199,11 +199,11 @@ export default function AdminHeader() {
         </button>
 
         <div>
-          <h1 className="text-[14px] sm:text-[15px] font-bold leading-none" style={{ color: "#f1f5f9" }}>
+          <h1 className="text-base sm:text-lg font-bold tracking-tight leading-none text-slate-100">
             {meta.title}
           </h1>
           {meta.desc && (
-            <p className="text-[11px] mt-0.5 hidden lg:block" style={{ color: "rgba(148, 163, 184, 0.6)" }}>
+            <p className="text-xs mt-1 hidden lg:block text-slate-400">
               {meta.desc}
             </p>
           )}

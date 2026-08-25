@@ -285,7 +285,7 @@ export default function AdminSidebar() {
         style={{ background: "#09090b" }}
       >
       {/* Brand */}
-      <div className="px-5 py-5 border-b border-white/10 relative overflow-hidden bg-gradient-to-r from-violet-950/30 via-slate-900 to-indigo-950/30">
+      <div className="px-5 py-5 border-b border-white/10 relative overflow-hidden bg-gradient-to-r from-violet-950/30 via-slate-900 to-indigo-950/30 shrink-0">
         <Link
           href="/admin/dashboard"
           className="flex items-center gap-3 group relative z-10"
@@ -308,7 +308,7 @@ export default function AdminSidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+      <nav className="flex-1 min-h-0 px-3 py-6 space-y-1 overflow-y-auto custom-scrollbar">
         <p className="px-3 mb-3 text-[10px] font-extrabold uppercase tracking-[0.2em] text-violet-400/80">
           Menu
         </p>
@@ -424,8 +424,8 @@ export default function AdminSidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-3 pb-5 border-t border-white/10 pt-4 bg-slate-950/60">
-        <p className="px-3 mb-2.5 text-[10px] font-extrabold uppercase tracking-[0.2em] text-violet-400/80">
+      <div className="px-3 pt-6 pb-6 border-t border-white/10 bg-slate-950/80 shrink-0 mt-auto">
+        <p className="px-3 mb-3 text-[10px] font-extrabold uppercase tracking-[0.2em] text-violet-400/80">
           Account
         </p>
         <div className="space-y-1">
