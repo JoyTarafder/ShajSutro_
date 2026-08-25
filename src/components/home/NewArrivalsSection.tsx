@@ -87,21 +87,21 @@ export default function NewArrivalsSection() {
       <div className="absolute top-0 left-6 right-6 sm:left-12 sm:right-12 h-px bg-gradient-to-r from-transparent via-charcoal-100 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-        <div className="flex items-end justify-between mb-8 sm:mb-10">
+        <div className="flex items-center justify-between mb-8 sm:mb-10">
           <div>
-            <span className="section-label">Just In</span>
-            <h2 className="section-title">New Arrivals</h2>
-            <p className="section-subtitle sm:mt-2">
+            <span className="text-xs font-semibold text-emerald-800 tracking-wider uppercase block mb-1.5">Just In</span>
+            <h2 className="text-2xl sm:text-3xl font-semibold text-charcoal-950 tracking-tight">New Arrivals</h2>
+            <p className="text-xs sm:text-sm text-charcoal-500 mt-1 font-light">
               Fresh styles carefully added to the collection
             </p>
           </div>
           <Link
             href="/shop?badge=New"
-            className="hidden sm:flex items-center gap-2 text-sm font-semibold text-charcoal-500 hover:text-charcoal-950 transition-colors duration-300 group relative py-1"
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-charcoal-700 hover:text-emerald-950 transition-colors group"
           >
             <span>View all</span>
             <svg
-              className="w-4 h-4 transition-transform duration-300 ease-premium group-hover:translate-x-1"
+              className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -109,11 +109,10 @@ export default function NewArrivalsSection() {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={1.8}
+                strokeWidth={2}
                 d="M9 5l7 7-7 7"
               />
             </svg>
-            <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-charcoal-950 transition-all duration-300 ease-premium group-hover:w-full" />
           </Link>
         </div>
 

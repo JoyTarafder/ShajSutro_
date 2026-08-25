@@ -66,34 +66,33 @@ export default function HeroSection() {
           {/* Text content side */}
           <div className="lg:col-span-6 order-2 lg:order-1 space-y-8 lg:space-y-10 animate-fade-up">
             {/* Tagline Badge */}
-            <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-white/70 backdrop-blur-md rounded-full border border-charcoal-100 shadow-soft transition-colors duration-300 hover:border-charcoal-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent-500 animate-ping" />
-              <span className="text-xs font-semibold text-charcoal-700 tracking-wider uppercase">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white/80 backdrop-blur-md rounded-full border border-charcoal-100 shadow-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+              <span className="text-xs font-semibold text-charcoal-700">
                 Spring / Summer 2026
               </span>
             </div>
 
             {/* Editorial Title */}
-            <h1 className="text-6xl sm:text-7xl lg:text-[5.5rem] font-bold text-charcoal-950 leading-[0.92] tracking-[-0.04em]">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-charcoal-950 leading-[0.95] tracking-tight">
               Dress with
               <br />
-              <span className="font-serif italic font-normal text-accent-600 tracking-tight mr-2 relative inline-block">
+              <span className="font-serif italic font-normal text-emerald-800 tracking-tight mr-2 relative inline-block">
                 intention.
-                <span className="absolute bottom-1.5 left-0 right-0 h-1.5 bg-accent-200/30 rounded-full blur-[1px]" />
               </span>
             </h1>
 
             {/* Subtext */}
-            <p className="text-base sm:text-lg text-charcoal-500 max-w-md leading-relaxed font-light">
+            <p className="text-sm sm:text-base text-charcoal-500 max-w-md leading-relaxed font-light">
               Thoughtfully crafted clothing for the modern wardrobe. Minimalist
               designs, premium materials, and enduring style.
             </p>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap gap-4 pt-2">
+            <div className="flex flex-wrap gap-3.5 pt-2">
               <Link
                 href="/shop"
-                className="btn-primary text-sm px-9 py-4 font-semibold shadow-soft-md hover:shadow-soft-xl"
+                className="inline-flex items-center justify-center px-8 py-3.5 bg-emerald-950 hover:bg-emerald-900 text-white text-xs sm:text-sm font-semibold rounded-full transition-all shadow-xs"
               >
                 Shop Now
               </Link>

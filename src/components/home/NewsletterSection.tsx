@@ -46,25 +46,25 @@ export default function NewsletterSection() {
       <div className="relative max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 flex flex-col items-center z-10">
         
         {/* Sleek Line Envelope Icon Container */}
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-white/[0.08] via-white/[0.03] to-white/[0.01] border border-white/15 flex items-center justify-center mb-6 shadow-2xl transition-all duration-500 hover:scale-105 group select-none">
-          <svg className="w-6 h-6 text-amber-400 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-white/[0.08] via-white/[0.03] to-white/[0.01] border border-white/15 flex items-center justify-center mb-3.5 shadow-xl transition-all duration-300 hover:scale-105 select-none">
+          <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
         </div>
 
         {/* Headings */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 mb-3">
+        <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 mb-2.5">
           <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
           <span className="text-xs font-semibold uppercase tracking-wider text-amber-400">
             Newsletter
           </span>
         </div>
 
-        <h2 className="text-3xl sm:text-5xl font-serif italic text-white mb-4 tracking-normal leading-tight font-normal text-center">
+        <h2 className="text-2xl sm:text-4xl font-serif italic text-white mb-2 tracking-normal leading-tight font-normal text-center">
           Stay in the Loop
         </h2>
         
-        <p className="text-gray-400 mb-9 text-xs sm:text-sm leading-relaxed font-light max-w-md text-center">
+        <p className="text-gray-400 mb-5 text-xs sm:text-sm leading-relaxed font-light max-w-md text-center">
           Subscribe to our newsletter for early access to drops, private sale alerts, and minimalist style guides.
         </p>
 

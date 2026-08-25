@@ -127,9 +127,9 @@ export default function PromoGrid() {
 
         {loading && items.length === 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-7">
-            <div className="rounded-[2.2rem] bg-charcoal-50 border border-charcoal-100/50 aspect-[4/5] md:aspect-auto md:row-span-2 animate-pulse" />
-            <div className="rounded-[2.2rem] bg-charcoal-50 border border-charcoal-100/50 aspect-video animate-pulse" />
-            <div className="rounded-[2.2rem] bg-charcoal-50 border border-charcoal-100/50 aspect-video animate-pulse" />
+            <div className="rounded-2xl bg-charcoal-50 border border-charcoal-100/50 aspect-[4/5] md:aspect-auto md:row-span-2 animate-pulse" />
+            <div className="rounded-2xl bg-charcoal-50 border border-charcoal-100/50 aspect-video animate-pulse" />
+            <div className="rounded-2xl bg-charcoal-50 border border-charcoal-100/50 aspect-video animate-pulse" />
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-7">
@@ -137,30 +137,30 @@ export default function PromoGrid() {
             {mainItem && (
               <Link
                 href={mainItem.href}
-                className="group relative overflow-hidden rounded-[2.2rem] aspect-[4/5] md:aspect-auto md:row-span-2 bg-warm-50 border border-charcoal-100/30 shadow-soft transition-all duration-500 hover:shadow-soft-lg"
+                className="group relative overflow-hidden rounded-2xl aspect-[4/5] md:aspect-auto md:row-span-2 bg-warm-50 border border-charcoal-100/30 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col justify-end"
               >
                 <Image
                   src={mainItem.image}
                   alt={mainItem.title}
                   fill
-                  className="object-cover transition-transform duration-[1200ms] ease-premium group-hover:scale-[1.04]"
+                  className="object-cover transition-transform duration-700 ease-premium group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 50vw"
                   priority
                 />
                 {/* Visual rich vignette overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/80 via-charcoal-950/30 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/85 via-charcoal-950/30 to-transparent" />
 
-                <div className="absolute bottom-0 left-0 right-0 p-8 sm:p-10 z-10">
-                  <p className="text-xs font-medium text-accent-200 tracking-widest uppercase mb-2">
-                    Spotlight Card
+                <div className="relative p-6 sm:p-8 z-10">
+                  <p className="text-xs font-semibold text-accent-200 tracking-wider uppercase mb-1.5">
+                    Spotlight Collection
                   </p>
-                  <h3 className="text-3xl sm:text-4xl font-serif italic text-white mb-3 tracking-normal leading-tight font-normal">
+                  <h3 className="text-2xl sm:text-3xl font-serif italic text-white mb-2 tracking-tight leading-tight">
                     {mainItem.title}
                   </h3>
-                  <p className="text-sm font-light text-white/70 mb-6 leading-relaxed max-w-sm">
+                  <p className="text-xs sm:text-sm font-light text-white/80 mb-5 leading-relaxed max-w-sm">
                     {trimText(mainItem.subtitle, 120)}
                   </p>
-                  <span className="inline-flex items-center gap-2 px-6 py-3 bg-white/90 backdrop-blur-md text-charcoal-950 text-xs font-bold rounded-full transition-all duration-300 group-hover:bg-white group-hover:shadow-soft-lg group-hover:scale-102">
+                  <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-charcoal-950 text-xs font-bold rounded-full transition-all shadow-xs group-hover:bg-warm-50">
                     <span>{mainItem.cta}</span>
                     <svg
                       className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1"
@@ -185,25 +185,25 @@ export default function PromoGrid() {
               <Link
                 key={item.id}
                 href={item.href}
-                className="group relative overflow-hidden rounded-[2.2rem] min-h-[300px] sm:min-h-[260px] sm:aspect-video bg-warm-50 border border-charcoal-100/30 shadow-soft transition-all duration-500 hover:shadow-soft-lg flex flex-col justify-end"
+                className="group relative overflow-hidden rounded-2xl min-h-[260px] sm:aspect-video bg-warm-50 border border-charcoal-100/30 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col justify-end"
               >
                 <Image
                   src={item.image}
                   alt={item.title}
                   fill
-                  className="object-cover transition-transform duration-[1200ms] ease-premium group-hover:scale-[1.04]"
+                  className="object-cover transition-transform duration-700 ease-premium group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 50vw"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/90 via-charcoal-950/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/85 via-charcoal-950/40 to-transparent" />
 
-                <div className="relative p-6 sm:p-8 z-10 pt-16">
-                  <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 tracking-tight line-clamp-2 leading-tight">
+                <div className="relative p-6 sm:p-8 z-10">
+                  <h3 className="text-xl sm:text-2xl font-bold text-white mb-1.5 tracking-tight leading-tight">
                     {item.title}
                   </h3>
-                  <p className="text-xs font-light text-white/80 mb-4 leading-relaxed max-w-xs line-clamp-2">
+                  <p className="text-xs font-light text-white/80 mb-3.5 leading-relaxed max-w-xs line-clamp-2">
                     {trimText(item.subtitle, 80)}
                   </p>
-                  <span className="inline-flex items-center gap-1.5 text-xs font-bold text-white group-hover:gap-2.5 transition-all duration-300">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-white group-hover:gap-2.5 transition-all">
                     <span>{item.cta}</span>
                     <svg
                       className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1"

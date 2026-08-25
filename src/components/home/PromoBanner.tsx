@@ -80,15 +80,15 @@ export default function PromoBanner() {
           {/* Main Poster Content */}
           <div className="text-left space-y-4 max-w-2xl">
             {badgeText && (
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-xs">
                 <span className="w-2 h-2 rounded-full bg-accent-400 animate-pulse" />
-                <span className="text-[10px] font-extrabold text-accent-300 uppercase tracking-[0.25em]">
+                <span className="text-xs font-semibold text-accent-300 uppercase tracking-wider">
                   {badgeText}
                 </span>
               </div>
             )}
 
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1] drop-shadow-md">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
               {title}
             </h2>
 

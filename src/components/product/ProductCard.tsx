@@ -50,14 +50,14 @@ export default function ProductCard({ product }: ProductCardProps) {
           />
 
           {(discount && discount > 0) || product.badge ? (
-            <div className="absolute top-4 left-4">
+            <div className="absolute top-3 left-3 pointer-events-none">
               <span
-                className={`px-3 py-1.5 text-[10px] font-semibold tracking-wider uppercase rounded-full backdrop-blur-sm ${
+                className={`px-2.5 py-1 text-xs font-semibold tracking-wide rounded-full shadow-xs ${
                   discount && discount > 0
                     ? "bg-rose-600 text-white"
                     : product.badge === "New"
-                    ? "bg-accent-600/90 text-white"
-                    : "bg-warm-500/90 text-white"
+                    ? "bg-emerald-950 text-white"
+                    : "bg-warm-500 text-white"
                 }`}
               >
                 {discount && discount > 0 ? `-${discount}%` : product.badge}
