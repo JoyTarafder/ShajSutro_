@@ -28,6 +28,10 @@
     @apply font-sans tracking-tight text-charcoal-950;
   }
 
+  a {
+    text-decoration: none;
+  }
+
   ::selection {
     @apply bg-accent-200/60 text-charcoal-950;
   }

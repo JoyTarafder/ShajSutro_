@@ -39,7 +39,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Link href={`/product/${product.id}`} className="block flex-1">
+      <Link href={`/product/${product.id}`} className="block flex-1 no-underline group-hover:no-underline">
         <div className="relative overflow-hidden rounded-2xl bg-warm-50 aspect-[3/4] shadow-soft transition-shadow duration-500 group-hover:shadow-soft-lg">
           <Image
             src={isHovered && product.images[1] ? product.images[1] : product.images[0]}
