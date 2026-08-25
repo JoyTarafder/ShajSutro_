@@ -302,26 +302,27 @@ function NotificationsContent() {
   const activeTypeCfg = TYPE_CONFIG[form.type] || TYPE_CONFIG.special_offer;
 
   return (
-    <div className="p-6 sm:p-10 space-y-8">
+    <div className="p-4 sm:p-8 space-y-6 max-w-7xl mx-auto">
       {toast && <Toast msg={toast.msg} type={toast.type} />}
 
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-100 tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight">
             Notifications &amp; Popup Panel
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1 font-medium">
+          </h2>
+          <p className="text-xs text-slate-400 mt-1">
             Create discount offers &amp; product alerts that show as interactive store popups.
           </p>
         </div>
 
         <button
+          type="button"
           onClick={openCreateModal}
-          className="px-6 py-3.5 bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-bold text-sm rounded-2xl shadow-lg transition-all duration-200 flex items-center justify-center gap-2 flex-shrink-0"
+          className="px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 flex-shrink-0"
         >
           <svg
-            className="w-5 h-5"
+            className="w-4 h-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -338,65 +339,63 @@ function NotificationsContent() {
       </div>
 
       {/* Summary Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <div className="p-6 rounded-3xl flex items-center gap-4" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" }}>
-          <div className="w-12 h-12 rounded-2xl bg-violet-900/30 text-violet-400 flex items-center justify-center text-xl">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center gap-4">
+          <div className="w-11 h-11 rounded-xl bg-violet-900/30 text-violet-400 flex items-center justify-center text-xl shrink-0">
             🔔
           </div>
           <div>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            <p className="text-xs font-medium text-slate-400">
               Total Notifications
             </p>
-            <p className="text-2xl font-bold text-slate-200">
+            <p className="text-2xl font-bold text-slate-100 mt-0.5">
               {notifications.length}
             </p>
           </div>
         </div>
 
-        <div className="p-6 rounded-3xl flex items-center gap-4" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" }}>
-          <div className="w-12 h-12 rounded-2xl bg-emerald-900/30 text-emerald-400 flex items-center justify-center text-xl">
+        <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center gap-4">
+          <div className="w-11 h-11 rounded-xl bg-emerald-900/30 text-emerald-400 flex items-center justify-center text-xl shrink-0">
             ✨
           </div>
           <div>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            <p className="text-xs font-medium text-slate-400">
               Active Store Popups
             </p>
-            <p className="text-2xl font-bold text-emerald-400">
+            <p className="text-2xl font-bold text-emerald-400 mt-0.5">
               {notifications.filter((n) => n.isActive).length}
             </p>
           </div>
         </div>
 
-        <div className="p-6 rounded-3xl flex items-center gap-4" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" }}>
-          <div className="w-12 h-12 rounded-2xl bg-amber-900/30 text-amber-400 flex items-center justify-center text-xl">
+        <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center gap-4">
+          <div className="w-11 h-11 rounded-xl bg-amber-900/30 text-amber-400 flex items-center justify-center text-xl shrink-0">
             ⏸️
           </div>
           <div>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            <p className="text-xs font-medium text-slate-400">
               Paused / Drafts
             </p>
-            <p className="text-2xl font-bold text-slate-400">
+            <p className="text-2xl font-bold text-slate-300 mt-0.5">
               {notifications.filter((n) => !n.isActive).length}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Notifications List */}
-      <div className="rounded-3xl p-6 sm:p-8" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" }}>
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-xl font-bold text-slate-100">
-              Notifications List
-            </h2>
-            <p className="text-xs text-slate-400">
-              The latest active notification will pop up for customers visiting the store.
-            </p>
-          </div>
+      {/* Notifications List Section */}
+      <div className="space-y-4">
+        <div>
+          <h3 className="text-base font-bold text-slate-100">
+            Notifications List
+          </h3>
+          <p className="text-xs text-slate-400 mt-0.5">
+            The latest active notification will pop up for customers visiting the store.
+          </p>
         </div>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-16 text-slate-400">
+          <div className="flex flex-col items-center justify-center py-16 text-slate-400 bg-white/[0.02] border border-white/8 rounded-2xl">
             <svg
               className="w-8 h-8 animate-spin text-violet-400 mb-3"
               fill="none"
@@ -419,28 +418,28 @@ function NotificationsContent() {
             <p className="text-sm font-medium">Loading notifications...</p>
           </div>
         ) : notifications.length === 0 ? (
-          <div className="text-center py-16 bg-white/[0.01] rounded-2xl border border-dashed border-white/8">
-            <div className="w-16 h-16 rounded-full bg-violet-900/30 text-violet-400 flex items-center justify-center text-2xl mx-auto mb-3">
+          <div className="text-center py-16 bg-white/[0.02] rounded-2xl border border-dashed border-white/10">
+            <div className="w-14 h-14 rounded-full bg-violet-900/30 text-violet-400 flex items-center justify-center text-2xl mx-auto mb-3">
               📢
             </div>
-            <p className="text-lg font-bold text-slate-200">
+            <p className="text-base font-bold text-slate-200">
               No notifications created yet
             </p>
-            <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+            <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
               Click &quot;Create New Notification&quot; to publish a discount
               offer or special announcement.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {notifications.map((item) => {
               const cfg = TYPE_CONFIG[item.type] || TYPE_CONFIG.special_offer;
               return (
                 <div
                   key={item._id}
-                  className={`relative p-6 rounded-3xl border transition-all duration-300 flex flex-col justify-between ${
+                  className={`relative p-5 rounded-2xl border transition-all duration-300 flex flex-col justify-between ${
                     item.isActive
-                      ? "bg-white/[0.04] border-white/10 hover:border-violet-500/40"
+                      ? "bg-white/[0.03] border-white/10 hover:border-violet-500/40"
                       : "bg-white/[0.015] border-white/5 opacity-60"
                   }`}
                 >
@@ -448,19 +447,22 @@ function NotificationsContent() {
                     {/* Header Row */}
                     <div className="flex items-center justify-between gap-3 mb-4">
                       <span
-                        className={`px-3 py-1 text-xs font-extrabold rounded-full border ${cfg.badgeBg}`}
+                        className={`px-3 py-1 text-xs font-semibold rounded-full border ${cfg.badgeBg}`}
                       >
                         {cfg.icon} {cfg.label}
                       </span>
 
                       <div className="flex items-center gap-3">
-                        <span className="text-xs font-semibold text-slate-400 bg-white/[0.04] px-2.5 py-1 rounded-full border border-white/5">
+                        <span className="text-xs font-medium text-slate-400 bg-white/[0.04] px-2.5 py-1 rounded-full border border-white/5">
                           ⏱️ {item.duration || 5}s
                         </span>
                         {/* Toggle Switch */}
                         <button
                           type="button"
+                          role="switch"
+                          aria-checked={item.isActive}
                           onClick={() => handleToggleActive(item)}
+                          title={item.isActive ? "Click to pause notification" : "Click to activate notification"}
                           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
                             item.isActive ? "bg-emerald-500" : "bg-slate-700"
                           }`}
@@ -477,7 +479,7 @@ function NotificationsContent() {
                     {/* Body Row */}
                     <div className="flex gap-4 items-start">
                       {item.image ? (
-                        <div className="w-20 h-20 rounded-2xl overflow-hidden bg-white/[0.04] flex-shrink-0 border border-white/8 shadow-sm">
+                        <div className="w-20 h-20 rounded-xl overflow-hidden bg-white/[0.04] flex-shrink-0 border border-white/8 shadow-sm">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={item.image}
@@ -486,31 +488,31 @@ function NotificationsContent() {
                           />
                         </div>
                       ) : (
-                        <div className="w-20 h-20 rounded-2xl bg-violet-900/20 border border-violet-500/20 text-violet-400 flex items-center justify-center flex-shrink-0 text-3xl shadow-inner">
+                        <div className="w-20 h-20 rounded-xl bg-violet-900/20 border border-violet-500/20 text-violet-400 flex items-center justify-center flex-shrink-0 text-3xl shadow-inner">
                           {cfg.icon}
                         </div>
                       )}
 
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-base font-bold text-slate-100 truncate">
+                        <h4 className="text-sm font-bold text-slate-100 truncate">
                           {item.title || (item.image ? "🖼️ Image Only Notification" : "Notification")}
-                        </h3>
+                        </h4>
                         {item.message ? (
-                          <p className="text-xs text-slate-400 mt-1.5 line-clamp-3 leading-relaxed">
+                          <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
                             {item.message}
                           </p>
                         ) : item.image ? (
-                          <p className="text-xs text-slate-400 mt-1.5 italic">
+                          <p className="text-xs text-slate-400 mt-1 italic">
                             (Image banner popup notification)
                           </p>
                         ) : null}
                         {item.promoCode && (
-                          <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-amber-900/30 text-amber-400 border border-amber-500/30">
+                          <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-xs font-mono font-semibold bg-amber-900/30 text-amber-400 border border-amber-500/30">
                             🏷️ Code: {item.promoCode}
                           </div>
                         )}
                         {item.link && (
-                          <div className="mt-2 text-xs font-bold text-violet-400 truncate">
+                          <div className="mt-1 text-xs font-medium text-violet-400 truncate">
                             🔗 {item.link}
                           </div>
                         )}
@@ -527,17 +529,21 @@ function NotificationsContent() {
                         day: "numeric",
                       })}
                     </span>
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-3">
                       <button
+                        type="button"
                         onClick={() => openEditModal(item)}
-                        className="px-4 py-1.5 font-bold text-slate-300 bg-white/[0.04] hover:bg-white/[0.06] rounded-xl transition-colors border border-white/8"
+                        aria-label={`Edit ${item.title || "notification"}`}
+                        className="px-4 py-2 min-h-[38px] text-xs font-semibold text-slate-200 bg-white/[0.05] hover:bg-white/[0.1] rounded-xl transition-all border border-white/10 flex items-center justify-center"
                       >
                         Edit
                       </button>
                       <button
+                        type="button"
                         onClick={() => handleDelete(item._id)}
                         disabled={deletingId === item._id}
-                        className="px-4 py-1.5 font-bold text-rose-400 bg-rose-900/20 hover:bg-rose-900/30 rounded-xl transition-colors disabled:opacity-50 border border-rose-500/20"
+                        aria-label={`Delete ${item.title || "notification"}`}
+                        className="px-4 py-2 min-h-[38px] text-xs font-semibold text-rose-400 bg-rose-950/30 hover:bg-rose-900/40 rounded-xl transition-all disabled:opacity-50 border border-rose-500/20 flex items-center justify-center"
                       >
                         Delete
                       </button>
