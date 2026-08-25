@@ -537,12 +537,12 @@ export default function ProductDetailPage() {
             {/* Size selector */}
             {product.sizes.length > 0 && (
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-semibold text-charcoal-900">
+                <div className="flex items-center justify-between mb-2.5">
+                  <h2 className="text-xs sm:text-sm font-semibold text-charcoal-900">
                     Size
-                  </h3>
+                  </h2>
                   {selectedSize && (
-                    <span className="text-sm text-charcoal-500">
+                    <span className="text-xs text-charcoal-500 font-medium">
                       {selectedSize}
                     </span>
                   )}
@@ -551,11 +551,12 @@ export default function ProductDetailPage() {
                   {product.sizes.map((size) => (
                     <button
                       key={size}
+                      type="button"
                       onClick={() => setSelectedSize(size)}
-                      className={`min-w-[48px] px-4 py-2.5 text-sm font-medium rounded-xl border-2 transition-all duration-200 ${
+                      className={`min-w-[44px] px-3.5 py-2 text-xs font-semibold rounded-xl border transition-all ${
                         selectedSize === size
-                          ? "bg-charcoal-950 text-white border-charcoal-950"
-                          : "border-charcoal-200 text-charcoal-500 hover:border-charcoal-400 hover:text-charcoal-900"
+                          ? "bg-emerald-950 text-white border-emerald-950 shadow-xs"
+                          : "border-charcoal-200 bg-white text-charcoal-700 hover:border-charcoal-400 hover:bg-charcoal-50"
                       }`}
                     >
                       {size}
@@ -568,12 +569,12 @@ export default function ProductDetailPage() {
             {/* Color selector */}
             {product.colors.length > 0 && (
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-semibold text-charcoal-900">
+                <div className="flex items-center justify-between mb-2.5">
+                  <h2 className="text-xs sm:text-sm font-semibold text-charcoal-900">
                     Color
-                  </h3>
+                  </h2>
                   {selectedColor && (
-                    <span className="text-sm text-charcoal-500">
+                    <span className="text-xs text-charcoal-500 font-medium">
                       {selectedColor}
                     </span>
                   )}
@@ -582,11 +583,12 @@ export default function ProductDetailPage() {
                   {product.colors.map((color) => (
                     <button
                       key={color}
+                      type="button"
                       onClick={() => setSelectedColor(color)}
                       title={color}
-                      className={`w-9 h-9 rounded-full border-2 transition-all duration-200 hover:scale-110 ${
+                      className={`w-8 h-8 rounded-full border-2 transition-all hover:scale-110 ${
                         selectedColor === color
-                          ? "border-charcoal-900 scale-110 shadow-md"
+                          ? "border-emerald-950 scale-110 shadow-xs"
                           : "border-charcoal-200"
                       }`}
                       style={{
@@ -600,20 +602,21 @@ export default function ProductDetailPage() {
 
             {/* Add to cart */}
             <button
+              type="button"
               onClick={handleAddToCart}
               disabled={!product.inStock || adding}
-              className={`w-full py-4 rounded-2xl text-sm font-semibold transition-all duration-300 ${
+              className={`w-full py-3.5 px-6 rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-xs flex items-center justify-center gap-2 ${
                 !product.inStock
-                  ? "bg-charcoal-100 text-charcoal-400 cursor-not-allowed"
+                  ? "bg-charcoal-100 text-charcoal-400 cursor-not-allowed border border-charcoal-200"
                   : added
-                    ? "bg-green-600 text-white"
-                    : "bg-charcoal-950 text-white hover:bg-charcoal-800 active:scale-[0.98]"
+                    ? "bg-emerald-600 text-white"
+                    : "bg-emerald-950 text-white hover:bg-emerald-900 active:scale-[0.98]"
               }`}
             >
               {added ? (
                 <span className="flex items-center justify-center gap-2">
                   <svg
-                    className="w-5 h-5"
+                    className="w-4 h-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -630,17 +633,22 @@ export default function ProductDetailPage() {
               ) : !product.inStock ? (
                 "Out of Stock"
               ) : (
-                "Add to Cart"
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                  </svg>
+                  Add to Cart
+                </>
               )}
             </button>
 
             {/* Description */}
             {product.description && (
               <div className="pt-2">
-                <h3 className="text-sm font-semibold text-charcoal-900 mb-2">
+                <h2 className="text-xs sm:text-sm font-semibold text-charcoal-900 mb-1.5">
                   Description
-                </h3>
-                <p className="text-sm text-charcoal-500 leading-relaxed font-light">
+                </h2>
+                <p className="text-xs sm:text-sm text-charcoal-500 leading-relaxed font-light">
                   {product.description}
                 </p>
               </div>
@@ -652,7 +660,7 @@ export default function ProductDetailPage() {
                 {product.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="px-3 py-1 text-xs font-medium text-charcoal-500 bg-charcoal-50 rounded-full"
+                    className="px-3 py-1 text-xs font-medium text-charcoal-600 bg-warm-50 border border-charcoal-100 rounded-full"
                   >
                     {tag}
                   </span>
@@ -661,12 +669,12 @@ export default function ProductDetailPage() {
             )}
 
             {/* Customer Reviews Section */}
-            <div className="pt-8 border-t border-charcoal-100 space-y-6">
+            <div className="pt-6 border-t border-charcoal-100 space-y-5">
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <div>
-                  <h3 className="text-base font-bold text-charcoal-900">
+                  <h2 className="text-sm sm:text-base font-bold text-charcoal-900">
                     Customer Reviews
-                  </h3>
+                  </h2>
                   <p className="text-xs text-charcoal-400 mt-0.5 font-light">
                     {product.reviews} verified review{product.reviews !== 1 ? "s" : ""} · {product.rating.toFixed(1)} out of 5 stars
                   </p>
@@ -675,17 +683,15 @@ export default function ProductDetailPage() {
                   <button
                     type="button"
                     onClick={() => setShowReviewForm(!showReviewForm)}
-                    className="px-4 py-2 text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200/80 rounded-xl hover:bg-emerald-100 transition-colors shadow-xs"
+                    className="px-3.5 py-1.5 text-xs font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-xl hover:bg-emerald-100 transition-colors"
                   >
-                    {showReviewForm ? "Close Form" : "✍️ Write a Review"}
+                    {showReviewForm ? "Close Form" : "Write a Review"}
                   </button>
                 )}
               </div>
 
               {!canUserReview && (
                 <div>
-                  {/* <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0 animate-pulse" />
-                  <span>Only verified customers who have purchased and received this item can write a review. All visitors can browse verified customer feedback below.</span> */}
                 </div>
               )}
 
@@ -696,10 +702,10 @@ export default function ProductDetailPage() {
                   className="p-5 rounded-2xl bg-emerald-50/40 border border-emerald-100 space-y-4 animate-in fade-in duration-200"
                 >
                   <div className="flex items-center justify-between">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-900">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-900">
                       Submit Verified Purchase Review
-                    </h4>
-                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100/80 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                    </h3>
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-100/80 px-2.5 py-0.5 rounded-full border border-emerald-200">
                       ✓ Verified Buyer
                     </span>
                   </div>
@@ -737,7 +743,7 @@ export default function ProductDetailPage() {
                           className="p-1 text-amber-400 hover:scale-125 transition-transform"
                         >
                           <svg
-                            className={`w-6 h-6 ${star <= newRating ? "fill-amber-400" : "fill-charcoal-200 text-charcoal-200"}`}
+                            className={`w-5 h-5 ${star <= newRating ? "fill-amber-400" : "fill-charcoal-200 text-charcoal-200"}`}
                             viewBox="0 0 20 20"
                           >
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -773,7 +779,6 @@ export default function ProductDetailPage() {
               {/* Reviews List */}
               {dbReviews.length === 0 ? (
                 <p className="text-xs text-charcoal-400 font-light italic py-2">
-                  {/* No verified customer reviews yet for this product. */}
                 </p>
               ) : (
                 <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1">
@@ -784,7 +789,7 @@ export default function ProductDetailPage() {
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-full bg-emerald-600 text-white font-bold text-[11px] flex items-center justify-center shadow-xs">
+                          <div className="w-7 h-7 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center shadow-xs">
                             {rev.user?.name?.charAt(0).toUpperCase() || "U"}
                           </div>
                           <div>
@@ -804,7 +809,7 @@ export default function ProductDetailPage() {
                             </div>
                           </div>
                         </div>
-                        <span className="text-[10px] text-charcoal-400 font-medium">
+                        <span className="text-xs text-charcoal-400 font-medium">
                           {new Date(rev.createdAt).toLocaleDateString("en-US", {
                             month: "short",
                             day: "numeric",
@@ -827,10 +832,10 @@ export default function ProductDetailPage() {
 
         {/* Related products */}
         {related.length > 0 && (
-          <div className="mt-24 pt-12 border-t border-charcoal-100">
-            <div className="mb-12">
-              <span className="section-label">You May Also Like</span>
-              <h2 className="section-title">Related Products</h2>
+          <div className="mt-20 pt-12 border-t border-charcoal-100">
+            <div className="mb-10">
+              <span className="text-xs font-semibold text-emerald-800 tracking-wide block mb-1.5">You May Also Like</span>
+              <h2 className="text-2xl sm:text-3xl font-semibold text-charcoal-950 tracking-tight">Related Products</h2>
             </div>
             <ProductGrid products={related} columns={4} />
           </div>
