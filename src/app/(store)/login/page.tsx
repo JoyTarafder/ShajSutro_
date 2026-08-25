@@ -32,16 +32,16 @@ export default function LoginPage() {
           {/* Illustration / story side */}
           <div className="md:w-1/2 bg-gradient-to-br from-emerald-50 via-emerald-50 to-emerald-100/70 px-8 md:px-10 py-7 md:py-9 flex flex-col">
             <div className="mb-6 md:mb-7">
-              <p className="text-xs font-semibold tracking-[0.28em] uppercase text-emerald-500 mb-3">
+              <p className="text-xs font-semibold tracking-[0.28em] uppercase text-emerald-600 mb-3">
                 ShajSutro
               </p>
-              <h1 className="text-2xl md:text-[1.7rem] font-semibold tracking-tight text-emerald-950">
+              <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-emerald-950">
                 Everyday style,
                 <span className="block text-emerald-600 mt-1">
                   delivered to your doorstep.
                 </span>
               </h1>
-              <p className="mt-3 text-sm leading-relaxed text-emerald-900/70 max-w-md">
+              <p className="mt-3 text-sm leading-relaxed text-emerald-800/80 max-w-md">
                 Sign in to continue your shopping journey or create a new
                 account in seconds. Save your favourites, track orders, and
                 enjoy a smoother checkout experience.
@@ -81,7 +81,7 @@ export default function LoginPage() {
                         <p className="text-xs font-semibold text-emerald-950 leading-tight">
                           Secure checkout
                         </p>
-                        <p className="text-[0.7rem] text-emerald-900/65 leading-tight mt-0.5">
+                        <p className="text-xs text-emerald-800/80 leading-tight mt-0.5">
                           Easy, fast payments
                         </p>
                       </div>
@@ -109,7 +109,7 @@ export default function LoginPage() {
                         <p className="text-xs font-semibold text-emerald-950 leading-tight">
                           Quality checked
                         </p>
-                        <p className="text-[0.7rem] text-emerald-900/65 leading-tight mt-0.5">
+                        <p className="text-xs text-emerald-800/80 leading-tight mt-0.5">
                           Verified products
                         </p>
                       </div>
@@ -137,7 +137,7 @@ export default function LoginPage() {
                         <p className="text-xs font-semibold text-emerald-950 leading-tight">
                           New arrivals
                         </p>
-                        <p className="text-[0.7rem] text-emerald-900/65 leading-tight mt-0.5">
+                        <p className="text-xs text-emerald-800/80 leading-tight mt-0.5">
                           Weekly drops
                         </p>
                       </div>
@@ -171,7 +171,7 @@ export default function LoginPage() {
                         <p className="text-xs font-semibold text-emerald-950 leading-tight">
                           Fast delivery
                         </p>
-                        <p className="text-[0.7rem] text-emerald-900/65 leading-tight mt-0.5">
+                        <p className="text-xs text-emerald-800/80 leading-tight mt-0.5">
                           Track your order
                         </p>
                       </div>
@@ -180,11 +180,11 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <div className="mt-auto flex items-center justify-between text-[0.7rem] text-emerald-900/70 pt-1">
-                <div className="flex gap-1.5">
+              <div className="mt-auto flex items-center justify-between text-xs font-medium text-emerald-900/80 pt-2">
+                <div className="flex gap-1.5" aria-hidden="true">
                   <span className="h-1.5 w-4 rounded-full bg-emerald-500" />
-                  <span className="h-1.5 w-3 rounded-full bg-emerald-300/80" />
-                  <span className="h-1.5 w-3 rounded-full bg-emerald-200/80" />
+                  <span className="h-1.5 w-3 rounded-full bg-emerald-300" />
+                  <span className="h-1.5 w-3 rounded-full bg-emerald-200" />
                 </div>
                 <p>Free returns within 7 days</p>
               </div>
@@ -194,13 +194,13 @@ export default function LoginPage() {
           {/* Auth side */}
           <div className="md:w-1/2 bg-[#f9fffb] px-7 md:px-10 py-9 md:py-12 flex flex-col">
             <div className="mb-7">
-              <p className="text-xs font-semibold tracking-[0.28em] uppercase text-emerald-500">
+              <p className="text-xs font-semibold tracking-[0.28em] uppercase text-emerald-600">
                 {activeTab === "login" ? "Sign in" : "Create account"}
               </p>
               <h2 className="mt-2 text-xl md:text-2xl font-semibold tracking-tight text-charcoal-950">
                 {activeTab === "login" ? "Welcome back" : "Join ShajSutro"}
               </h2>
-              <p className="text-charcoal-400 text-sm mt-1.5 font-light">
+              <p className="text-charcoal-600 text-sm mt-1.5 font-light">
                 {subtitles[view]}
               </p>
             </div>
@@ -211,20 +211,20 @@ export default function LoginPage() {
                 <div className="flex border-b border-emerald-50 bg-emerald-50/40">
                   <button
                     onClick={() => setActiveTab("login")}
-                    className={`flex-1 py-4.5 text-sm font-medium transition-all duration-300 ${
+                    className={`flex-1 py-4 text-sm font-medium transition-all duration-300 ${
                       activeTab === "login"
-                        ? "text-emerald-900 border-b-2 border-emerald-500 bg-white"
-                        : "text-emerald-500/70 hover:text-emerald-700"
+                        ? "text-emerald-950 border-b-2 border-emerald-600 bg-white"
+                        : "text-emerald-700/80 hover:text-emerald-900"
                     }`}
                   >
                     Sign In
                   </button>
                   <button
                     onClick={() => setActiveTab("register")}
-                    className={`flex-1 py-4.5 text-sm font-medium transition-all duration-300 ${
+                    className={`flex-1 py-4 text-sm font-medium transition-all duration-300 ${
                       activeTab === "register"
-                        ? "text-emerald-900 border-b-2 border-emerald-500 bg-white"
-                        : "text-emerald-500/70 hover:text-emerald-700"
+                        ? "text-emerald-950 border-b-2 border-emerald-600 bg-white"
+                        : "text-emerald-700/80 hover:text-emerald-900"
                     }`}
                   >
                     Create Account
