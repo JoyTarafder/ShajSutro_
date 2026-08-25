@@ -273,13 +273,13 @@ export default function ProfilePage() {
           {/* ── Sidebar ── */}
           <aside className="lg:w-64 shrink-0 space-y-3">
             {/* Avatar card */}
-            <div className="bg-white rounded-2xl border border-charcoal-100 p-6 flex flex-col items-center text-center gap-3">
+            <div className="bg-white rounded-2xl border border-charcoal-100 p-6 flex flex-col items-center text-center gap-3 shadow-2xs">
               {avatarImg ? (
                 <div className="w-16 h-16 rounded-full overflow-hidden border border-charcoal-150 shadow-sm bg-warm-50 shrink-0">
                   <img src={avatarImg} alt={user.name} className="w-full h-full object-cover" />
                 </div>
               ) : (
-                <div className="w-16 h-16 rounded-full bg-charcoal-950 flex items-center justify-center text-white text-xl font-semibold tracking-wide select-none shrink-0">
+                <div className="w-16 h-16 rounded-full bg-emerald-950 flex items-center justify-center text-white text-xl font-semibold tracking-wide select-none shrink-0 shadow-xs">
                   {initials(user.name)}
                 </div>
               )}
@@ -287,13 +287,13 @@ export default function ProfilePage() {
                 <p className="font-semibold text-charcoal-950 text-sm">{user.name}</p>
                 <p className="text-xs text-charcoal-400 mt-0.5 font-light">{user.email}</p>
               </div>
-              <span className="text-[11px] font-medium px-3 py-1 rounded-full bg-charcoal-50 border border-charcoal-100 text-charcoal-500 uppercase tracking-wide">
+              <span className="text-xs font-medium px-3 py-1 rounded-full bg-warm-50 border border-charcoal-100 text-charcoal-600 uppercase tracking-wide">
                 {user.role}
               </span>
             </div>
 
             {/* Nav */}
-            <nav className="bg-white rounded-2xl border border-charcoal-100 overflow-hidden">
+            <nav className="bg-white rounded-2xl border border-charcoal-100 overflow-hidden shadow-2xs">
               {(
                 [
                   { id: "overview",  icon: GridIcon,    label: "Overview" },
@@ -306,14 +306,17 @@ export default function ProfilePage() {
                 <button
                   key={id}
                   onClick={() => setTab(id)}
-                  className={`w-full flex items-center gap-3 px-5 py-4 text-sm font-medium transition-all duration-200 border-b border-charcoal-50 last:border-0 ${
+                  className={`w-full flex items-center gap-3 px-5 py-3.5 text-xs sm:text-sm font-semibold transition-all duration-200 border-b border-charcoal-50 last:border-0 relative ${
                     tab === id
-                      ? "bg-charcoal-950 text-white"
+                      ? "bg-emerald-950 text-white shadow-xs font-bold"
                       : "text-charcoal-600 hover:bg-charcoal-50 hover:text-charcoal-950"
                   }`}
                 >
+                  {tab === id && (
+                    <span className="absolute left-0 top-0 bottom-0 w-1.5 bg-emerald-400 rounded-r-full" />
+                  )}
                   <Icon className="w-4 h-4 shrink-0" />
-                  {label}
+                  <span>{label}</span>
                 </button>
               ))}
             </nav>
@@ -321,7 +324,7 @@ export default function ProfilePage() {
             {/* Logout */}
             <button
               onClick={() => { localStorage.removeItem("token"); router.push("/login"); }}
-              className="w-full flex items-center gap-3 px-5 py-4 text-sm font-medium text-red-500 hover:text-red-600 bg-white hover:bg-red-50 rounded-2xl border border-charcoal-100 transition-all duration-200"
+              className="w-full flex items-center gap-3 px-5 py-3.5 text-xs sm:text-sm font-semibold text-rose-600 hover:text-rose-700 bg-white hover:bg-rose-50 rounded-2xl border border-charcoal-100 transition-all duration-200 shadow-2xs"
             >
               <LogoutIcon className="w-4 h-4 shrink-0" />
               Sign Out
@@ -380,15 +383,17 @@ function OverviewTab({
 
   return (
     <div className="space-y-6">
-      {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      {/* Stats grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
         {stats.map(({ label, value, icon: Icon }) => (
-          <div key={label} className="bg-white rounded-2xl border border-charcoal-100 p-5">
-            <div className="w-9 h-9 rounded-xl bg-charcoal-50 flex items-center justify-center mb-3">
-              <Icon className="w-4 h-4 text-charcoal-600" />
+          <div key={label} className="bg-white rounded-2xl border border-charcoal-100 p-4 sm:p-5 flex flex-col justify-between shadow-2xs">
+            <div className="w-8 h-8 rounded-xl bg-warm-50 border border-charcoal-100 flex items-center justify-center text-charcoal-600 mb-3">
+              <Icon className="w-4 h-4" />
             </div>
-            <p className="text-xl font-bold text-charcoal-950">{value}</p>
-            <p className="text-xs text-charcoal-400 mt-0.5 font-light">{label}</p>
+            <div>
+              <p className="text-xl sm:text-2xl font-bold text-charcoal-950 tracking-tight">{value}</p>
+              <p className="text-xs text-charcoal-400 mt-0.5 font-light">{label}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -404,18 +409,21 @@ function OverviewTab({
         </div>
       </div>
 
-      {/* Recent orders */}
+      {/* Recent Orders */}
       {recentOrders.length > 0 && (
-        <div className="bg-white rounded-2xl border border-charcoal-100 overflow-hidden">
-          <div className="flex items-center justify-between px-6 py-5 border-b border-charcoal-50">
-            <h2 className="text-sm font-semibold text-charcoal-950">Recent Orders</h2>
-            <button onClick={() => onTabChange("orders")} className="text-xs text-charcoal-400 hover:text-charcoal-700 transition-colors font-medium">
-              View all
+        <div className="bg-white rounded-2xl border border-charcoal-100 overflow-hidden shadow-2xs">
+          <div className="px-6 py-4 border-b border-charcoal-50 flex items-center justify-between">
+            <h2 className="text-xs sm:text-sm font-semibold text-charcoal-950">Recent Orders</h2>
+            <button
+              onClick={() => onTabChange("orders")}
+              className="text-xs font-semibold text-emerald-800 hover:text-emerald-950 transition-colors"
+            >
+              View all orders &rarr;
             </button>
           </div>
           <div className="divide-y divide-charcoal-50">
             {recentOrders.map((order) => (
-              <OrderRow key={order._id} order={order} onOrderUpdated={onFetchOrders} />
+              <OrderRow key={order._id} order={order} />
             ))}
           </div>
         </div>
@@ -474,21 +482,22 @@ function OrdersTab({ orders, onFetch, token }: { orders: Order[]; onFetch: () =>
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-charcoal-100 overflow-hidden">
-      <div className="px-6 py-5 border-b border-charcoal-50">
-        <h2 className="text-sm font-semibold text-charcoal-950">Order History</h2>
-        <p className="text-xs text-charcoal-400 mt-0.5">{sorted.length} order{sorted.length !== 1 ? "s" : ""}</p>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between px-1 pb-1">
+        <h2 className="text-sm sm:text-base font-bold text-charcoal-950">Order History</h2>
+        <span className="text-xs text-charcoal-400 font-medium">{sorted.length} order{sorted.length !== 1 ? "s" : ""}</span>
       </div>
-      <div className="divide-y divide-charcoal-50">
+      <div className="space-y-4">
         {sorted.map((order) => (
-          <OrderRow
-            key={order._id}
-            order={order}
-            expanded
-            reviewedPairs={reviewedPairs}
-            onWriteReview={(draft) => setReviewDraft(draft)}
-            onOrderUpdated={onFetch}
-          />
+          <div key={order._id} className="bg-white rounded-2xl border border-charcoal-150 shadow-2xs overflow-hidden">
+            <OrderRow
+              order={order}
+              expanded
+              reviewedPairs={reviewedPairs}
+              onWriteReview={(draft) => setReviewDraft(draft)}
+              onOrderUpdated={onFetch}
+            />
+          </div>
         ))}
       </div>
 
@@ -541,7 +550,7 @@ function OrderStatusStepper({ order }: { order: Order }) {
           </svg>
           Order Cancelled {cancelItem ? `• ${formatDateTime(cancelItem.updatedAt)}` : ""}
         </div>
-        <span className="text-[11px] text-red-500 font-light">This order was cancelled</span>
+        <span className="text-xs text-red-600 font-medium">This order was cancelled</span>
       </div>
     );
   }
@@ -556,7 +565,7 @@ function OrderStatusStepper({ order }: { order: Order }) {
           </svg>
           Order Returned {returnItem ? `• ${formatDateTime(returnItem.updatedAt)}` : ""}
         </div>
-        <span className="text-[11px] text-orange-600 font-light">This order was returned</span>
+        <span className="text-xs text-orange-700 font-medium">This order was returned</span>
       </div>
     );
   }
@@ -609,7 +618,7 @@ function OrderStatusStepper({ order }: { order: Order }) {
                 )}
               </div>
               <p
-                className={`mt-1.5 text-[11px] sm:text-xs text-center transition-colors ${
+                className={`mt-1.5 text-xs text-center transition-colors ${
                   isCurrent
                     ? "font-bold text-charcoal-950"
                     : isPassedOrCurrent
@@ -620,7 +629,7 @@ function OrderStatusStepper({ order }: { order: Order }) {
                 {step.label}
               </p>
               {stepDate && (
-                <span className="text-[10px] text-charcoal-400 font-mono mt-0.5 text-center leading-tight">
+                <span className="text-xs text-charcoal-400 font-mono mt-0.5 text-center leading-tight">
                   {stepDate}
                 </span>
               )}
@@ -771,6 +780,7 @@ function OrderRow({
   onOrderUpdated?: () => void;
 }) {
   const [open, setOpen] = useState(false);
+  const [showTracking, setShowTracking] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [showExchangeModal, setShowExchangeModal] = useState(false);
   const cfg    = statusConfig[order.status];
@@ -805,16 +815,16 @@ function OrderRow({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <p className="text-xs font-mono text-charcoal-400">#{order._id.slice(-8).toUpperCase()}</p>
-            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${cfg.classes}`}>
+            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${cfg.classes}`}>
               {cfg.label}
             </span>
             {order.paymentStatus === "refunded" ? (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border bg-purple-50 text-purple-700 border-purple-200">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold border bg-purple-50 text-purple-700 border-purple-200">
                 <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
                 Payment Returned
               </span>
             ) : order.paymentMethod !== "cod" || order.paymentStatus === "paid" ? (
-              <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
+              <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
                 order.paymentStatus === "paid" ? "bg-green-50 text-green-700 border-green-200" : payCfg.classes
               }`}>
                 <span className={`w-1.5 h-1.5 rounded-full ${order.paymentStatus === "paid" ? "bg-green-500" : payCfg.dot}`} />
@@ -822,46 +832,48 @@ function OrderRow({
               </span>
             ) : null}
             {order.exchangeRequest && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border bg-orange-50 text-orange-700 border-orange-200 capitalize">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold border bg-orange-50 text-orange-700 border-orange-200 capitalize">
                 Exchange: {order.exchangeRequest.status}
               </span>
             )}
           </div>
-          <p className="text-sm font-medium text-charcoal-700 mt-1.5">
+          <p className="text-xs sm:text-sm font-medium text-charcoal-700 mt-1.5">
             {order.items.length} item{order.items.length !== 1 ? "s" : ""} &middot; {methodLabel(order.paymentMethod)}
             {order.txnId && <span className="text-charcoal-400 font-mono text-xs ml-1">(TxnID: {order.txnId})</span>}
           </p>
           <p className="text-xs text-charcoal-400 mt-0.5 font-light">{formatDate(order.createdAt)}</p>
         </div>
-        <div className="text-right shrink-0 flex flex-col items-end gap-1">
-          <p className="text-sm font-bold text-charcoal-950">৳{order.total.toLocaleString()}</p>
-          {order.status === "pending" && (
-            <button
-              type="button"
-              disabled={cancelling}
-              onClick={handleCancelOrder}
-              className="text-[11px] font-semibold text-red-600 hover:text-red-700 hover:underline underline-offset-2 transition-colors disabled:opacity-50"
-            >
-              {cancelling ? "Cancelling..." : "Cancel Order"}
-            </button>
-          )}
-          {order.status === "delivered" && !order.exchangeRequest && (
-            <button
-              type="button"
-              onClick={() => setShowExchangeModal(true)}
-              className="text-[11px] font-semibold text-orange-600 hover:text-orange-700 hover:underline underline-offset-2 transition-colors"
-            >
-              Exchange Product
-            </button>
-          )}
-          {expanded && (
-            <button
-              onClick={() => setOpen(!open)}
-              className="text-xs text-charcoal-400 hover:text-charcoal-700 transition-colors mt-0.5 font-medium"
-            >
-              {open ? "Hide items" : "View items"}
-            </button>
-          )}
+        <div className="text-right shrink-0 flex flex-col items-end gap-2">
+          <p className="text-sm sm:text-base font-bold text-charcoal-950">৳{order.total.toLocaleString()}</p>
+          <div className="flex items-center gap-2 flex-wrap justify-end">
+            {order.status === "pending" && (
+              <button
+                type="button"
+                disabled={cancelling}
+                onClick={handleCancelOrder}
+                className="px-3 py-1.5 text-xs font-semibold text-rose-700 bg-rose-50 border border-rose-200 hover:bg-rose-100 rounded-xl transition-all shadow-2xs disabled:opacity-50"
+              >
+                {cancelling ? "Cancelling..." : "Cancel Order"}
+              </button>
+            )}
+            {order.status === "delivered" && !order.exchangeRequest && (
+              <button
+                type="button"
+                onClick={() => setShowExchangeModal(true)}
+                className="px-3 py-1.5 text-xs font-semibold text-amber-800 bg-amber-50 border border-amber-200 hover:bg-amber-100 rounded-xl transition-all shadow-2xs"
+              >
+                Exchange Product
+              </button>
+            )}
+            {expanded && (
+              <button
+                onClick={() => setOpen(!open)}
+                className="px-3 py-1.5 text-xs font-semibold text-charcoal-700 bg-white border border-charcoal-200 hover:bg-charcoal-50 rounded-xl transition-all shadow-2xs"
+              >
+                {open ? "Hide Items" : "View Items"}
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -877,24 +889,44 @@ function OrderRow({
         />
       )}
 
-      {/* Order Tracking History Log (Only on Order History Page) */}
+      {/* Order Tracking History Log Toggle (Only on Order History Page) */}
       {expanded && (
         <div className="mt-5 pt-4 border-t border-charcoal-100">
-          <h4 className="text-xs font-semibold text-charcoal-900 uppercase tracking-wider mb-3">
-            Order Tracking History
-          </h4>
-          <div className="bg-white rounded-xl border border-charcoal-150 divide-y divide-charcoal-100 overflow-hidden shadow-2xs">
-            {getTrackingHistoryLogs(order).map((log, idx) => (
-              <div key={idx} className="flex items-start px-4 sm:px-5 py-3.5 hover:bg-warm-50/50 transition-colors">
-                <div className="w-36 sm:w-44 shrink-0 text-[11px] sm:text-xs text-charcoal-500 font-mono font-medium leading-relaxed pr-3">
-                  {formatTrackingDateTime(log.date)}
-                </div>
-                <div className="flex-1 text-xs sm:text-sm text-charcoal-800 font-normal leading-relaxed pl-3 border-l border-charcoal-100">
-                  {log.message}
-                </div>
-              </div>
-            ))}
+          <div className="flex items-center justify-between">
+            <h3 className="text-xs sm:text-sm font-semibold text-charcoal-900">
+              Order Tracking History
+            </h3>
+            <button
+              type="button"
+              onClick={() => setShowTracking(!showTracking)}
+              className="inline-flex items-center gap-2 px-3.5 py-2 min-h-[38px] text-xs font-semibold text-charcoal-700 bg-warm-50 hover:bg-charcoal-100 border border-charcoal-200 rounded-xl transition-all shadow-2xs"
+            >
+              <span>{showTracking ? "Hide History" : "Show History"}</span>
+              <svg
+                className={`w-3.5 h-3.5 transition-transform duration-200 ${showTracking ? "rotate-180" : ""}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
           </div>
+
+          {showTracking && (
+            <div className="mt-3 bg-white rounded-xl border border-charcoal-150 divide-y divide-charcoal-100 overflow-hidden shadow-2xs animate-in fade-in duration-200">
+              {getTrackingHistoryLogs(order).map((log, idx) => (
+                <div key={idx} className="flex items-start px-4 sm:px-5 py-3 hover:bg-warm-50/50 transition-colors">
+                  <div className="w-36 sm:w-44 shrink-0 text-xs text-charcoal-500 font-mono font-medium leading-relaxed pr-3">
+                    {formatTrackingDateTime(log.date)}
+                  </div>
+                  <div className="flex-1 text-xs sm:text-sm text-charcoal-800 font-normal leading-relaxed pl-3 border-l border-charcoal-100">
+                    {log.message}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
