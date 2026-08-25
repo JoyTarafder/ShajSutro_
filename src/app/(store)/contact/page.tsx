@@ -72,58 +72,66 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="bg-warm-50 border-b border-charcoal-100 py-20">
+      <div className="bg-warm-50 border-b border-charcoal-100 py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
-          <span className="section-label">Reach Out</span>
-          <h1 className="text-4xl sm:text-5xl font-semibold text-charcoal-950 mb-4 tracking-tight">Get in Touch</h1>
-          <p className="text-charcoal-400 max-w-md mx-auto font-light">
+          <span className="text-xs font-semibold text-emerald-800 tracking-wider uppercase block mb-2">Reach Out</span>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-charcoal-950 mb-3 tracking-tight">Get in Touch</h1>
+          <p className="text-xs sm:text-sm text-charcoal-500 max-w-md mx-auto font-light leading-relaxed">
             Have a question, feedback, or just want to say hello? We&apos;d love to hear from you.
           </p>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
-        <div className="grid lg:grid-cols-3 gap-16">
-          <div className="space-y-9">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-16 sm:py-20">
+        <div className="grid lg:grid-cols-3 gap-12 lg:gap-16">
+          <div className="space-y-8">
             <div>
-              <h2 className="text-xl font-semibold text-charcoal-950 mb-7">Contact Information</h2>
-              <div className="space-y-7">
+              <h2 className="text-lg sm:text-xl font-semibold text-charcoal-950 mb-6">Contact Information</h2>
+              <div className="space-y-6">
                 {contactInfo.map((info) => (
                   <div key={info.label} className="flex gap-4">
-                    <div className="w-11 h-11 rounded-xl bg-warm-50 border border-warm-100 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-5 h-5 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-10 h-10 rounded-xl bg-warm-50 border border-warm-100 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         {info.icon}
                       </svg>
                     </div>
                     <div>
-                      <p className="text-[11px] font-semibold text-charcoal-400 uppercase tracking-[0.15em]">{info.label}</p>
-                      <p className="text-sm font-medium text-charcoal-900 mt-1">{info.value}</p>
-                      <p className="text-xs text-charcoal-300 mt-0.5 font-light">{info.sub}</p>
+                      <p className="text-xs font-semibold text-charcoal-400 uppercase tracking-wider">{info.label}</p>
+                      <p className="text-sm font-medium text-charcoal-900 mt-0.5">{info.value}</p>
+                      <p className="text-xs text-charcoal-400 mt-0.5 font-light">{info.sub}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-accent-50 rounded-2xl p-6 border border-accent-100">
-              <div className="flex items-center gap-2.5 mb-2.5">
-                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+            <div className="bg-emerald-50/50 rounded-2xl p-6 border border-emerald-100/80">
+              <div className="flex items-center gap-2.5 mb-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="text-sm font-semibold text-charcoal-900">Live Chat Available</span>
               </div>
-              <p className="text-xs text-charcoal-400 mb-5 font-light">
+              <p className="text-xs text-charcoal-500 mb-4 font-light leading-relaxed">
                 Chat with a style expert right now. Average response time: under 2 minutes.
               </p>
-              <button className="w-full py-3 text-sm font-medium bg-white text-charcoal-900 rounded-xl border border-charcoal-200 hover:bg-charcoal-50 hover:shadow-soft transition-all duration-300">
+              <button
+                type="button"
+                className="w-full py-2.5 text-xs font-semibold bg-white text-charcoal-900 rounded-xl border border-charcoal-200 hover:bg-charcoal-50 transition-all shadow-xs"
+              >
                 Start Live Chat
               </button>
             </div>
 
-            <div className="bg-charcoal-50 rounded-2xl p-6">
-              <h3 className="text-sm font-semibold text-charcoal-900 mb-2.5">Looking for quick answers?</h3>
-              <p className="text-xs text-charcoal-400 mb-5 font-light">Check our FAQ &mdash; it covers returns, shipping, sizing, and more.</p>
-              <a href="#faq" className="text-sm font-medium text-accent-600 hover:text-accent-700 flex items-center gap-1.5 transition-colors duration-300 group">
-                View FAQ
-                <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-warm-50/70 rounded-2xl p-6 border border-charcoal-100">
+              <h3 className="text-sm font-semibold text-charcoal-900 mb-2">Looking for quick answers?</h3>
+              <p className="text-xs text-charcoal-500 mb-4 font-light leading-relaxed">
+                Check our FAQ &mdash; it covers returns, shipping, sizing, and more.
+              </p>
+              <a
+                href="#faq"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-800 hover:text-emerald-950 hover:underline transition-colors"
+              >
+                <span>View FAQ</span>
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </a>
@@ -132,35 +140,36 @@ export default function ContactPage() {
 
           <div className="lg:col-span-2">
             {status === "success" ? (
-              <div className="flex flex-col items-center justify-center h-full py-20 text-center">
-                <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-5">
-                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <div className="flex flex-col items-center justify-center h-full py-16 text-center">
+                <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4">
+                  <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h2 className="text-xl font-semibold text-charcoal-950 mb-2.5">Message Sent!</h2>
-                <p className="text-charcoal-400 max-w-sm font-light">
+                <h2 className="text-xl font-semibold text-charcoal-950 mb-2">Message Sent!</h2>
+                <p className="text-xs sm:text-sm text-charcoal-500 max-w-sm font-light">
                   Thank you for reaching out. We&apos;ve received your message and will get back to you within 24 hours.
                 </p>
                 <button
+                  type="button"
                   onClick={() => setStatus("idle")}
-                  className="btn-secondary mt-7 text-sm"
+                  className="mt-6 px-6 py-2.5 text-xs font-semibold rounded-xl border border-charcoal-200 hover:bg-charcoal-50 transition-all text-charcoal-900"
                 >
                   Send Another Message
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <h2 className="text-xl font-semibold text-charcoal-950 mb-7">Send a Message</h2>
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <h2 className="text-lg sm:text-xl font-semibold text-charcoal-950 mb-4">Send a Message</h2>
 
                 {error && (
-                  <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                  <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs font-medium text-rose-700">
                     {error}
                   </div>
                 )}
 
                 <div>
-                  <label className="block text-xs font-medium text-charcoal-600 mb-2.5">Topic</label>
+                  <label className="block text-xs font-medium text-charcoal-600 mb-2">Topic</label>
                   <div className="flex flex-wrap gap-2">
                     {[
                       { value: "general", label: "General" },
@@ -173,10 +182,10 @@ export default function ContactPage() {
                         key={topic.value}
                         type="button"
                         onClick={() => setFormData({ ...formData, topic: topic.value })}
-                        className={`px-5 py-2.5 text-sm rounded-full border-2 transition-all duration-200 ${
+                        className={`px-4 py-2 text-xs font-semibold rounded-full border transition-all ${
                           formData.topic === topic.value
-                            ? "border-charcoal-950 bg-charcoal-950 text-white"
-                            : "border-charcoal-200 text-charcoal-500 hover:border-charcoal-400 hover:text-charcoal-900"
+                            ? "border-emerald-950 bg-emerald-950 text-white shadow-xs"
+                            : "border-charcoal-200 text-charcoal-600 hover:border-charcoal-300 hover:bg-charcoal-50"
                         }`}
                       >
                         {topic.label}
@@ -185,24 +194,24 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                <div className="grid sm:grid-cols-2 gap-5">
+                <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-charcoal-600 mb-2">Full Name</label>
+                    <label className="block text-xs font-medium text-charcoal-600 mb-1.5">Full Name *</label>
                     <input
                       type="text"
                       required
-                      className="input-field"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-charcoal-200 text-xs text-charcoal-900 placeholder-charcoal-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-600 transition-all bg-white"
                       placeholder="John Doe"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-charcoal-600 mb-2">Email Address</label>
+                    <label className="block text-xs font-medium text-charcoal-600 mb-1.5">Email Address *</label>
                     <input
                       type="email"
                       required
-                      className="input-field"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-charcoal-200 text-xs text-charcoal-900 placeholder-charcoal-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-600 transition-all bg-white"
                       placeholder="john@example.com"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -211,11 +220,11 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-charcoal-600 mb-2">Subject</label>
+                  <label className="block text-xs font-medium text-charcoal-600 mb-1.5">Subject *</label>
                   <input
                     type="text"
                     required
-                    className="input-field"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-charcoal-200 text-xs text-charcoal-900 placeholder-charcoal-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-600 transition-all bg-white"
                     placeholder="How can we help you?"
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
@@ -223,11 +232,11 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-charcoal-600 mb-2">Message</label>
+                  <label className="block text-xs font-medium text-charcoal-600 mb-1.5">Message *</label>
                   <textarea
                     required
-                    rows={6}
-                    className="input-field resize-none"
+                    rows={5}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-charcoal-200 text-xs text-charcoal-900 placeholder-charcoal-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-600 transition-all bg-white resize-none"
                     placeholder="Tell us more about your inquiry..."
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -237,7 +246,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={status === "loading"}
-                  className="btn-primary w-full py-4 flex items-center justify-center gap-2"
+                  className="w-full py-3.5 px-6 bg-emerald-950 hover:bg-emerald-900 text-white text-xs font-semibold rounded-xl transition-all shadow-xs flex items-center justify-center gap-2"
                 >
                   {status === "loading" ? (
                     <>

@@ -44,7 +44,7 @@ export default function Footer() {
             <p className="mt-4 text-sm text-charcoal-400 leading-relaxed font-light max-w-sm sm:max-w-none">
               Thoughtfully crafted clothing for the modern wardrobe. Quality over quantity.
             </p>
-            <div className="flex justify-center sm:justify-start gap-2 mt-6">
+            <div className="flex items-center gap-3">
               {[
                 {
                   label: "Instagram",

@@ -44,67 +44,69 @@ export default function FAQSection() {
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-accent-50/20 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
-        <div className="text-center mb-14 sm:mb-18">
-          <span className="section-label">Support Guide</span>
-          <h2 className="section-title">Frequently Asked Questions</h2>
-          <p className="section-subtitle mt-3">
+        <div className="text-center mb-12 sm:mb-14">
+          <span className="text-xs font-semibold text-emerald-800 tracking-wider uppercase block mb-2">Support Guide</span>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-charcoal-950 tracking-tight">Frequently Asked Questions</h2>
+          <p className="text-xs sm:text-sm text-charcoal-500 mt-2 font-light">
             Everything you need to know. Can&apos;t find the answer?{" "}
-            <a href="/contact" className="text-accent-600 hover:text-accent-700 transition-colors font-semibold relative inline-block group">
-              <span>Contact our team</span>
-              <span className="absolute bottom-0 left-0 w-full h-[1.5px] bg-accent-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
+            <a href="/contact" className="text-emerald-800 hover:text-emerald-950 hover:underline transition-colors font-semibold">
+              Contact our team
             </a>
             .
           </p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3.5">
           {faqs.map((faq, index) => {
             const isOpen = openIndex === index;
 
             return (
               <div
                 key={index}
-                className={`border rounded-2.5xl overflow-hidden transition-all duration-500 ease-premium ${
+                className={`border rounded-2xl overflow-hidden transition-all duration-300 ${
                   isOpen
-                    ? "border-charcoal-200/80 shadow-soft-md bg-white/80 backdrop-blur-md"
-                    : "border-charcoal-100/70 hover:border-charcoal-200/60 bg-white/40"
+                    ? "border-charcoal-200 shadow-xs bg-white"
+                    : "border-charcoal-100 hover:border-charcoal-200 bg-white/70"
                 }`}
               >
                 <button
+                  type="button"
                   onClick={() => setOpenIndex(isOpen ? null : index)}
-                  className="w-full flex items-center justify-between px-6 sm:px-8 py-6.5 text-left transition-colors duration-300"
+                  className="w-full flex items-center justify-between px-6 sm:px-7 py-5 text-left transition-colors"
                   aria-expanded={isOpen}
                 >
-                  <span className="text-[15px] sm:text-base font-semibold text-charcoal-900 pr-6">
+                  <span className="text-sm sm:text-base font-semibold text-charcoal-900 pr-4">
                     {faq.question}
                   </span>
                   
-                  {/* Chic rotating badge */}
+                  {/* Accessible directional chevron toggle */}
                   <span
-                    className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center border transition-all duration-500 ease-premium ${
+                    className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center border transition-all duration-300 ${
                       isOpen
-                        ? "bg-charcoal-950 border-charcoal-950 rotate-45 text-white"
-                        : "bg-white border-charcoal-100 text-charcoal-400 group-hover:border-charcoal-200 shadow-soft"
+                        ? "bg-emerald-950 border-emerald-950 text-white"
+                        : "bg-warm-50 border-charcoal-200/80 text-charcoal-600"
                     }`}
                   >
                     <svg
-                      className="w-3.5 h-3.5"
+                      className={`w-4 h-4 transition-transform duration-300 ${
+                        isOpen ? "rotate-180" : "rotate-0"
+                      }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </span>
                 </button>
 
                 <div
-                  className={`transition-all duration-500 ease-premium ${
+                  className={`transition-all duration-300 ${
                     isOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0 pointer-events-none"
                   }`}
                 >
-                  <div className="px-6 sm:px-8 pb-6.5 text-sm sm:text-[14.5px] text-charcoal-500 leading-relaxed font-light">
-                    <p className="border-t border-charcoal-100/50 pt-5">
+                  <div className="px-6 sm:px-7 pb-5 text-xs sm:text-sm text-charcoal-500 leading-relaxed font-light">
+                    <p className="border-t border-charcoal-100 pt-4">
                       {faq.answer}
                     </p>
                   </div>
