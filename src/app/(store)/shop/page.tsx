@@ -363,13 +363,18 @@ function ShopContent() {
       </div>
 
       {hasActiveFilters && (
-        <button
-          type="button"
-          onClick={clearFilters}
-          className="w-full text-xs font-semibold text-emerald-800 hover:text-white hover:bg-emerald-800 border border-emerald-300 rounded-xl py-2.5 transition-all"
-        >
-          Clear all filters
-        </button>
+        <div className="pt-2 border-t border-emerald-100">
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="text-xs font-semibold text-emerald-800 hover:text-emerald-950 hover:underline transition-colors flex items-center gap-1"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            Clear all filters
+          </button>
+        </div>
       )}
     </div>
   );
@@ -386,49 +391,25 @@ function ShopContent() {
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-emerald-200/20 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute top-[25%] right-[-10%] w-[40%] h-[40%] bg-teal-200/10 rounded-full blur-[100px] pointer-events-none" />
 
-      {/* ─── Hero Section ─── */}
-      <div className="relative overflow-hidden border-b border-emerald-100/50 bg-gradient-to-r from-emerald-50/70 via-emerald-100/40 to-teal-50/50 py-8 md:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+      {/* ─── Simplified Hero Section ─── */}
+      <div className="relative overflow-hidden border-b border-emerald-100/50 bg-gradient-to-r from-emerald-50/70 via-emerald-100/40 to-teal-50/50 py-8 md:py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="max-w-2xl space-y-2 md:space-y-3">
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200/80 bg-white/70 px-3 py-1 text-xs font-semibold text-emerald-800 backdrop-blur-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
               Curated Collection
             </div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-emerald-950 leading-tight">
-              {headingText}
-            </h1>
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-emerald-950 leading-tight">
+                {headingText}
+              </h1>
+              <span className="text-xs font-semibold text-emerald-800 bg-white/80 border border-emerald-200 px-3 py-1 rounded-full shadow-xs">
+                {loading ? "Loading..." : `${filteredProducts.length} ${filteredProducts.length === 1 ? "item" : "items"}`}
+              </span>
+            </div>
             <p className="text-emerald-900/70 text-xs sm:text-sm font-normal max-w-lg leading-relaxed">
               Explore ShajSutro&apos;s premium lineup of products designed to combine style, longevity, and exceptional quality checks.
             </p>
-          </div>
-          
-          {/* Glassmorphic stat card */}
-          <div className="hidden md:flex flex-shrink-0 bg-white/60 backdrop-blur-md border border-emerald-100 rounded-2xl p-5 md:w-72 flex-col gap-3 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-                <svg className="w-4 h-4 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-emerald-950">Quality Verified</p>
-                <p className="text-xs text-emerald-900/60 leading-normal">100% genuine products</p>
-              </div>
-            </div>
-            <div className="h-px bg-emerald-100" />
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-emerald-900/60">Status:</span>
-              <span className="font-semibold text-emerald-800 bg-emerald-100/60 px-2.5 py-0.5 rounded-full text-xs flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                Active Store
-              </span>
-            </div>
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-emerald-900/60">Available:</span>
-              <span className="font-semibold text-emerald-950">
-                {loading ? "Counting..." : `${filteredProducts.length} items`}
-              </span>
-            </div>
           </div>
         </div>
       </div>

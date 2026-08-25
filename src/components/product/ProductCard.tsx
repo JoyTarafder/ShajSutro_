@@ -35,11 +35,11 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <div
-      className="group relative"
+      className="group relative flex flex-col"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Link href={`/product/${product.id}`} className="block">
+      <Link href={`/product/${product.id}`} className="block flex-1">
         <div className="relative overflow-hidden rounded-2xl bg-warm-50 aspect-[3/4] shadow-soft transition-shadow duration-500 group-hover:shadow-soft-lg">
           <Image
             src={isHovered && product.images[1] ? product.images[1] : product.images[0]}
@@ -65,38 +65,11 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
           ) : null}
 
-          <div
-            className={`absolute inset-x-0 bottom-0 p-3 transition-all duration-300 ease-premium pointer-events-none ${
-              isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0"
-            }`}
-          >
-            <button
-              type="button"
-              onClick={handleAddToCart}
-              disabled={isAddingToCart}
-              className={`w-full py-2.5 text-xs font-semibold rounded-xl transition-all duration-300 pointer-events-auto shadow-md ${
-                isAddingToCart
-                  ? "bg-emerald-600 text-white"
-                  : "bg-white/95 backdrop-blur-md text-charcoal-950 hover:bg-charcoal-950 hover:text-white active:scale-95"
-              }`}
-            >
-              {isAddingToCart ? (
-                <span className="flex items-center justify-center gap-1.5">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Added!
-                </span>
-              ) : (
-                "Add to Cart"
-              )}
-            </button>
-          </div>
-
           <button
-            className={`absolute top-3 right-3 sm:top-4 sm:right-4 p-2 sm:p-2.5 bg-white/95 backdrop-blur-sm rounded-full shadow-md transition-all duration-300 ${
-              isHovered ? "opacity-100 scale-100" : "opacity-100 sm:opacity-0 scale-100 sm:scale-90"
-            } ${favored ? "text-red-500" : "text-charcoal-400 hover:text-red-500"}`}
+            type="button"
+            className={`absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-xs transition-all duration-300 ${
+              isHovered ? "opacity-100 scale-100" : "opacity-0 sm:opacity-0 scale-90"
+            } ${favored ? "text-rose-600" : "text-charcoal-400 hover:text-rose-600"}`}
             aria-label={favored ? "Remove from favorites" : "Add to favorites"}
             onClick={(e) => {
               e.preventDefault();
@@ -117,8 +90,8 @@ export default function ProductCard({ product }: ProductCardProps) {
           </button>
         </div>
 
-        <div className="mt-4 space-y-1.5">
-          <h3 className="text-sm font-medium text-charcoal-900 leading-snug group-hover:text-charcoal-600 transition-colors duration-300 line-clamp-1">
+        <div className="mt-3 space-y-1.5">
+          <h3 className="text-xs sm:text-sm font-medium text-charcoal-900 leading-snug group-hover:text-emerald-800 transition-colors line-clamp-1">
             {product.name}
           </h3>
 
@@ -139,20 +112,20 @@ export default function ProductCard({ product }: ProductCardProps) {
                 </svg>
               ))}
             </div>
-            <span className="text-xs text-charcoal-300">({product.reviews})</span>
+            <span className="text-xs text-charcoal-400">({product.reviews})</span>
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-bold text-charcoal-900">
+            <span className="text-xs sm:text-sm font-bold text-charcoal-900">
               ৳{product.price}
             </span>
             {product.originalPrice && product.originalPrice > product.price && (
               <>
-                <span className="text-xs text-charcoal-300 line-through">
+                <span className="text-xs text-charcoal-400 line-through">
                   ৳{product.originalPrice}
                 </span>
                 {discount && discount > 0 && (
-                  <span className="text-[10px] font-extrabold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded-md border border-rose-100">
+                  <span className="text-xs font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-100">
                     {discount}% OFF
                   </span>
                 )}
@@ -164,7 +137,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <div className="flex items-center gap-2 pt-0.5 flex-wrap">
             <StockBadge stock={product.stock} inStock={product.inStock} />
             {product.totalOrdered !== undefined && product.totalOrdered > 0 && (
-              <span className="inline-flex items-center gap-1 text-[11px] text-charcoal-400 font-medium">
+              <span className="inline-flex items-center gap-1 text-xs text-charcoal-400 font-normal">
                 <svg className="w-3 h-3 text-charcoal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
@@ -180,18 +153,47 @@ export default function ProductCard({ product }: ProductCardProps) {
               {product.colors.slice(0, 4).map((color) => (
                 <div
                   key={color}
-                  className="w-3.5 h-3.5 rounded-full border border-charcoal-200 shadow-sm transition-transform duration-200 hover:scale-125"
+                  className="w-3.5 h-3.5 rounded-full border border-charcoal-200 shadow-xs transition-transform duration-200 hover:scale-125"
                   style={{ backgroundColor: colorToHex(color) }}
                   title={color}
                 />
               ))}
               {product.colors.length > 4 && (
-                <span className="text-xs text-charcoal-300 self-center">+{product.colors.length - 4}</span>
+                <span className="text-xs text-charcoal-400 self-center">+{product.colors.length - 4}</span>
               )}
             </div>
           )}
         </div>
       </Link>
+
+      <div className="pt-2 mt-auto">
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          disabled={isAddingToCart}
+          className={`w-full py-2 px-3 text-xs font-semibold rounded-xl transition-all shadow-xs border flex items-center justify-center gap-1.5 ${
+            isAddingToCart
+              ? "bg-emerald-600 text-white border-emerald-600"
+              : "bg-white text-emerald-950 border-emerald-200 hover:bg-emerald-950 hover:text-white hover:border-emerald-950 active:scale-95"
+          }`}
+        >
+          {isAddingToCart ? (
+            <span className="flex items-center gap-1.5">
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              Added!
+            </span>
+          ) : (
+            <>
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+              </svg>
+              Add to Cart
+            </>
+          )}
+        </button>
+      </div>
     </div>
   );
 }
