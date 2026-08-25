@@ -1075,11 +1075,11 @@ function ProductsContent() {
                             </div>
                           )}
                         </div>
-                        <div>
-                          <p className="text-sm font-semibold text-slate-100 max-w-[180px] truncate">
+                        <div className="min-w-0 max-w-xs sm:max-w-sm">
+                          <p className="text-sm font-semibold text-slate-100 line-clamp-1" title={p.name}>
                             {p.name}
                           </p>
-                          <p className="text-xs text-slate-400 max-w-[180px] truncate">
+                          <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed mt-0.5" title={p.description}>
                             {p.description}
                           </p>
                         </div>
@@ -1113,7 +1113,9 @@ function ProductsContent() {
                           {p.badge}
                         </span>
                       ) : (
-                        <span className="text-slate-500 text-xs">—</span>
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium text-slate-500 bg-white/[0.02] border border-white/5">
+                          None
+                        </span>
                       )}
                     </td>
                     {/* Stock Qty */}
@@ -1122,17 +1124,17 @@ function ProductsContent() {
                         const qty = p.stock ?? 0;
                         if (!p.inStock)
                           return (
-                            <span className="text-xs font-semibold text-red-400">
+                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold text-rose-400 bg-rose-950/30 border border-rose-500/20">
                               Out of stock
                             </span>
                           );
                         if (qty === 0)
                           return (
-                            <span className="text-xs text-slate-500">—</span>
+                            <span className="text-xs text-slate-500">0</span>
                           );
                         const color =
                           qty <= 3
-                            ? "text-red-400 font-bold"
+                            ? "text-rose-400 font-bold"
                             : qty <= 10
                               ? "text-amber-400 font-semibold"
                               : "text-emerald-400 font-semibold";
@@ -1162,48 +1164,70 @@ function ProductsContent() {
                             className="w-3 h-3"
                             fill="currentColor"
                             viewBox="0 0 20 20"
+                            aria-hidden="true"
                           >
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                           </svg>
-                          Yes
+                          Featured
                         </span>
                       ) : (
-                        <span className="text-slate-500 text-xs">—</span>
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium text-slate-500 bg-white/[0.03] border border-white/5">
+                          Standard
+                        </span>
                       )}
                     </td>
                     {/* Visibility toggle */}
                     <td className="px-5 py-4">
                       <button
+                        type="button"
+                        role="switch"
+                        aria-checked={p.isVisible}
                         onClick={() => toggleVisibility(p)}
                         title={
                           p.isVisible
                             ? "Click to hide from store"
                             : "Click to show on store"
                         }
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-colors ${
+                        className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
                           p.isVisible
-                            ? "bg-emerald-900/20 text-emerald-400 hover:bg-emerald-900/40"
-                            : "bg-white/[0.04] text-slate-500 hover:bg-white/[0.06]"
+                            ? "bg-emerald-950/40 text-emerald-400 border-emerald-500/30 hover:bg-emerald-900/50"
+                            : "bg-white/[0.04] text-slate-400 border-white/10 hover:bg-white/[0.08]"
                         }`}
                       >
                         <span
-                          className={`w-1.5 h-1.5 rounded-full ${p.isVisible ? "bg-emerald-500" : "bg-slate-400"}`}
-                        />
-                        {p.isVisible ? "Visible" : "Hidden"}
+                          className={`relative inline-block w-6 h-3.5 rounded-full transition-colors ${
+                            p.isVisible ? "bg-emerald-500" : "bg-slate-700"
+                          }`}
+                        >
+                          <span
+                            className={`absolute top-0.5 left-0.5 w-2.5 h-2.5 bg-white rounded-full transition-transform ${
+                              p.isVisible ? "translate-x-2.5" : "translate-x-0"
+                            }`}
+                          />
+                        </span>
+                        <span>{p.isVisible ? "Visible" : "Hidden"}</span>
                       </button>
                     </td>
                     <td className="px-5 py-4">
-                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end">
+                      <div className="flex items-center gap-2 justify-end">
                         <button
                           onClick={() => setModalProduct(p)}
-                          className="px-3 py-1.5 text-xs font-bold text-slate-300 bg-white/[0.04] rounded-lg hover:bg-white/[0.06] transition-colors"
+                          aria-label={`Edit ${p.name}`}
+                          className="px-3 py-1.5 text-xs font-semibold text-slate-200 bg-white/[0.06] border border-white/10 rounded-xl hover:bg-white/[0.12] hover:text-white transition-all shadow-sm flex items-center gap-1"
                         >
+                          <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
+                          </svg>
                           Edit
                         </button>
                         <button
                           onClick={() => setDeleteId(p._id)}
-                          className="px-3 py-1.5 text-xs font-bold text-red-600 bg-red-900/20 rounded-lg hover:bg-red-900/30 transition-colors"
+                          aria-label={`Delete ${p.name}`}
+                          className="px-3 py-1.5 text-xs font-semibold text-rose-400 bg-rose-950/30 border border-rose-500/20 rounded-xl hover:bg-rose-900/40 hover:text-rose-300 transition-all shadow-sm flex items-center gap-1"
                         >
+                          <svg className="w-3.5 h-3.5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                          </svg>
                           Delete
                         </button>
                       </div>
