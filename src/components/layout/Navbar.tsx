@@ -105,6 +105,7 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInitial, setUserInitial] = useState("");
+  const [avatarImg, setAvatarImg] = useState<string | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [categories, setCategories] = useState<NavCategory[]>([]);
   const [openCat, setOpenCat] = useState<string | null>(null); // desktop hover
@@ -146,23 +147,45 @@ export default function Navbar() {
       .catch(() => {});
   }, []);
 
-  // ── Auth ──
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+  // ── Auth & Avatar ──
+  const syncUserAuth = () => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
     if (token) {
       setIsLoggedIn(true);
       fetch(`${getApiBase()}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((r) => r.json())
-        .then((d) =>
-          setUserInitial((d?.data?.name ?? "U").charAt(0).toUpperCase()),
-        )
+        .then((d) => {
+          if (d?.data) {
+            setUserInitial((d.data.name ?? "U").charAt(0).toUpperCase());
+            const userId = d.data.id || d.data._id;
+            const savedAvatar = userId ? localStorage.getItem(`user_avatar_${userId}`) : null;
+            setAvatarImg(savedAvatar);
+          }
+        })
         .catch(() => setUserInitial("U"));
     } else {
       setIsLoggedIn(false);
       setUserInitial("");
+      setAvatarImg(null);
     }
+  };
+
+  useEffect(() => {
+    syncUserAuth();
+
+    const handleAvatarUpdate = () => {
+      syncUserAuth();
+    };
+
+    window.addEventListener("user_avatar_updated", handleAvatarUpdate);
+    window.addEventListener("storage", handleAvatarUpdate);
+
+    return () => {
+      window.removeEventListener("user_avatar_updated", handleAvatarUpdate);
+      window.removeEventListener("storage", handleAvatarUpdate);
+    };
   }, [pathname]);
 
   // ── Outside click handlers for Account & Notification dropdowns ──
@@ -366,10 +389,21 @@ export default function Navbar() {
                 <div ref={acctRef} className="relative hidden sm:block">
                   <button
                     onClick={() => setDropdownOpen(!dropdownOpen)}
-                    className="w-8 h-8 rounded-full bg-charcoal-950 text-white text-xs font-semibold flex items-center justify-center hover:bg-charcoal-700 transition-colors duration-200 select-none"
+                    className="w-8 h-8 rounded-full overflow-hidden border border-charcoal-200 flex items-center justify-center transition-all duration-200 select-none shadow-2xs hover:border-charcoal-400 focus:outline-none"
                     aria-label="Account menu"
                   >
-                    {userInitial}
+                    {avatarImg ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={avatarImg}
+                        alt="User Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-emerald-950 text-white text-xs font-semibold flex items-center justify-center">
+                        {userInitial}
+                      </div>
+                    )}
                   </button>
                   {dropdownOpen && (
                     <div className="absolute right-0 mt-2.5 w-44 bg-white rounded-2xl border border-charcoal-100 shadow-soft-md py-1.5 z-50">

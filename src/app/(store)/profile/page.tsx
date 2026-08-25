@@ -239,6 +239,9 @@ export default function ProfilePage() {
         localStorage.removeItem(`user_avatar_${user.id}`);
         setAvatarImg(null);
       }
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("user_avatar_updated"));
+      }
     }
   };
 
