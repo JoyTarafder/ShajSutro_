@@ -308,11 +308,11 @@ export default function AdminSidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 min-h-0 px-3 py-6 space-y-1 overflow-y-auto custom-scrollbar">
-        <p className="px-3 mb-3 text-[10px] font-extrabold uppercase tracking-[0.2em] text-violet-400/80">
+      <nav className="flex-1 min-h-0 px-3.5 py-4 space-y-2 overflow-y-auto custom-scrollbar">
+        <p className="px-3 mb-2.5 text-[10px] font-extrabold uppercase tracking-[0.2em] text-violet-400/80">
           Menu
         </p>
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           {filteredNavItems.map((item) => {
             const isActive =
               pathname === item.href || pathname.startsWith(item.href + "/");
@@ -321,7 +321,8 @@ export default function AdminSidebar() {
                 <Link
                   href={item.href}
                   onClick={closeMobileSidebar}
-                  className={`relative flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-semibold transition-all duration-200 group ${
+                  aria-label={item.label}
+                  className={`relative flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-sm font-semibold transition-all duration-200 group ${
                     isActive
                       ? item.activeBg
                       : "text-slate-400 hover:text-white hover:bg-white/[0.06]"
@@ -361,7 +362,8 @@ export default function AdminSidebar() {
                   <Link
                     href="/admin/applications"
                     onClick={closeMobileSidebar}
-                    className={`relative flex items-center gap-2.5 pl-11 pr-3 py-2.5 min-h-[44px] rounded-2xl text-sm font-semibold transition-all duration-200 ${
+                    aria-label="Job Applications"
+                    className={`relative flex items-center gap-2.5 pl-11 pr-3 py-2 min-h-[40px] rounded-2xl text-sm font-semibold transition-all duration-200 ${
                       pathname === "/admin/applications" ||
                       pathname.startsWith("/admin/applications/")
                         ? "bg-teal-500/20 text-teal-300 font-bold border-l-2 border-teal-400"
@@ -392,7 +394,8 @@ export default function AdminSidebar() {
                   <Link
                     href="/admin/promo-codes"
                     onClick={closeMobileSidebar}
-                    className={`relative flex items-center gap-2.5 pl-11 pr-3 py-2.5 min-h-[44px] rounded-2xl text-sm font-semibold transition-all duration-200 ${
+                    aria-label="Promo Codes"
+                    className={`relative flex items-center gap-2.5 pl-11 pr-3 py-2 min-h-[40px] rounded-2xl text-sm font-semibold transition-all duration-200 ${
                       pathname === "/admin/promo-codes" ||
                       pathname.startsWith("/admin/promo-codes/")
                         ? "bg-rose-500/20 text-rose-300 font-bold border-l-2 border-rose-400"
@@ -424,7 +427,7 @@ export default function AdminSidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-3 pt-6 pb-6 border-t border-white/10 bg-slate-950/80 shrink-0 mt-auto">
+      <div className="px-3.5 py-4 border-t border-white/10 bg-[#09090b] shrink-0 flex-shrink-0 mt-auto">
         <p className="px-3 mb-3 text-[10px] font-extrabold uppercase tracking-[0.2em] text-violet-400/80">
           Account
         </p>

@@ -254,13 +254,15 @@ export default function AdminHeader() {
               border: "1px solid rgba(255, 255, 255, 0.08)",
               color: "rgba(226, 232, 240, 0.8)",
             }}
-            title="System Activity & Alerts"
+            title={unreadCount > 0 ? `Notifications (${unreadCount} unread)` : "Notifications & Activity Alerts"}
+            aria-label={unreadCount > 0 ? `Notifications (${unreadCount} unread)` : "Notifications & Activity Alerts"}
           >
             <svg
               className="w-[19px] h-[19px]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -271,7 +273,10 @@ export default function AdminHeader() {
             </svg>
 
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-rose-500 text-white text-[9px] font-black shadow-md ring-2 ring-[#0a0a0f] animate-pulse">
+              <span
+                className="absolute -top-1 -right-1 flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-rose-500 text-white text-[10px] font-black shadow-md ring-2 ring-[#0a0a0f] animate-pulse"
+                aria-label={`${unreadCount} unread notifications`}
+              >
                 {unreadCount > 9 ? "9+" : unreadCount}
               </span>
             )}
