@@ -147,7 +147,7 @@ export default function HeroSection() {
                 style={{ animationDelay: "1.5s", animationDuration: "7s" }}
               >
                 <Image
-                  src="https://images.unsplash.com/photo-1595152772835-219674b2a8a6?q=80&w=800"
+                  src="https://www.yellowclothing.net/cdn/shop/files/DSC09746_bda242ed-87fc-4756-9bd1-53ef63dbaead.jpg?v=1784004255"
                   alt="Man wearing traditional Panjabi"
                   fill
                   className="object-cover transition-transform duration-1000 ease-premium hover:scale-105"
@@ -161,7 +161,7 @@ export default function HeroSection() {
                 style={{ animationDelay: "3s", animationDuration: "5s" }}
               >
                 <Image
-                  src="https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=600&q=80"
+                  src="https://i.pinimg.com/originals/61/ae/35/61ae35b0305e8e20a3d4127530049bb4.jpg"
                   alt="Kids traditional and luxury wear"
                   fill
                   className="object-cover transition-transform duration-1000 ease-premium hover:scale-105"
