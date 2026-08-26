@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useMemo, useEffect, Suspense } from "react";
+import ProductCard from "@/components/product/ProductCard";
+import { products as fallbackProducts } from "@/data/products";
+import { getApiBase } from "@/lib/apiBase";
+import { Product, SortOption } from "@/types";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Product, SortOption } from "@/types";
-import ProductCard from "@/components/product/ProductCard";
-import { getApiBase } from "@/lib/apiBase";
-import { products as fallbackProducts } from "@/data/products";
+import { Suspense, useEffect, useMemo, useState } from "react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -92,7 +92,9 @@ function mapProduct(p: ApiProduct): ShopProduct {
 
 function getProductCategorySlugs(p: ShopProduct, cats: NavCategory[]) {
   const directSlug = (p.category || "").toLowerCase();
-  let parentSlug = p.parentCategorySlug ? p.parentCategorySlug.toLowerCase() : undefined;
+  let parentSlug = p.parentCategorySlug
+    ? p.parentCategorySlug.toLowerCase()
+    : undefined;
 
   if (!parentSlug) {
     for (const c of cats) {
@@ -116,7 +118,22 @@ function getProductCategorySlugs(p: ShopProduct, cats: NavCategory[]) {
   return { directSlug, parentSlug };
 }
 
-const SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
+const SIZES = [
+  "XS",
+  "S",
+  "M",
+  "L",
+  "XL",
+  "XXL",
+  "38",
+  "40",
+  "42",
+  "44",
+  "4-6 Yrs",
+  "6-8 Yrs",
+  "8-10 Yrs",
+  "10-12 Yrs",
+];
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "newest", label: "Newest" },
   { value: "price-asc", label: "Price: Low to High" },
@@ -166,7 +183,7 @@ function ShopContent() {
   // ── Filter & Pagination state ──
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    initialCategory ? [initialCategory] : []
+    initialCategory ? [initialCategory] : [],
   );
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 25000]);
@@ -195,7 +212,9 @@ function ShopContent() {
   useEffect(() => {
     fetch(`${getApiBase()}/api/categories`)
       .then((r) => r.json())
-      .then((j) => { if (j.success) setCategories(j.data); })
+      .then((j) => {
+        if (j.success) setCategories(j.data);
+      })
       .catch(() => {});
   }, []);
 
@@ -243,14 +262,17 @@ function ShopContent() {
           p.description.toLowerCase().includes(q) ||
           (p.sku && p.sku.toLowerCase().includes(q)) ||
           p.category.toLowerCase().includes(q) ||
-          (p.tags && p.tags.some((t) => t.toLowerCase().includes(q)))
+          (p.tags && p.tags.some((t) => t.toLowerCase().includes(q))),
       );
     }
 
     if (selectedCategories.length > 0) {
       const selectedLower = selectedCategories.map((c) => c.toLowerCase());
       list = list.filter((p) => {
-        const { directSlug, parentSlug } = getProductCategorySlugs(p, categories);
+        const { directSlug, parentSlug } = getProductCategorySlugs(
+          p,
+          categories,
+        );
         return (
           selectedLower.includes(directSlug) ||
           (parentSlug ? selectedLower.includes(parentSlug) : false)
@@ -263,7 +285,7 @@ function ShopContent() {
     }
 
     list = list.filter(
-      (p) => p.price >= priceRange[0] && p.price <= priceRange[1]
+      (p) => p.price >= priceRange[0] && p.price <= priceRange[1],
     );
 
     switch (sortBy) {
@@ -282,9 +304,20 @@ function ShopContent() {
     }
 
     return list;
-  }, [allProducts, selectedCategories, selectedSizes, priceRange, sortBy, categories, searchQuery]);
+  }, [
+    allProducts,
+    selectedCategories,
+    selectedSizes,
+    priceRange,
+    sortBy,
+    categories,
+    searchQuery,
+  ]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / ITEMS_PER_PAGE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredProducts.length / ITEMS_PER_PAGE),
+  );
 
   const paginatedProducts = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -293,13 +326,13 @@ function ShopContent() {
 
   const toggleCategory = (cat: string) => {
     setSelectedCategories((prev) =>
-      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
+      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat],
     );
   };
 
   const toggleSize = (size: string) => {
     setSelectedSizes((prev) =>
-      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
+      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size],
     );
   };
 
@@ -350,8 +383,14 @@ function ShopContent() {
             {categories.map((cat) => {
               const isSelected = selectedCategories.includes(cat.slug);
               const parentProductCount = allProducts.filter((p) => {
-                const { directSlug, parentSlug } = getProductCategorySlugs(p, categories);
-                return directSlug === cat.slug.toLowerCase() || parentSlug === cat.slug.toLowerCase();
+                const { directSlug, parentSlug } = getProductCategorySlugs(
+                  p,
+                  categories,
+                );
+                return (
+                  directSlug === cat.slug.toLowerCase() ||
+                  parentSlug === cat.slug.toLowerCase()
+                );
               }).length;
 
               return (
@@ -375,8 +414,18 @@ function ShopContent() {
                         aria-hidden="true"
                       >
                         {isSelected && (
-                          <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3.5} d="M5 13l4 4L19 7" />
+                          <svg
+                            className="w-2.5 h-2.5 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={3.5}
+                              d="M5 13l4 4L19 7"
+                            />
                           </svg>
                         )}
                       </span>
@@ -384,9 +433,13 @@ function ShopContent() {
                         {cat.name}
                       </span>
                     </div>
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                      isSelected ? "bg-emerald-950 text-white font-bold" : "bg-emerald-100/50 text-emerald-800"
-                    }`}>
+                    <span
+                      className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                        isSelected
+                          ? "bg-emerald-950 text-white font-bold"
+                          : "bg-emerald-100/50 text-emerald-800"
+                      }`}
+                    >
                       {parentProductCount}
                     </span>
                   </button>
@@ -395,9 +448,14 @@ function ShopContent() {
                   {cat.subcategories && cat.subcategories.length > 0 && (
                     <div className="ml-5 pl-2.5 border-l-2 border-emerald-200/60 space-y-1 pt-0.5">
                       {cat.subcategories.map((sub) => {
-                        const isSubSelected = selectedCategories.includes(sub.slug);
+                        const isSubSelected = selectedCategories.includes(
+                          sub.slug,
+                        );
                         const subProductCount = allProducts.filter((p) => {
-                          const { directSlug } = getProductCategorySlugs(p, categories);
+                          const { directSlug } = getProductCategorySlugs(
+                            p,
+                            categories,
+                          );
                           return directSlug === sub.slug.toLowerCase();
                         }).length;
 
@@ -421,8 +479,18 @@ function ShopContent() {
                                 }`}
                               >
                                 {isSubSelected && (
-                                  <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3.5} d="M5 13l4 4L19 7" />
+                                  <svg
+                                    className="w-2 h-2 text-white"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={3.5}
+                                      d="M5 13l4 4L19 7"
+                                    />
                                   </svg>
                                 )}
                               </span>
@@ -430,9 +498,13 @@ function ShopContent() {
                                 {sub.name}
                               </span>
                             </div>
-                            <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-medium ${
-                              isSubSelected ? "bg-emerald-950 text-white font-bold" : "bg-emerald-100/40 text-emerald-800"
-                            }`}>
+                            <span
+                              className={`text-[10px] px-1.5 py-0.2 rounded-full font-medium ${
+                                isSubSelected
+                                  ? "bg-emerald-950 text-white font-bold"
+                                  : "bg-emerald-100/40 text-emerald-800"
+                              }`}
+                            >
                               {subProductCount}
                             </span>
                           </button>
@@ -538,8 +610,18 @@ function ShopContent() {
             onClick={clearFilters}
             className="text-xs font-semibold text-emerald-800 hover:text-emerald-950 hover:underline transition-colors flex items-center gap-1"
           >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-3.5 h-3.5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
             Clear all filters
           </button>
@@ -573,7 +655,7 @@ function ShopContent() {
   }, [searchQuery, initialBadge, initialCategory, categories]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f5fff9] via-[#eef9f2] to-white relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-[#f5fff9] via-[#eef9f2] to-white relative overflow-x-clip">
       {/* Decorative organic glows */}
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-emerald-200/20 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute top-[25%] right-[-10%] w-[40%] h-[40%] bg-teal-200/10 rounded-full blur-[100px] pointer-events-none" />
@@ -591,21 +673,24 @@ function ShopContent() {
                 {headingText}
               </h1>
               <span className="text-xs font-semibold text-emerald-800 bg-white/80 border border-emerald-200 px-3 py-1 rounded-full shadow-xs">
-                {loading ? "Loading..." : `${filteredProducts.length} ${filteredProducts.length === 1 ? "item" : "items"}`}
+                {loading
+                  ? "Loading..."
+                  : `${filteredProducts.length} ${filteredProducts.length === 1 ? "item" : "items"}`}
               </span>
             </div>
             <p className="text-emerald-900/70 text-xs sm:text-sm font-normal max-w-lg leading-relaxed">
-              Explore ShajSutro&apos;s premium lineup of products designed to combine style, longevity, and exceptional quality checks.
+              Explore ShajSutro&apos;s premium lineup of products designed to
+              combine style, longevity, and exceptional quality checks.
             </p>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
-        <div className="flex gap-8">
-          {/* Glassmorphic Filters Sidebar (Desktop) */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="sticky top-28 bg-white/70 backdrop-blur-md border border-emerald-100 rounded-2xl p-5 shadow-xs">
+        <div className="flex gap-8 items-start">
+          {/* Glassmorphic Filters Sidebar (Desktop - Fixed/Sticky on scroll) */}
+          <aside className="hidden lg:block w-64 flex-shrink-0 self-start sticky top-24 z-20">
+            <div className="bg-white/85 backdrop-blur-md border border-emerald-100/90 rounded-2xl p-5 shadow-xs max-h-[calc(100vh-7rem)] overflow-y-auto overscroll-contain">
               <FiltersPanel />
             </div>
           </aside>
@@ -618,8 +703,18 @@ function ShopContent() {
                 onClick={() => setIsMobileFiltersOpen(true)}
                 className="flex lg:hidden items-center gap-2 text-xs sm:text-sm font-semibold text-emerald-950 border border-emerald-200/80 bg-white/90 px-4 py-2.5 rounded-xl hover:bg-white transition-all shadow-xs"
               >
-                <svg className="w-4 h-4 text-emerald-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                <svg
+                  className="w-4 h-4 text-emerald-800"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
+                  />
                 </svg>
                 Filters
                 {hasActiveFilters && (
@@ -630,7 +725,9 @@ function ShopContent() {
               </button>
 
               <div className="flex items-center gap-3 ml-auto">
-                <label className="text-xs font-semibold uppercase tracking-wider text-emerald-900/70 hidden sm:block">Sort By</label>
+                <label className="text-xs font-semibold uppercase tracking-wider text-emerald-900/70 hidden sm:block">
+                  Sort By
+                </label>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as SortOption)}
@@ -648,7 +745,9 @@ function ShopContent() {
             {/* Micro-animated Active Filter Chips (Standardized unified pill style) */}
             {hasActiveFilters && (
               <div className="flex flex-wrap items-center gap-2 mb-8 animate-fade-in">
-                <span className="text-xs text-emerald-900/70 font-medium mr-1 uppercase tracking-wider">Active:</span>
+                <span className="text-xs text-emerald-900/70 font-medium mr-1 uppercase tracking-wider">
+                  Active:
+                </span>
                 {searchQuery && (
                   <Link
                     href={`/shop${initialCategory ? `?category=${initialCategory}` : ""}${initialBadge ? `${initialCategory ? "&" : "?"}badge=${initialBadge}` : ""}`}
@@ -656,8 +755,18 @@ function ShopContent() {
                   >
                     <span>Search: &ldquo;{searchQuery}&rdquo;</span>
                     <span className="bg-white/20 rounded-full p-0.5 group-hover:bg-white/30 transition-colors">
-                      <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="w-2.5 h-2.5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </span>
                   </Link>
@@ -671,8 +780,18 @@ function ShopContent() {
                   >
                     <span>{getCategoryLabel(cat)}</span>
                     <span className="bg-white/20 rounded-full p-0.5 group-hover:bg-white/30 transition-colors">
-                      <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="w-2.5 h-2.5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </span>
                   </button>
@@ -686,8 +805,18 @@ function ShopContent() {
                   >
                     <span>{size}</span>
                     <span className="bg-white/20 rounded-full p-0.5 group-hover:bg-white/30 transition-colors">
-                      <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="w-2.5 h-2.5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </span>
                   </button>
@@ -698,16 +827,28 @@ function ShopContent() {
                     onClick={() => setPriceRange([0, maxPrice])}
                     className="group flex items-center gap-2 px-3.5 py-1.5 bg-emerald-950 text-white text-xs font-medium rounded-full transition-all duration-200 hover:bg-emerald-800 shadow-xs"
                   >
-                    <span>৳{priceRange[0]} – ৳{priceRange[1]}</span>
+                    <span>
+                      ৳{priceRange[0]} – ৳{priceRange[1]}
+                    </span>
                     <span className="bg-white/20 rounded-full p-0.5 group-hover:bg-white/30 transition-colors">
-                      <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="w-2.5 h-2.5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </span>
                   </button>
                 )}
-                
-                <button 
+
+                <button
                   type="button"
                   onClick={clearFilters}
                   className="text-xs text-emerald-800 hover:text-emerald-950 hover:underline font-semibold ml-2 transition-all"
@@ -731,12 +872,27 @@ function ShopContent() {
             ) : filteredProducts.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center bg-white/40 backdrop-blur-md border border-emerald-100/40 rounded-3xl p-8 shadow-glass mt-4">
                 <div className="w-16 h-16 rounded-2xl bg-emerald-100/30 border border-emerald-200/50 flex items-center justify-center mb-6">
-                  <svg className="w-7 h-7 text-emerald-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                  <svg
+                    className="w-7 h-7 text-emerald-800"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                    />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-emerald-950">No products match your criteria</h3>
-                <p className="text-emerald-900/70 mt-2 text-sm font-normal max-w-sm leading-relaxed">Try resetting the price range, unselecting size filters, or exploring other categories.</p>
+                <h3 className="text-xl font-semibold text-emerald-950">
+                  No products match your criteria
+                </h3>
+                <p className="text-emerald-900/70 mt-2 text-sm font-normal max-w-sm leading-relaxed">
+                  Try resetting the price range, unselecting size filters, or
+                  exploring other categories.
+                </p>
                 <button
                   type="button"
                   onClick={clearFilters}
@@ -757,9 +913,22 @@ function ShopContent() {
                 {totalPages > 1 && (
                   <div className="mt-12 pt-6 border-t border-emerald-100/60 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <p className="text-xs text-emerald-900/70 font-medium">
-                      Showing <span className="font-bold text-emerald-950">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span>–
-                      <span className="font-bold text-emerald-950">{Math.min(currentPage * ITEMS_PER_PAGE, filteredProducts.length)}</span> of{" "}
-                      <span className="font-bold text-emerald-950">{filteredProducts.length}</span> items
+                      Showing{" "}
+                      <span className="font-bold text-emerald-950">
+                        {(currentPage - 1) * ITEMS_PER_PAGE + 1}
+                      </span>
+                      –
+                      <span className="font-bold text-emerald-950">
+                        {Math.min(
+                          currentPage * ITEMS_PER_PAGE,
+                          filteredProducts.length,
+                        )}
+                      </span>{" "}
+                      of{" "}
+                      <span className="font-bold text-emerald-950">
+                        {filteredProducts.length}
+                      </span>{" "}
+                      items
                     </p>
 
                     <div className="flex items-center gap-1.5">
@@ -774,15 +943,28 @@ function ShopContent() {
                         className="px-3.5 py-2 rounded-xl text-xs font-semibold border border-emerald-200/80 bg-white text-emerald-950 hover:bg-emerald-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-xs flex items-center gap-1"
                         aria-label="Previous Page"
                       >
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 19l-7-7 7-7"
+                          />
                         </svg>
                         Prev
                       </button>
 
                       {/* Numbered Page Buttons */}
                       <div className="flex items-center gap-1">
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                        {Array.from(
+                          { length: totalPages },
+                          (_, i) => i + 1,
+                        ).map((pageNum) => (
                           <button
                             key={pageNum}
                             type="button"
@@ -796,7 +978,9 @@ function ShopContent() {
                                 : "border border-emerald-200/80 bg-white text-emerald-950 hover:bg-emerald-50"
                             }`}
                             aria-label={`Go to page ${pageNum}`}
-                            aria-current={currentPage === pageNum ? "page" : undefined}
+                            aria-current={
+                              currentPage === pageNum ? "page" : undefined
+                            }
                           >
                             {pageNum}
                           </button>
@@ -815,8 +999,18 @@ function ShopContent() {
                         aria-label="Next Page"
                       >
                         Next
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
                         </svg>
                       </button>
                     </div>
@@ -837,14 +1031,26 @@ function ShopContent() {
           />
           <div className="fixed inset-y-0 left-0 z-50 w-80 bg-gradient-to-b from-[#f5fff9] to-white flex flex-col shadow-soft-xl border-r border-emerald-100/50 animate-slide-in">
             <div className="flex items-center justify-between px-7 py-6 border-b border-emerald-100/30">
-              <h2 className="text-base font-semibold text-emerald-950 uppercase tracking-wider">Filters</h2>
+              <h2 className="text-base font-semibold text-emerald-950 uppercase tracking-wider">
+                Filters
+              </h2>
               <button
                 type="button"
                 onClick={() => setIsMobileFiltersOpen(false)}
                 className="p-2 text-emerald-800/70 hover:text-emerald-950 rounded-full transition-colors duration-200"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
