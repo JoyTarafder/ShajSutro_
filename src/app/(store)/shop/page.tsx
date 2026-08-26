@@ -141,6 +141,8 @@ export default function ShopPage() {
   );
 }
 
+const ITEMS_PER_PAGE = 9;
+
 // ─── Main content ─────────────────────────────────────────────────────────────
 
 function ShopContent() {
@@ -161,7 +163,8 @@ function ShopContent() {
     return Math.max(5000, Math.ceil(highest / 1000) * 1000);
   }, [allProducts]);
 
-  // ── Filter state ──
+  // ── Filter & Pagination state ──
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     initialCategory ? [initialCategory] : []
   );
@@ -175,12 +178,18 @@ function ShopContent() {
     setSelectedCategories(initialCategory ? [initialCategory] : []);
     setSelectedSizes([]);
     setSortBy("newest");
+    setCurrentPage(1);
     if (allProducts.length > 0) {
       const highest = Math.max(...allProducts.map((p) => p.price));
       const dynamicMax = Math.max(5000, Math.ceil(highest / 1000) * 1000);
       setPriceRange([0, dynamicMax]);
     }
   }, [initialCategory, initialBadge, searchQuery, allProducts]);
+
+  // Reset to page 1 on filter or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategories, selectedSizes, priceRange, sortBy, searchQuery]);
 
   // Fetch categories for the filter panel
   useEffect(() => {
@@ -275,6 +284,13 @@ function ShopContent() {
     return list;
   }, [allProducts, selectedCategories, selectedSizes, priceRange, sortBy, categories, searchQuery]);
 
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / ITEMS_PER_PAGE));
+
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredProducts.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredProducts, currentPage]);
+
   const toggleCategory = (cat: string) => {
     setSelectedCategories((prev) =>
       prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
@@ -306,6 +322,7 @@ function ShopContent() {
     setSelectedSizes([]);
     setPriceRange([0, maxPrice]);
     setSortBy("newest");
+    setCurrentPage(1);
   };
 
   const hasActiveFilters =
@@ -729,10 +746,82 @@ function ShopContent() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-x-5 gap-y-10 sm:gap-x-7">
-                {filteredProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
+              <div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-x-5 gap-y-10 sm:gap-x-7">
+                  {paginatedProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+
+                {/* ─── Numbered Pagination Controls (9 items per page) ─── */}
+                {totalPages > 1 && (
+                  <div className="mt-12 pt-6 border-t border-emerald-100/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <p className="text-xs text-emerald-900/70 font-medium">
+                      Showing <span className="font-bold text-emerald-950">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span>–
+                      <span className="font-bold text-emerald-950">{Math.min(currentPage * ITEMS_PER_PAGE, filteredProducts.length)}</span> of{" "}
+                      <span className="font-bold text-emerald-950">{filteredProducts.length}</span> items
+                    </p>
+
+                    <div className="flex items-center gap-1.5">
+                      {/* Previous Page Button */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCurrentPage((p) => Math.max(1, p - 1));
+                          window.scrollTo({ top: 150, behavior: "smooth" });
+                        }}
+                        disabled={currentPage === 1}
+                        className="px-3.5 py-2 rounded-xl text-xs font-semibold border border-emerald-200/80 bg-white text-emerald-950 hover:bg-emerald-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-xs flex items-center gap-1"
+                        aria-label="Previous Page"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        </svg>
+                        Prev
+                      </button>
+
+                      {/* Numbered Page Buttons */}
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                          <button
+                            key={pageNum}
+                            type="button"
+                            onClick={() => {
+                              setCurrentPage(pageNum);
+                              window.scrollTo({ top: 150, behavior: "smooth" });
+                            }}
+                            className={`w-9 h-9 rounded-xl text-xs font-semibold transition-all flex items-center justify-center ${
+                              currentPage === pageNum
+                                ? "bg-emerald-950 text-white shadow-xs"
+                                : "border border-emerald-200/80 bg-white text-emerald-950 hover:bg-emerald-50"
+                            }`}
+                            aria-label={`Go to page ${pageNum}`}
+                            aria-current={currentPage === pageNum ? "page" : undefined}
+                          >
+                            {pageNum}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Next Page Button */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCurrentPage((p) => Math.min(totalPages, p + 1));
+                          window.scrollTo({ top: 150, behavior: "smooth" });
+                        }}
+                        disabled={currentPage === totalPages}
+                        className="px-3.5 py-2 rounded-xl text-xs font-semibold border border-emerald-200/80 bg-white text-emerald-950 hover:bg-emerald-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-xs flex items-center gap-1"
+                        aria-label="Next Page"
+                      >
+                        Next
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
