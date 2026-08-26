@@ -97,6 +97,7 @@ export interface IProduct {
   stock: number;
   totalOrdered: number;
   tags: string[];
+  sku?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

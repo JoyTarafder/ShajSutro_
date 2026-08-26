@@ -15,6 +15,7 @@ export interface Product {
   stock?: number;
   totalOrdered?: number;
   tags?: string[];
+  sku?: string;
 }
 
 export interface CartItem {

@@ -193,7 +193,14 @@ export const getAdminProducts = asyncHandler(
         }
       }
     }
-    if (search) filter.$text = { $search: search };
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { sku: { $regex: search, $options: "i" } },
+        { tags: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
     if (req.query.isFeatured !== undefined) {
       filter.isFeatured = req.query.isFeatured === "true";
     }

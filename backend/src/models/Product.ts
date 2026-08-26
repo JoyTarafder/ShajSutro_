@@ -87,15 +87,21 @@ const productSchema = new Schema<IProductDocument>(
       type: [String],
       default: [],
     },
+    sku: {
+      type: String,
+      trim: true,
+      uppercase: true,
+    },
   },
   { timestamps: true }
 );
 
 // Text index for search
-productSchema.index({ name: "text", description: "text", tags: "text" });
+productSchema.index({ name: "text", description: "text", tags: "text", sku: "text" });
 
 // Compound index for common filter queries
 productSchema.index({ category: 1, price: 1 });
+productSchema.index({ sku: 1 });
 productSchema.index({ badge: 1 });
 
 const Product = mongoose.model<IProductDocument>("Product", productSchema);

@@ -41,6 +41,7 @@ interface Product {
   sizes: string[];
   colors: string[];
   tags?: string[];
+  sku?: string;
   badge?: string;
   inStock: boolean;
   isFeatured: boolean;
@@ -51,6 +52,7 @@ interface Product {
 
 type ProductForm = {
   name: string;
+  sku: string;
   description: string;
   price: string;
   originalPrice: string;
@@ -76,6 +78,7 @@ const BADGE_STYLE: Record<string, string> = {
 
 const EMPTY_FORM: ProductForm = {
   name: "",
+  sku: "",
   description: "",
   price: "",
   originalPrice: "",
@@ -230,6 +233,7 @@ function ProductModal({
     product
       ? {
           name: product.name,
+          sku: product.sku ?? "",
           description: product.description,
           price: String(product.price),
           originalPrice: product.originalPrice
@@ -261,6 +265,16 @@ function ProductModal({
   ) => {
     const { name, value } = e.target;
     setForm((p) => ({ ...p, [name]: value }));
+  };
+
+  const generateSkuCode = () => {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    const part = (len: number) =>
+      Array.from({ length: len }, () =>
+        chars.charAt(Math.floor(Math.random() * chars.length)),
+      ).join("");
+    const newSku = `OY-${part(4)}-${part(4)}-${Math.floor(1000 + Math.random() * 9000)}`;
+    setForm((p) => ({ ...p, sku: newSku }));
   };
 
   const handleParentCategoryChange = (
@@ -335,6 +349,7 @@ function ProductModal({
       await onSave(
         {
           name: form.name,
+          sku: form.sku.trim().toUpperCase() || undefined,
           description: form.description,
           price: Number(form.price),
           originalPrice: form.originalPrice
@@ -484,16 +499,39 @@ function ProductModal({
                   <span className="text-[11px] text-slate-500 font-medium">Required *</span>
                 </div>
 
-                <Field label="Product Name *">
-                  <input
-                    name="name"
-                    required
-                    value={form.name}
-                    onChange={set}
-                    placeholder="e.g. Premium Silk Saree - Royal Blue"
-                    className="w-full px-4 py-3 rounded-2xl text-sm bg-slate-900/90 border border-white/10 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50 transition-all font-medium"
-                  />
-                </Field>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Field label="Product Name *">
+                    <input
+                      name="name"
+                      required
+                      value={form.name}
+                      onChange={set}
+                      placeholder="e.g. Royal Banarasi Silk Sherwani"
+                      className="w-full px-4 py-3 rounded-2xl text-sm bg-slate-900/90 border border-white/10 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50 transition-all font-medium"
+                    />
+                  </Field>
+
+                  <Field label="Product Code (SKU)">
+                    <div className="flex items-center gap-2">
+                      <input
+                        name="sku"
+                        value={form.sku}
+                        onChange={set}
+                        placeholder="e.g. OY-EF59-GBFK-0284"
+                        className="w-full px-4 py-3 rounded-2xl text-sm font-mono uppercase bg-slate-900/90 border border-white/10 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/50 transition-all font-medium"
+                      />
+                      <button
+                        type="button"
+                        onClick={generateSkuCode}
+                        title="Auto-generate formatted unique product SKU code"
+                        className="px-3.5 py-3 rounded-2xl bg-amber-400/10 border border-amber-400/30 text-amber-300 text-xs font-bold whitespace-nowrap hover:bg-amber-400/20 active:scale-95 transition-all flex items-center gap-1.5"
+                      >
+                        <span>⚡</span>
+                        <span className="hidden sm:inline">Generate</span>
+                      </button>
+                    </div>
+                  </Field>
+                </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   <Field label="Category *">
@@ -873,9 +911,16 @@ function ProductModal({
 
                   {/* Card Details */}
                   <div className="p-4 space-y-2 bg-slate-900/95">
-                    <p className="text-[11px] font-bold text-violet-400 uppercase tracking-wider">
-                      {displayCategoryName}
-                    </p>
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-[11px] font-bold text-violet-400 uppercase tracking-wider">
+                        {displayCategoryName}
+                      </p>
+                      {form.sku && (
+                        <span className="font-mono text-[10px] font-bold text-amber-300 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">
+                          SKU: {form.sku}
+                        </span>
+                      )}
+                    </div>
                     <h4 className="text-sm font-bold text-white line-clamp-1">
                       {form.name || "Product Title Goes Here"}
                     </h4>
@@ -1406,11 +1451,16 @@ function ProductsContent() {
                             </div>
                           )}
                         </div>
-                        <div className="min-w-0 max-w-xs sm:max-w-sm">
+                        <div className="min-w-0 max-w-xs sm:max-w-sm space-y-1">
                           <p className="text-sm font-semibold text-slate-100 line-clamp-1" title={p.name}>
                             {p.name}
                           </p>
-                          <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed mt-0.5" title={p.description}>
+                          {p.sku && (
+                            <span className="inline-block px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-400/10 text-amber-300 border border-amber-400/20">
+                              SKU: {p.sku}
+                            </span>
+                          )}
+                          <p className="text-xs text-slate-400 line-clamp-1 leading-relaxed" title={p.description}>
                             {p.description}
                           </p>
                         </div>

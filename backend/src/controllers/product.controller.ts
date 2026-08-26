@@ -143,6 +143,7 @@ export const createProduct = asyncHandler(
       isVisible,
       stock,
       tags,
+      sku,
     } = req.body as {
       name: string;
       description: string;
@@ -158,6 +159,7 @@ export const createProduct = asyncHandler(
       isVisible?: boolean;
       stock?: number;
       tags?: string[];
+      sku?: string;
     };
 
     if (!name || !description || !price || !category) {
@@ -175,9 +177,21 @@ export const createProduct = asyncHandler(
       "-" +
       Date.now();
 
+    const generateSku = () => {
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      const part = (len: number) =>
+        Array.from({ length: len }, () =>
+          chars.charAt(Math.floor(Math.random() * chars.length)),
+        ).join("");
+      return `OY-${part(4)}-${part(4)}-${Math.floor(1000 + Math.random() * 9000)}`;
+    };
+
+    const finalSku = sku && sku.trim() ? sku.trim().toUpperCase() : generateSku();
+
     const product = await Product.create({
       name,
       slug,
+      sku: finalSku,
       description,
       price,
       originalPrice,
@@ -213,6 +227,7 @@ export const updateProduct = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
     const updates = req.body as Partial<{
       name: string;
+      sku: string;
       description: string;
       price: number;
       originalPrice: number;
@@ -228,14 +243,18 @@ export const updateProduct = asyncHandler(
       tags: string[];
     }>;
 
+    if (updates.sku !== undefined) {
+      updates.sku = updates.sku ? updates.sku.trim().toUpperCase() : undefined;
+    }
+
     if (updates.name) {
       (updates as Record<string, unknown>).slug =
         updates.name
           .toLowerCase()
           .replace(/\s+/g, "-")
           .replace(/[^\w-]/g, "") +
-        "-" +
-        Date.now();
+          "-" +
+          Date.now();
     }
 
     if (updates.badge === "" || updates.badge === null) {

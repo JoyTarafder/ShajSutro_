@@ -32,6 +32,7 @@ interface ApiProduct {
   stock?: number;
   totalOrdered?: number;
   tags?: string[];
+  sku?: string;
 }
 
 interface ProductReviewItem {
@@ -61,6 +62,7 @@ function mapProduct(p: ApiProduct): Product {
     stock: p.stock,
     totalOrdered: p.totalOrdered,
     tags: p.tags,
+    sku: p.sku,
   };
 }
 
@@ -418,9 +420,17 @@ export default function ProductDetailPage() {
           <div className="flex flex-col gap-6 pt-2">
             {/* Name + rating */}
             <div>
-              <p className="text-xs font-semibold tracking-[0.15em] uppercase text-charcoal-400 mb-2">
-                {product.category}
-              </p>
+              <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
+                <p className="text-xs font-semibold tracking-[0.15em] uppercase text-charcoal-400">
+                  {product.category}
+                </p>
+                {product.sku && (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-charcoal-50 text-charcoal-700 border border-charcoal-200/80 shadow-xs">
+                    <span className="text-charcoal-400 font-sans text-[10px] font-bold uppercase tracking-wider">SKU:</span>
+                    <span>{product.sku}</span>
+                  </span>
+                )}
+              </div>
               <h1 className="text-3xl lg:text-4xl font-semibold text-charcoal-950 tracking-tight leading-tight">
                 {product.name}
               </h1>
