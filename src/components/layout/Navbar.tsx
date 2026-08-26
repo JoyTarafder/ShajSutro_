@@ -89,7 +89,9 @@ function CopyPromoButton({ code }: { code: string }) {
       className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] font-mono font-bold bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100 transition-all cursor-pointer shadow-xs active:scale-95 shrink-0"
       title="Click to copy promo code"
     >
-      <span className="text-[10px] uppercase font-sans font-bold text-amber-700">Code:</span>
+      <span className="text-[10px] uppercase font-sans font-bold text-amber-700">
+        Code:
+      </span>
       <span className="tracking-wider text-amber-950 font-black">{code}</span>
       <span className="text-[10px] font-sans font-bold ml-1 text-violet-700">
         {copied ? "✓ Copied!" : "📋 Copy"}
@@ -141,7 +143,9 @@ export default function Navbar() {
         if (!j?.success || !Array.isArray(j?.data)) return;
         const normalized = j.data
           .map((cat: unknown) => normalizeCategory(cat))
-          .filter((cat: NavCategory | null): cat is NavCategory => cat !== null);
+          .filter(
+            (cat: NavCategory | null): cat is NavCategory => cat !== null,
+          );
         setCategories(normalized);
       })
       .catch(() => {});
@@ -149,7 +153,8 @@ export default function Navbar() {
 
   // ── Auth & Avatar ──
   const syncUserAuth = () => {
-    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("token") : null;
     if (token) {
       setIsLoggedIn(true);
       fetch(`${getApiBase()}/api/auth/me`, {
@@ -160,7 +165,9 @@ export default function Navbar() {
           if (d?.data) {
             setUserInitial((d.data.name ?? "U").charAt(0).toUpperCase());
             const userId = d.data.id || d.data._id;
-            const savedAvatar = userId ? localStorage.getItem(`user_avatar_${userId}`) : null;
+            const savedAvatar = userId
+              ? localStorage.getItem(`user_avatar_${userId}`)
+              : null;
             setAvatarImg(savedAvatar);
           }
         })
@@ -543,12 +550,16 @@ export default function Navbar() {
                   <div className="absolute right-0 mt-3 w-80 sm:w-96 bg-white rounded-[1.75rem] border border-charcoal-150 shadow-2xl p-4 sm:p-5 z-50 animate-in fade-in zoom-in-95 duration-200 ring-1 ring-black/5">
                     <div className="flex items-center justify-between pb-3.5 mb-3 border-b border-charcoal-100">
                       <div className="flex items-center gap-2">
-                        <span className="flex items-center justify-center w-7 h-7 rounded-xl bg-warm-100 text-charcoal-900 text-xs font-bold">🔔</span>
+                        <span className="flex items-center justify-center w-7 h-7 rounded-xl bg-warm-100 text-charcoal-900 text-xs font-bold">
+                          🔔
+                        </span>
                         <div>
                           <h3 className="text-xs font-bold text-charcoal-950">
                             Notifications & Offers
                           </h3>
-                          <p className="text-[10px] text-charcoal-400 font-light">{notifications.length} active updates</p>
+                          <p className="text-[10px] text-charcoal-400 font-light">
+                            {notifications.length} active updates
+                          </p>
                         </div>
                       </div>
                       <button
@@ -561,16 +572,29 @@ export default function Navbar() {
 
                     {notifications.length === 0 ? (
                       <div className="py-8 text-center text-charcoal-400">
-                        <span className="text-3xl block mb-1.5 opacity-80">🎁</span>
-                        <p className="text-xs font-bold text-charcoal-700">No active offers</p>
-                        <p className="text-[11px] text-charcoal-400 mt-0.5 font-light">New announcements will appear here</p>
+                        <span className="text-3xl block mb-1.5 opacity-80">
+                          🎁
+                        </span>
+                        <p className="text-xs font-bold text-charcoal-700">
+                          No active offers
+                        </p>
+                        <p className="text-[11px] text-charcoal-400 mt-0.5 font-light">
+                          New announcements will appear here
+                        </p>
                       </div>
                     ) : (
                       <div className="space-y-2.5 max-h-[380px] overflow-y-auto pr-1">
                         {notifications.map((n) => {
-                          const displayTitle = n.title?.trim() || "Special Offer & Announcement";
+                          const displayTitle =
+                            n.title?.trim() || "Special Offer & Announcement";
                           const displayMessage = n.message?.trim() || "";
-                          const code = n.promoCode?.trim() || (displayMessage ? (displayMessage.match(/\b([A-Z0-9]{4,15})\b/i)?.[1]?.toUpperCase() ?? null) : null);
+                          const code =
+                            n.promoCode?.trim() ||
+                            (displayMessage
+                              ? (displayMessage
+                                  .match(/\b([A-Z0-9]{4,15})\b/i)?.[1]
+                                  ?.toUpperCase() ?? null)
+                              : null);
 
                           return (
                             <div
@@ -616,7 +640,9 @@ export default function Navbar() {
                                         href={n.link}
                                         target="_blank"
                                         rel="noreferrer"
-                                        onClick={() => setNotifDropdownOpen(false)}
+                                        onClick={() =>
+                                          setNotifDropdownOpen(false)
+                                        }
                                         className="inline-flex items-center gap-1 text-[11px] font-bold text-charcoal-950 hover:text-accent-600 bg-white border border-charcoal-200 px-3 py-1 rounded-xl transition-all shadow-xs"
                                       >
                                         <span>View Offer</span>
@@ -625,7 +651,9 @@ export default function Navbar() {
                                     ) : (
                                       <Link
                                         href={n.link}
-                                        onClick={() => setNotifDropdownOpen(false)}
+                                        onClick={() =>
+                                          setNotifDropdownOpen(false)
+                                        }
                                         className="inline-flex items-center gap-1 text-[11px] font-bold text-charcoal-950 hover:text-accent-600 bg-white border border-charcoal-200 px-3 py-1 rounded-xl transition-all shadow-xs"
                                       >
                                         <span>View Offer</span>

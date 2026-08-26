@@ -14,7 +14,14 @@ interface ApiProduct {
   name: string;
   price: number;
   originalPrice?: number;
-  category: { _id: string; name: string; slug: string } | string;
+  category:
+    | {
+        _id: string;
+        name: string;
+        slug: string;
+        parent?: { _id: string; name: string; slug: string } | string;
+      }
+    | string;
   images: string[];
   sizes: string[];
   colors: string[];
@@ -28,22 +35,46 @@ interface ApiProduct {
   tags?: string[];
 }
 
+interface NavSubCategory {
+  _id: string;
+  name: string;
+  slug: string;
+  image?: string;
+  productCount?: number;
+}
+
 interface NavCategory {
   _id: string;
   name: string;
   slug: string;
   productCount: number;
+  subcategories?: NavSubCategory[];
 }
 
-function mapProduct(p: ApiProduct): Product {
-  const catSlug =
-    typeof p.category === "object" ? p.category.slug : p.category;
+interface ShopProduct extends Product {
+  parentCategorySlug?: string;
+}
+
+function mapProduct(p: ApiProduct): ShopProduct {
+  let catSlug = "";
+  let parentSlug: string | undefined = undefined;
+
+  if (typeof p.category === "object" && p.category) {
+    catSlug = p.category.slug || "";
+    if (p.category.parent && typeof p.category.parent === "object") {
+      parentSlug = p.category.parent.slug;
+    }
+  } else if (typeof p.category === "string") {
+    catSlug = p.category;
+  }
+
   return {
     id: p._id,
     name: p.name,
     price: p.price,
     originalPrice: p.originalPrice,
     category: catSlug,
+    parentCategorySlug: parentSlug,
     images: p.images,
     sizes: p.sizes,
     colors: p.colors,
@@ -56,6 +87,32 @@ function mapProduct(p: ApiProduct): Product {
     totalOrdered: p.totalOrdered,
     tags: p.tags,
   };
+}
+
+function getProductCategorySlugs(p: ShopProduct, cats: NavCategory[]) {
+  const directSlug = (p.category || "").toLowerCase();
+  let parentSlug = p.parentCategorySlug ? p.parentCategorySlug.toLowerCase() : undefined;
+
+  if (!parentSlug) {
+    for (const c of cats) {
+      if (c.slug.toLowerCase() === directSlug) {
+        break;
+      }
+      if (
+        c.subcategories?.some(
+          (s) =>
+            s.slug.toLowerCase() === directSlug ||
+            s._id === directSlug ||
+            s.name.toLowerCase() === directSlug,
+        )
+      ) {
+        parentSlug = c.slug.toLowerCase();
+        break;
+      }
+    }
+  }
+
+  return { directSlug, parentSlug };
 }
 
 const SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
@@ -90,27 +147,38 @@ function ShopContent() {
   const initialCategory = searchParams.get("category") ?? "";
   const initialBadge = searchParams.get("badge") ?? "";
 
-  // ── Filter state ──
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    initialCategory ? [initialCategory] : []
-  );
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000]);
-  const [sortBy, setSortBy] = useState<SortOption>("newest");
-  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
-
   // ── Data state ──
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<NavCategory[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Reset filters when URL category/badge changes
+  // Derive max price from current products for the range slider
+  const maxPrice = useMemo(() => {
+    if (allProducts.length === 0) return 25000;
+    const highest = Math.max(...allProducts.map((p) => p.price));
+    return Math.max(5000, Math.ceil(highest / 1000) * 1000);
+  }, [allProducts]);
+
+  // ── Filter state ──
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    initialCategory ? [initialCategory] : []
+  );
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 25000]);
+  const [sortBy, setSortBy] = useState<SortOption>("newest");
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+
+  // Reset filters when URL category/badge changes or allProducts load
   useEffect(() => {
     setSelectedCategories(initialCategory ? [initialCategory] : []);
     setSelectedSizes([]);
-    setPriceRange([0, 5000]);
     setSortBy("newest");
-  }, [initialCategory, initialBadge]);
+    if (allProducts.length > 0) {
+      const highest = Math.max(...allProducts.map((p) => p.price));
+      const dynamicMax = Math.max(5000, Math.ceil(highest / 1000) * 1000);
+      setPriceRange([0, dynamicMax]);
+    }
+  }, [initialCategory, initialBadge, allProducts]);
 
   // Fetch categories for the filter panel
   useEffect(() => {
@@ -130,13 +198,23 @@ function ShopContent() {
       .then((r) => r.json())
       .then((j) => {
         if (j.success && Array.isArray(j.data) && j.data.length > 0) {
-          setAllProducts((j.data as ApiProduct[]).map(mapProduct));
+          const prods = (j.data as ApiProduct[]).map(mapProduct);
+          setAllProducts(prods);
+          const highest = Math.max(...prods.map((p) => p.price));
+          const dynamicMax = Math.max(5000, Math.ceil(highest / 1000) * 1000);
+          setPriceRange([0, dynamicMax]);
         } else {
           setAllProducts(fallbackProducts);
+          const highest = Math.max(...fallbackProducts.map((p) => p.price));
+          const dynamicMax = Math.max(5000, Math.ceil(highest / 1000) * 1000);
+          setPriceRange([0, dynamicMax]);
         }
       })
       .catch(() => {
         setAllProducts(fallbackProducts);
+        const highest = Math.max(...fallbackProducts.map((p) => p.price));
+        const dynamicMax = Math.max(5000, Math.ceil(highest / 1000) * 1000);
+        setPriceRange([0, dynamicMax]);
       })
       .finally(() => setLoading(false));
   }, [initialBadge]);
@@ -146,7 +224,14 @@ function ShopContent() {
     let list = [...allProducts];
 
     if (selectedCategories.length > 0) {
-      list = list.filter((p) => selectedCategories.includes(p.category));
+      const selectedLower = selectedCategories.map((c) => c.toLowerCase());
+      list = list.filter((p) => {
+        const { directSlug, parentSlug } = getProductCategorySlugs(p, categories);
+        return (
+          selectedLower.includes(directSlug) ||
+          (parentSlug ? selectedLower.includes(parentSlug) : false)
+        );
+      });
     }
 
     if (selectedSizes.length > 0) {
@@ -173,7 +258,7 @@ function ShopContent() {
     }
 
     return list;
-  }, [allProducts, selectedCategories, selectedSizes, priceRange, sortBy]);
+  }, [allProducts, selectedCategories, selectedSizes, priceRange, sortBy, categories]);
 
   const toggleCategory = (cat: string) => {
     setSelectedCategories((prev) =>
@@ -204,7 +289,7 @@ function ShopContent() {
   const clearFilters = () => {
     setSelectedCategories([]);
     setSelectedSizes([]);
-    setPriceRange([0, 5000]);
+    setPriceRange([0, maxPrice]);
     setSortBy("newest");
   };
 
@@ -212,13 +297,7 @@ function ShopContent() {
     selectedCategories.length > 0 ||
     selectedSizes.length > 0 ||
     priceRange[0] > 0 ||
-    priceRange[1] < 5000;
-
-  // Derive max price from current products for the range slider
-  const maxPrice = useMemo(
-    () => Math.max(5000, ...allProducts.map((p) => p.price)),
-    [allProducts]
-  );
+    priceRange[1] < maxPrice;
 
   const activeFiltersCount =
     selectedCategories.length +
@@ -233,45 +312,101 @@ function ShopContent() {
           <h2 className="text-xs font-bold text-emerald-950 mb-3.5 tracking-wider uppercase">
             Categories
           </h2>
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             {categories.map((cat) => {
               const isSelected = selectedCategories.includes(cat.slug);
+              const parentProductCount = allProducts.filter((p) => {
+                const { directSlug, parentSlug } = getProductCategorySlugs(p, categories);
+                return directSlug === cat.slug.toLowerCase() || parentSlug === cat.slug.toLowerCase();
+              }).length;
+
               return (
-                <button
-                  key={cat._id}
-                  type="button"
-                  onClick={() => toggleCategory(cat.slug)}
-                  className={`w-full flex items-center justify-between rounded-xl px-3 py-2 border transition-all duration-200 ${
-                    isSelected
-                      ? "border-emerald-300 bg-emerald-500/10 text-emerald-950 font-semibold"
-                      : "border-transparent text-emerald-900/70 hover:border-emerald-100 hover:bg-emerald-50/30"
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <span
-                      className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${
-                        isSelected
-                          ? "bg-emerald-600 border-emerald-600 shadow-xs"
-                          : "border-emerald-200 bg-white"
-                      }`}
-                      aria-hidden="true"
-                    >
-                      {isSelected && (
-                        <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3.5} d="M5 13l4 4L19 7" />
-                        </svg>
-                      )}
+                <div key={cat._id} className="space-y-1">
+                  <button
+                    type="button"
+                    onClick={() => toggleCategory(cat.slug)}
+                    className={`w-full flex items-center justify-between rounded-xl px-3 py-2 border transition-all duration-200 ${
+                      isSelected
+                        ? "border-emerald-300 bg-emerald-500/10 text-emerald-950 font-semibold shadow-xs"
+                        : "border-transparent text-emerald-900/70 hover:border-emerald-100 hover:bg-emerald-50/30"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span
+                        className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${
+                          isSelected
+                            ? "bg-emerald-600 border-emerald-600 shadow-xs"
+                            : "border-emerald-200 bg-white"
+                        }`}
+                        aria-hidden="true"
+                      >
+                        {isSelected && (
+                          <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3.5} d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </span>
+                      <span className="text-xs font-semibold truncate">
+                        {cat.name}
+                      </span>
+                    </div>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                      isSelected ? "bg-emerald-600/15 text-emerald-900 font-bold" : "bg-emerald-100/50 text-emerald-700"
+                    }`}>
+                      {parentProductCount}
                     </span>
-                    <span className="text-xs font-medium truncate">
-                      {cat.name}
-                    </span>
-                  </div>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                    isSelected ? "bg-emerald-600/15 text-emerald-900" : "bg-emerald-100/50 text-emerald-700"
-                  }`}>
-                    {cat.productCount}
-                  </span>
-                </button>
+                  </button>
+
+                  {/* Subcategories (if any) */}
+                  {cat.subcategories && cat.subcategories.length > 0 && (
+                    <div className="ml-5 pl-2.5 border-l-2 border-emerald-200/60 space-y-1 pt-0.5">
+                      {cat.subcategories.map((sub) => {
+                        const isSubSelected = selectedCategories.includes(sub.slug);
+                        const subProductCount = allProducts.filter((p) => {
+                          const { directSlug } = getProductCategorySlugs(p, categories);
+                          return directSlug === sub.slug.toLowerCase();
+                        }).length;
+
+                        return (
+                          <button
+                            key={sub._id}
+                            type="button"
+                            onClick={() => toggleCategory(sub.slug)}
+                            className={`w-full flex items-center justify-between rounded-lg px-2.5 py-1.5 border transition-all duration-200 ${
+                              isSubSelected
+                                ? "border-emerald-300 bg-emerald-500/15 text-emerald-950 font-bold"
+                                : "border-transparent text-emerald-900/65 hover:bg-emerald-50/50 hover:text-emerald-950"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span
+                                className={`w-3.5 h-3.5 rounded border flex items-center justify-center transition-all ${
+                                  isSubSelected
+                                    ? "bg-emerald-600 border-emerald-600"
+                                    : "border-emerald-200 bg-white"
+                                }`}
+                              >
+                                {isSubSelected && (
+                                  <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3.5} d="M5 13l4 4L19 7" />
+                                  </svg>
+                                )}
+                              </span>
+                              <span className="text-[11px] font-medium truncate">
+                                {sub.name}
+                              </span>
+                            </div>
+                            <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-medium ${
+                              isSubSelected ? "bg-emerald-600/25 text-emerald-950 font-bold" : "bg-emerald-100/40 text-emerald-600"
+                            }`}>
+                              {subProductCount}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               );
             })}
           </div>
@@ -379,11 +514,28 @@ function ShopContent() {
     </div>
   );
 
-  const headingText = initialBadge
-    ? initialBadge
-    : initialCategory
-    ? initialCategory.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
-    : "All Products";
+  const getCategoryLabel = (slug: string) => {
+    const parent = categories.find(
+      (c) => c.slug.toLowerCase() === slug.toLowerCase(),
+    );
+    if (parent) return parent.name;
+    for (const c of categories) {
+      const sub = c.subcategories?.find(
+        (s) => s.slug.toLowerCase() === slug.toLowerCase(),
+      );
+      if (sub) return `${c.name} › ${sub.name}`;
+    }
+    return slug
+      .split("-")
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(" ");
+  };
+
+  const headingText = useMemo(() => {
+    if (initialBadge) return initialBadge;
+    if (!initialCategory) return "All Products";
+    return getCategoryLabel(initialCategory);
+  }, [initialBadge, initialCategory, categories]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f5fff9] via-[#eef9f2] to-white relative overflow-hidden">
@@ -467,7 +619,7 @@ function ShopContent() {
                     onClick={() => toggleCategory(cat)}
                     className="group flex items-center gap-2 px-4 py-2 bg-emerald-950 text-white text-xs font-medium rounded-full transition-all duration-300 hover:bg-emerald-800 hover:scale-105 active:scale-95 shadow-soft hover:shadow-soft-lg"
                   >
-                    <span className="capitalize">{cat}</span>
+                    <span>{getCategoryLabel(cat)}</span>
                     <span className="bg-white/20 rounded-full p-0.5 group-hover:bg-white/30 transition-colors">
                       <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
