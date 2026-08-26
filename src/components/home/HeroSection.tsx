@@ -132,7 +132,7 @@ export default function HeroSection() {
                 src="https://zaribanaras.com/cdn/shop/products/BF-183E.jpg?v=1756359508"
                 alt="Woman wearing elegant luxury Saree"
                 fill
-                className="object-cover transition-transform duration-1000 ease-premium hover:scale-105"
+                className="object-cover object-top transition-transform duration-1000 ease-premium hover:scale-105"
                 priority
                 sizes="(max-width: 1024px) 40vw, 25vw"
               />
@@ -150,7 +150,7 @@ export default function HeroSection() {
                   src="https://www.yellowclothing.net/cdn/shop/files/DSC09746_bda242ed-87fc-4756-9bd1-53ef63dbaead.jpg?v=1784004255"
                   alt="Man wearing traditional Panjabi"
                   fill
-                  className="object-cover transition-transform duration-1000 ease-premium hover:scale-105"
+                  className="object-cover object-top transition-transform duration-1000 ease-premium hover:scale-105"
                   sizes="(max-width: 1024px) 40vw, 25vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
@@ -164,7 +164,7 @@ export default function HeroSection() {
                   src="https://i.pinimg.com/originals/61/ae/35/61ae35b0305e8e20a3d4127530049bb4.jpg"
                   alt="Kids traditional and luxury wear"
                   fill
-                  className="object-cover transition-transform duration-1000 ease-premium hover:scale-105"
+                  className="object-cover object-top transition-transform duration-1000 ease-premium hover:scale-105"
                   sizes="(max-width: 1024px) 40vw, 25vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />

@@ -137,18 +137,18 @@ export default function PromoGrid() {
             {mainItem && (
               <Link
                 href={mainItem.href}
-                className="group relative overflow-hidden rounded-2xl aspect-[4/5] md:aspect-auto md:row-span-2 bg-warm-50 border border-charcoal-100/30 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col justify-end"
+                className="group relative overflow-hidden rounded-2xl min-h-[460px] sm:min-h-[520px] md:min-h-[640px] md:row-span-2 bg-warm-50 border border-charcoal-100/30 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col justify-end"
               >
                 <Image
                   src={mainItem.image}
                   alt={mainItem.title}
                   fill
-                  className="object-cover transition-transform duration-700 ease-premium group-hover:scale-105"
+                  className="object-cover object-top transition-transform duration-700 ease-premium group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 50vw"
                   priority
                 />
                 {/* Visual rich vignette overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/85 via-charcoal-950/30 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/90 via-charcoal-950/20 to-transparent" />
 
                 <div className="relative p-6 sm:p-8 z-10">
                   <p className="text-xs font-semibold text-accent-200 tracking-wider uppercase mb-1.5">
@@ -185,16 +185,16 @@ export default function PromoGrid() {
               <Link
                 key={item.id}
                 href={item.href}
-                className="group relative overflow-hidden rounded-2xl min-h-[260px] sm:aspect-video bg-warm-50 border border-charcoal-100/30 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col justify-end"
+                className="group relative overflow-hidden rounded-2xl min-h-[290px] sm:min-h-[305px] bg-warm-50 border border-charcoal-100/30 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col justify-end"
               >
                 <Image
                   src={item.image}
                   alt={item.title}
                   fill
-                  className="object-cover transition-transform duration-700 ease-premium group-hover:scale-105"
+                  className="object-cover object-top transition-transform duration-700 ease-premium group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 50vw"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/85 via-charcoal-950/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/90 via-charcoal-950/20 to-transparent" />
 
                 <div className="relative p-6 sm:p-8 z-10">
                   <h3 className="text-xl sm:text-2xl font-bold text-white mb-1.5 tracking-tight leading-tight">
