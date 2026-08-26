@@ -125,6 +125,12 @@ try {
 
 app.use("/uploads", express.static(uploadsPath));
 
+// ─── Global Request Logger ───────────────────────────────────────────────────
+app.use((req, _res, next) => {
+  console.log(`[REQ] ${req.method} ${req.originalUrl}`);
+  next();
+});
+
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get("/api/health", (_req, res) => {
   res.status(200).json({

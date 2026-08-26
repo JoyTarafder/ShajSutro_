@@ -9,8 +9,6 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { getApiBase } from "@/lib/apiBase";
 import { notifyError, notifyInfo, notifySuccess } from "@/lib/notify";
 
-const API = getApiBase();
-
 type View = "tabs" | "verify-email" | "forgot-password";
 
 export default function LoginPage() {
@@ -423,7 +421,7 @@ function LoginForm({
     }
     setLoading(true);
     try {
-      const res = await fetch(`${API}/api/auth/login`, {
+      const res = await fetch(`${getApiBase()}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -558,7 +556,7 @@ function RegisterForm({
     setLoading(true);
     try {
       const name = `${firstName} ${lastName}`.trim();
-      const res = await fetch(`${API}/api/auth/register`, {
+      const res = await fetch(`${getApiBase()}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
@@ -742,7 +740,7 @@ function FPStepEmail({
     }
     setLoading(true);
     try {
-      const res = await fetch(`${API}/api/auth/forgot-password`, {
+      const res = await fetch(`${getApiBase()}/api/auth/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -872,7 +870,7 @@ function FPStepOTP({
   const handleResend = async () => {
     setError("");
     try {
-      await fetch(`${API}/api/auth/forgot-password`, {
+      await fetch(`${getApiBase()}/api/auth/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -982,7 +980,7 @@ function FPStepNewPassword({
     }
     setLoading(true);
     try {
-      const res = await fetch(`${API}/api/auth/reset-password`, {
+      const res = await fetch(`${getApiBase()}/api/auth/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, code, newPassword }),
@@ -1124,7 +1122,7 @@ function VerifyEmailForm({
     }
     setLoading(true);
     try {
-      const res = await fetch(`${API}/api/auth/verify-email`, {
+      const res = await fetch(`${getApiBase()}/api/auth/verify-email`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, code }),
@@ -1151,7 +1149,7 @@ function VerifyEmailForm({
     setError("");
     setSuccess("");
     try {
-      const res = await fetch(`${API}/api/auth/resend-verification`, {
+      const res = await fetch(`${getApiBase()}/api/auth/resend-verification`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),

@@ -34,11 +34,30 @@ export const register = asyncHandler(
     }
 
     const normalizedEmail = email.toLowerCase().trim();
+    console.log(`[REGISTER REQUEST RECEIVED] Name: "${name}", Email: "${normalizedEmail}"`);
 
     // Check if verified user already exists in main database
     const existing = await User.findOne({ email: normalizedEmail });
     if (existing) {
-      throw new AppError("An account with that email already exists", 400);
+      if (!existing.isEmailVerified) {
+        const code = generateVerificationCode();
+        existing.verificationCode = code;
+        existing.verificationCodeExpiry = new Date(Date.now() + 10 * 60 * 1000);
+        existing.verificationAttempts = 0;
+        await existing.save();
+        await sendVerificationEmail(normalizedEmail, code);
+        res.status(200).json({
+          success: true,
+          message: "Verification code sent to your email. Please verify to complete account creation.",
+          data: {
+            name: existing.name,
+            email: normalizedEmail,
+            isEmailVerified: false,
+          },
+        });
+        return;
+      }
+      throw new AppError("An account with that email already exists. Please sign in.", 400);
     }
 
     const code = generateVerificationCode();
@@ -440,22 +459,30 @@ export const resendVerificationCode = asyncHandler(
     if (!email) throw new AppError("Please provide an email", 400);
 
     const normalizedEmail = email.toLowerCase().trim();
+    console.log(`[RESEND VERIFICATION REQUEST] Email: "${normalizedEmail}"`);
 
     const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser && existingUser.isEmailVerified) {
-      throw new AppError("Email is already verified", 400);
-    }
-
-    const pending = await PendingUser.findOne({ email: normalizedEmail });
-    if (!pending) {
-      throw new AppError("No pending registration found. Please sign up first.", 404);
+      throw new AppError("Email is already verified. Please sign in.", 400);
     }
 
     const code = generateVerificationCode();
-    pending.verificationCode = code;
-    pending.verificationCodeExpiry = new Date(Date.now() + 10 * 60 * 1000);
-    pending.verificationAttempts = 0;
-    await pending.save();
+    const expiry = new Date(Date.now() + 10 * 60 * 1000);
+
+    const pending = await PendingUser.findOne({ email: normalizedEmail });
+    if (pending) {
+      pending.verificationCode = code;
+      pending.verificationCodeExpiry = expiry;
+      pending.verificationAttempts = 0;
+      await pending.save();
+    } else if (existingUser && !existingUser.isEmailVerified) {
+      existingUser.verificationCode = code;
+      existingUser.verificationCodeExpiry = expiry;
+      existingUser.verificationAttempts = 0;
+      await existingUser.save();
+    } else {
+      throw new AppError("No registration found for this email. Please sign up first.", 404);
+    }
 
     try {
       await sendVerificationEmail(normalizedEmail, code);
@@ -478,14 +505,23 @@ export const forgotPassword = asyncHandler(
 
     if (!email) throw new AppError("Please provide an email address", 400);
 
-    const user = await User.findOne({ email: email.toLowerCase().trim() });
-    // Always respond success to prevent email enumeration
+    const normalizedEmail = email.toLowerCase().trim();
+    console.log(`[FORGOT PASSWORD REQUEST] Email: "${normalizedEmail}"`);
+
+    const user = await User.findOne({ email: normalizedEmail });
+
     if (!user) {
-      res.status(200).json({
-        success: true,
-        message: "If that email exists, a reset code has been sent.",
-      });
-      return;
+      const pending = await PendingUser.findOne({ email: normalizedEmail });
+      if (pending) {
+        throw new AppError(
+          "This account is pending email verification. Please verify your email from the Sign Up screen first.",
+          400
+        );
+      }
+      throw new AppError(
+        "No account found with this email address. Please check your spelling or create a new account.",
+        404
+      );
     }
 
     const code = generateVerificationCode();
@@ -493,6 +529,8 @@ export const forgotPassword = asyncHandler(
     user.passwordResetCodeExpiry = new Date(Date.now() + 10 * 60 * 1000);
     user.passwordResetAttempts = 0;
     await user.save();
+
+    console.log(`[AUTH RESET PASSWORD OTP] Generated code for ${user.email}: ${code}`);
 
     try {
       await sendPasswordResetEmail(user.email, code);

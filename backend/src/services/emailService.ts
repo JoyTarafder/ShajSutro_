@@ -30,28 +30,25 @@ async function sendMailWithAntiSpam(options: {
   text?: string;
   isBroadcast?: boolean;
 }): Promise<void> {
-  const senderEmail = process.env.EMAIL_USER || "info@shajsutro.com";
+  const senderEmail = (process.env.EMAIL_USER || "shajsutro@gmail.com").trim();
   const senderName = process.env.EMAIL_FROM_NAME || "ShajSutro";
   const fromHeader = `"${senderName}" <${senderEmail}>`;
 
   const plainText = options.text || stripHtmlToText(options.html);
 
   const headers: Record<string, string> = {
-    "X-Mailer": "ShajSutro Transactional Mailer v1.0",
-    "X-Priority": "3",
-    "X-MSMail-Priority": "Normal",
-    "Importance": "Normal",
-    "Auto-Submitted": "auto-generated",
+    "X-Mailer": "ShajSutro Notification System",
+    "X-Priority": "1",
+    "Importance": "High",
   };
 
   if (options.isBroadcast) {
-    headers["List-Unsubscribe"] = `<mailto:unsubscribe@shajsutro.com?subject=unsubscribe>, <https://shajsutro.com/unsubscribe>`;
-    headers["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click";
+    headers["List-Unsubscribe"] = `<mailto:${senderEmail}?subject=unsubscribe>`;
     headers["Precedence"] = "bulk";
   }
 
   try {
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: fromHeader,
       replyTo: senderEmail,
       to: options.to,
@@ -60,6 +57,9 @@ async function sendMailWithAntiSpam(options: {
       html: options.html,
       headers,
     });
+    console.log(
+      `[Email Service Success] Successfully sent to: ${options.to} | Message ID: ${info?.messageId}`
+    );
   } catch (err: any) {
     console.error(
       `[Email Service Error] Failed to dispatch email to ${options.to}:`,
