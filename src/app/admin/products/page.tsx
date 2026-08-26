@@ -642,24 +642,24 @@ function ProductModal({
                     </div>
                   </Field>
 
-                  {/* Badges / Visibility Toggles */}
-                  <div className="flex flex-col justify-end gap-2">
-                    <Toggle
-                      checked={form.inStock}
-                      onChange={() => setForm((p) => ({ ...p, inStock: !p.inStock }))}
-                      label="In Stock Status"
-                    />
-                    <Toggle
-                      checked={form.isFeatured}
-                      onChange={() => setForm((p) => ({ ...p, isFeatured: !p.isFeatured }))}
-                      label="Featured on Homepage"
-                    />
-                    <Toggle
-                      checked={form.isVisible}
-                      onChange={() => setForm((p) => ({ ...p, isVisible: !p.isVisible }))}
-                      label="Visible in Catalog"
-                    />
-                  </div>
+                    {/* Badges / Visibility Toggles */}
+                    <div className="flex flex-col justify-end gap-2">
+                      <Toggle
+                        checked={form.inStock}
+                        onChange={() => setForm((p) => ({ ...p, inStock: !p.inStock }))}
+                        label="In Stock Status"
+                      />
+                      <Toggle
+                        checked={form.isFeatured}
+                        onChange={() => setForm((p) => ({ ...p, isFeatured: !p.isFeatured }))}
+                        label="Show in Premium Product Gallery (Carousel)"
+                      />
+                      <Toggle
+                        checked={form.isVisible}
+                        onChange={() => setForm((p) => ({ ...p, isVisible: !p.isVisible }))}
+                        label="Visible in Catalog"
+                      />
+                    </div>
                 </div>
               </div>
 
@@ -939,6 +939,7 @@ function ProductsContent() {
   const filterCategoryId = searchParams.get("category");
   const filterCategoryName = searchParams.get("categoryName");
 
+  const [filterFeatured, setFilterFeatured] = useState<boolean | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
@@ -965,6 +966,7 @@ function ProductsContent() {
     try {
       const params = new URLSearchParams({ page: String(page), limit: "12" });
       if (filterCategoryId) params.set("category", filterCategoryId);
+      if (filterFeatured !== null) params.set("isFeatured", String(filterFeatured));
       const res = await apiFetch<{
         success: boolean;
         data: Product[];
@@ -983,7 +985,7 @@ function ProductsContent() {
     } finally {
       setLoading(false);
     }
-  }, [apiFetch, page, filterCategoryId]);
+  }, [apiFetch, page, filterCategoryId, filterFeatured]);
 
   const fetchCategories = useCallback(async () => {
     setCategoriesLoading(true);
@@ -1066,6 +1068,29 @@ function ProductsContent() {
     }
   };
 
+  const toggleFeatured = async (product: Product) => {
+    const nextVal = !product.isFeatured;
+    try {
+      await apiFetch(`/products/${product._id}`, {
+        method: "PUT",
+        body: JSON.stringify({ isFeatured: nextVal }),
+      });
+      setProducts((prev) =>
+        prev.map((p) =>
+          p._id === product._id ? { ...p, isFeatured: nextVal } : p,
+        ),
+      );
+      showToast(
+        "success",
+        nextVal
+          ? `Added "${product.name}" to Premium Product Gallery`
+          : `Removed "${product.name}" from Premium Product Gallery`,
+      );
+    } catch (e: unknown) {
+      showToast("error", e instanceof Error ? e.message : "Update failed");
+    }
+  };
+
   const toggleVisibility = async (product: Product) => {
     try {
       await apiFetch(`/products/${product._id}`, {
@@ -1092,7 +1117,7 @@ function ProductsContent() {
     <div className="p-4 sm:p-8 space-y-6">
       {toast && <Toast msg={toast.msg} type={toast.type} />}
 
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           {filterCategoryName && (
             <div className="flex items-center gap-2 mb-1">
@@ -1108,34 +1133,75 @@ function ProductsContent() {
               </span>
             </div>
           )}
-          <p className="text-sm text-slate-400 font-medium">
-            {pagination.total} product{pagination.total !== 1 ? "s" : ""}
-            {filterCategoryName ? ` in "${filterCategoryName}"` : " in store"}
-          </p>
+          <div className="flex items-center gap-3">
+            <p className="text-sm text-slate-400 font-medium">
+              {pagination.total} product{pagination.total !== 1 ? "s" : ""}
+              {filterCategoryName ? ` in "${filterCategoryName}"` : " in store"}
+            </p>
+            {filterFeatured && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-400/15 text-amber-300 border border-amber-400/30">
+                <span>✨</span> Filtered: Premium Gallery
+              </span>
+            )}
+          </div>
         </div>
-        <button
-          onClick={() => setModalProduct("new")}
-          className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl text-sm font-bold hover:from-violet-700 hover:to-indigo-700 transition-all hover:shadow-lg hover:shadow-violet-300/40 hover:-translate-y-0.5"
-        >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Quick filter tabs */}
+          <div className="flex items-center bg-white/[0.03] border border-white/10 rounded-xl p-1">
+            <button
+              onClick={() => {
+                setFilterFeatured(null);
+                setPage(1);
+              }}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                filterFeatured === null
+                  ? "bg-violet-600 text-white shadow-xs"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              All Products
+            </button>
+            <button
+              onClick={() => {
+                setFilterFeatured(true);
+                setPage(1);
+              }}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                filterFeatured === true
+                  ? "bg-amber-400 text-slate-950 shadow-xs"
+                  : "text-amber-300/80 hover:text-amber-300 hover:bg-amber-400/10"
+              }`}
+            >
+              <span>✨</span>
+              <span>Premium Gallery</span>
+            </button>
+          </div>
+
+          <button
+            onClick={() => setModalProduct("new")}
+            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl text-sm font-bold hover:from-violet-700 hover:to-indigo-700 transition-all hover:shadow-lg hover:shadow-violet-300/40 hover:-translate-y-0.5"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2.5}
-              d="M12 4.5v15m7.5-7.5h-15"
-            />
-          </svg>
-          Add Product
-        </button>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+            Add Product
+          </button>
+        </div>
       </div>
 
       <div
-        className="rounded-2xl  overflow-hidden"
+        className="rounded-2xl overflow-hidden"
         style={{
           background: "rgba(255,255,255,0.025)",
           border: "1px solid rgba(255,255,255,0.06)",
@@ -1160,13 +1226,22 @@ function ProductsContent() {
                 d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z"
               />
             </svg>
-            <p className="text-sm font-medium">No products yet</p>
-            <button
-              onClick={() => setModalProduct("new")}
-              className="mt-3 text-violet-400 text-sm hover:underline font-bold"
-            >
-              Add your first product -&gt;
-            </button>
+            <p className="text-sm font-medium">No products found</p>
+            {filterFeatured ? (
+              <button
+                onClick={() => setFilterFeatured(null)}
+                className="mt-3 text-amber-400 text-sm hover:underline font-bold"
+              >
+                Clear Premium Gallery filter
+              </button>
+            ) : (
+              <button
+                onClick={() => setModalProduct("new")}
+                className="mt-3 text-violet-400 text-sm hover:underline font-bold"
+              >
+                Add your first product -&gt;
+              </button>
+            )}
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -1180,7 +1255,7 @@ function ProductsContent() {
                     "Badge",
                     "Stock Qty",
                     "Orders",
-                    "Featured",
+                    "Premium Gallery",
                     "Visible",
                     "",
                   ].map((h) => (
@@ -1300,32 +1375,25 @@ function ProductsContent() {
                         {(p.totalOrdered ?? 0).toLocaleString()}
                       </span>
                     </td>
-                    {/* Featured */}
-                    <td className="px-5 py-4">
-                      {p.isFeatured ? (
-                        <span
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold"
-                          style={{
-                            background: "rgba(251,191,36,0.12)",
-                            color: "#fbbf24",
-                            border: "1px solid rgba(251,191,36,0.2)",
-                          }}
-                        >
-                          <svg
-                            className="w-3 h-3"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            aria-hidden="true"
-                          >
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
-                          Featured
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium text-slate-500 bg-white/[0.03] border border-white/5">
-                          Standard
-                        </span>
-                      )}
+                    {/* Premium Gallery Toggle */}
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <button
+                        type="button"
+                        onClick={() => toggleFeatured(p)}
+                        title={
+                          p.isFeatured
+                            ? "Click to remove from Premium Gallery"
+                            : "Click to add to Premium Gallery"
+                        }
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                          p.isFeatured
+                            ? "bg-amber-400/15 text-amber-300 border border-amber-400/30 hover:bg-amber-400/25 shadow-xs"
+                            : "text-slate-500 bg-white/[0.02] border border-white/5 hover:border-amber-400/30 hover:text-amber-300 hover:bg-amber-400/10"
+                        }`}
+                      >
+                        <span>{p.isFeatured ? "✨" : "+"}</span>
+                        <span>{p.isFeatured ? "In Gallery" : "Add to Gallery"}</span>
+                      </button>
                     </td>
                     {/* Visibility toggle */}
                     <td className="px-5 py-4">

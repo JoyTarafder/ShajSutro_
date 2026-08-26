@@ -194,6 +194,9 @@ export const getAdminProducts = asyncHandler(
       }
     }
     if (search) filter.$text = { $search: search };
+    if (req.query.isFeatured !== undefined) {
+      filter.isFeatured = req.query.isFeatured === "true";
+    }
 
     const [products, total] = await Promise.all([
       Product.find(filter)
