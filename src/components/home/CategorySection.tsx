@@ -344,11 +344,11 @@ export default function CategorySection() {
                           type="button"
                           onClick={(e) => handleQuickAdd(e, product)}
                           disabled={!product.inStock || addingId === product.id}
-                          className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-lg flex items-center justify-center gap-2 ${
+                          className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-md flex items-center justify-center gap-2 ${
                             addingId === product.id
-                              ? "bg-emerald-600 text-white"
+                              ? "bg-emerald-600 text-white shadow-emerald-900/30"
                               : product.inStock
-                              ? "bg-charcoal-950/95 hover:bg-charcoal-900 text-white backdrop-blur-md active:scale-95"
+                              ? "bg-emerald-700 hover:bg-emerald-800 text-white shadow-emerald-950/25 border border-emerald-600/40 backdrop-blur-md active:scale-95 hover:shadow-lg"
                               : "bg-charcoal-300 text-charcoal-600 cursor-not-allowed"
                           }`}
                         >
@@ -362,7 +362,7 @@ export default function CategorySection() {
                             </>
                           ) : product.inStock ? (
                             <>
-                              <svg className="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-3.5 h-3.5 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                               </svg>
                               <span>Quick Add</span>
