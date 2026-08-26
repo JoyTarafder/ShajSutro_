@@ -1,15 +1,17 @@
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
+import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import ContactMessage from "../models/ContactMessage";
 import User from "../models/User";
 import Order from "../models/Order";
 import Product from "../models/Product";
+import Category from "../models/Category";
 import JobApplication from "../models/JobApplication";
 import Subscriber from "../models/Subscriber";
 import { AppError } from "../middleware/error.middleware";
 import { sendBroadcastEmail } from "../services/emailService";
-import { AuthRequest } from "../types";
+import { AuthRequest, ICategoryDocument } from "../types";
 
 // ─── GET /api/admin/stats ─────────────────────────────────────────────────────
 
@@ -162,12 +164,44 @@ export const getAdminProducts = asyncHandler(
     const category = req.query.category as string | undefined;
 
     const filter: Record<string, unknown> = {};
-    if (category) filter.category = category;
+    if (category) {
+      if (mongoose.Types.ObjectId.isValid(category)) {
+        const childCats = await Category.find({ parent: category });
+        if (childCats.length > 0) {
+          filter.category = {
+            $in: [
+              new mongoose.Types.ObjectId(category),
+              ...childCats.map((c: ICategoryDocument) => c._id),
+            ],
+          };
+        } else {
+          filter.category = new mongoose.Types.ObjectId(category);
+        }
+      } else {
+        const cat = await Category.findOne({ slug: category });
+        if (cat) {
+          const childCats = await Category.find({ parent: cat._id });
+          if (childCats.length > 0) {
+            filter.category = {
+              $in: [cat._id, ...childCats.map((c: ICategoryDocument) => c._id)],
+            };
+          } else {
+            filter.category = cat._id;
+          }
+        } else {
+          filter.category = category;
+        }
+      }
+    }
     if (search) filter.$text = { $search: search };
 
     const [products, total] = await Promise.all([
       Product.find(filter)
-        .populate("category", "name slug")
+        .populate({
+          path: "category",
+          select: "name slug parent",
+          populate: { path: "parent", select: "name slug" },
+        })
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit),

@@ -8,13 +8,34 @@ import { Suspense, useCallback, useEffect, useState } from "react";
 
 // â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+interface SubCategory {
+  _id: string;
+  name: string;
+  slug: string;
+  image?: string;
+}
+
+interface Category {
+  _id: string;
+  name: string;
+  slug: string;
+  subcategories?: SubCategory[];
+}
+
 interface Product {
   _id: string;
   name: string;
   description: string;
   price: number;
   originalPrice?: number;
-  category: { _id: string; name: string } | string;
+  category:
+    | {
+        _id: string;
+        name: string;
+        slug?: string;
+        parent?: { _id: string; name: string; slug?: string } | string;
+      }
+    | string;
   images: string[];
   sizes: string[];
   colors: string[];
@@ -24,12 +45,6 @@ interface Product {
   isVisible: boolean;
   stock: number;
   totalOrdered: number;
-}
-
-interface Category {
-  _id: string;
-  name: string;
-  slug: string;
 }
 
 type ProductForm = {
@@ -157,6 +172,56 @@ function ProductModal({
   onClose: () => void;
   onSave: (data: Partial<Product>, id?: string) => Promise<void>;
 }) {
+  // Helper to determine initial parentCategoryId & subCategoryId
+  const resolveInitialCategories = () => {
+    if (!product) {
+      if (!defaultCategoryId) return { parentId: "", subId: "" };
+      const matchingParent = categories.find((c) => c._id === defaultCategoryId);
+      if (matchingParent) return { parentId: defaultCategoryId, subId: "" };
+      for (const cat of categories) {
+        const sub = cat.subcategories?.find((s) => s._id === defaultCategoryId);
+        if (sub) return { parentId: cat._id, subId: sub._id };
+      }
+      return { parentId: defaultCategoryId, subId: "" };
+    }
+
+    const prodCatId =
+      typeof product.category === "object" && product.category
+        ? product.category._id
+        : (product.category as string);
+
+    if (!prodCatId) return { parentId: "", subId: "" };
+
+    // 1. If product.category has parent populated
+    if (typeof product.category === "object" && product.category.parent) {
+      const parentId =
+        typeof product.category.parent === "object"
+          ? product.category.parent._id
+          : product.category.parent;
+      return { parentId, subId: prodCatId };
+    }
+
+    // 2. Direct match with a root/parent category
+    const parentMatch = categories.find((c) => c._id === prodCatId);
+    if (parentMatch) {
+      return { parentId: parentMatch._id, subId: "" };
+    }
+
+    // 3. Search in all subcategories of categories
+    for (const cat of categories) {
+      const subMatch = cat.subcategories?.find((s) => s._id === prodCatId);
+      if (subMatch) {
+        return { parentId: cat._id, subId: subMatch._id };
+      }
+    }
+
+    return { parentId: prodCatId, subId: "" };
+  };
+
+  const initialCats = resolveInitialCategories();
+  const [parentCatId, setParentCatId] = useState<string>(initialCats.parentId);
+  const [subCatId, setSubCatId] = useState<string>(initialCats.subId);
+
   const [form, setForm] = useState<ProductForm>(() =>
     product
       ? {
@@ -193,6 +258,23 @@ function ProductModal({
     setForm((p) => ({ ...p, [name]: value }));
   };
 
+  const handleParentCategoryChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const newParentId = e.target.value;
+    setParentCatId(newParentId);
+    setSubCatId("");
+    setForm((p) => ({ ...p, category: newParentId }));
+  };
+
+  const handleSubCategoryChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const newSubId = e.target.value;
+    setSubCatId(newSubId);
+    setForm((p) => ({ ...p, category: newSubId || parentCatId }));
+  };
+
   const toggleSizeTag = (size: string) => {
     const current = form.sizes.split(",").map((s) => s.trim()).filter(Boolean);
     const exists = current.includes(size);
@@ -212,8 +294,16 @@ function ProductModal({
     .map((s) => s.trim())
     .filter(Boolean);
 
-  const selectedCategoryName =
-    categories.find((c) => c._id === form.category)?.name || "Select Category";
+  const selectedParentCategory = categories.find((c) => c._id === parentCatId);
+  const availableSubcategories = selectedParentCategory?.subcategories || [];
+  const hasSubcategories = availableSubcategories.length > 0;
+  const selectedSubcategory = availableSubcategories.find(
+    (s) => s._id === subCatId,
+  );
+
+  const displayCategoryName = selectedSubcategory
+    ? `${selectedParentCategory?.name} › ${selectedSubcategory.name}`
+    : selectedParentCategory?.name || "Select Category";
 
   const numPrice = Number(form.price) || 0;
   const numOrig = Number(form.originalPrice) || 0;
@@ -224,6 +314,10 @@ function ProductModal({
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const effectiveCategory = subCatId || parentCatId;
+    if (!effectiveCategory) {
+      return;
+    }
     setSaving(true);
     try {
       await onSave(
@@ -234,7 +328,7 @@ function ProductModal({
           originalPrice: form.originalPrice
             ? Number(form.originalPrice)
             : undefined,
-          category: form.category,
+          category: effectiveCategory,
           images: form.images
             .split(",")
             .map((s) => s.trim())
@@ -366,23 +460,23 @@ function ProductModal({
                   />
                 </Field>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   <Field label="Category *">
                     <select
-                      name="category"
+                      name="parentCategory"
                       required
-                      value={form.category}
-                      onChange={set}
+                      value={parentCatId}
+                      onChange={handleParentCategoryChange}
                       disabled={categoriesLoading || categories.length === 0}
-                      className="w-full px-4 py-3 rounded-2xl text-sm bg-slate-900 border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500 disabled:opacity-60 font-medium cursor-pointer"
+                      className="w-full px-3.5 py-3 rounded-2xl text-xs sm:text-sm bg-slate-900 border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500 disabled:opacity-60 font-medium cursor-pointer"
                     >
                       {categoriesLoading ? (
                         <option value="" className="bg-slate-900 text-slate-100">
-                          Loading categories...
+                          Loading...
                         </option>
                       ) : categories.length === 0 ? (
                         <option value="" className="bg-slate-900 text-slate-100">
-                          No categories found
+                          No categories
                         </option>
                       ) : (
                         <>
@@ -390,8 +484,57 @@ function ProductModal({
                             Select Category...
                           </option>
                           {categories.map((c) => (
-                            <option key={c._id} value={c._id} className="bg-slate-900 text-slate-100">
+                            <option
+                              key={c._id}
+                              value={c._id}
+                              className="bg-slate-900 text-slate-100"
+                            >
                               {c.name}
+                            </option>
+                          ))}
+                        </>
+                      )}
+                    </select>
+                  </Field>
+
+                  <Field
+                    label={
+                      hasSubcategories
+                        ? `Sub-Category (${availableSubcategories.length})`
+                        : "Sub-Category"
+                    }
+                  >
+                    <select
+                      name="subCategory"
+                      value={subCatId}
+                      onChange={handleSubCategoryChange}
+                      disabled={!parentCatId || !hasSubcategories}
+                      className={`w-full px-3.5 py-3 rounded-2xl text-xs sm:text-sm bg-slate-900 border font-medium cursor-pointer transition-all ${
+                        !parentCatId || !hasSubcategories
+                          ? "border-white/5 opacity-40 cursor-not-allowed text-slate-500"
+                          : "border-white/10 text-slate-100 focus:border-violet-500 hover:border-white/20"
+                      }`}
+                    >
+                      {!parentCatId ? (
+                        <option value="" className="bg-slate-900 text-slate-400">
+                          Choose Category first
+                        </option>
+                      ) : !hasSubcategories ? (
+                        <option value="" className="bg-slate-900 text-slate-400">
+                          No Sub-Categories
+                        </option>
+                      ) : (
+                        <>
+                          <option value="" className="bg-slate-900 text-slate-100">
+                            None (Main Category)
+                          </option>
+                          {availableSubcategories.map((sub) => (
+                            <option
+                              key={sub._id}
+                              value={sub._id}
+                              className="bg-slate-900 text-slate-100"
+                            >
+                              {sub.name}
                             </option>
                           ))}
                         </>
@@ -404,7 +547,7 @@ function ProductModal({
                       name="badge"
                       value={form.badge}
                       onChange={set}
-                      className="w-full px-4 py-3 rounded-2xl text-sm bg-slate-900 border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500 font-medium cursor-pointer"
+                      className="w-full px-3.5 py-3 rounded-2xl text-xs sm:text-sm bg-slate-900 border border-white/10 text-slate-100 focus:outline-none focus:border-violet-500 font-medium cursor-pointer"
                     >
                       <option value="" className="bg-slate-900 text-slate-100">None (Regular)</option>
                       <option value="New" className="bg-slate-900 text-slate-100">🔥 New Arrival</option>
@@ -664,7 +807,7 @@ function ProductModal({
                   {/* Card Details */}
                   <div className="p-4 space-y-2 bg-slate-900/95">
                     <p className="text-[11px] font-bold text-violet-400 uppercase tracking-wider">
-                      {selectedCategoryName}
+                      {displayCategoryName}
                     </p>
                     <h4 className="text-sm font-bold text-white line-clamp-1">
                       {form.name || "Product Title Goes Here"}
@@ -848,25 +991,35 @@ function ProductsContent() {
       const res = await apiFetch<{ success: boolean; data: Category[] }>(
         "/categories",
       );
-      let cats = res.data;
-      // If filtering by a sub-category not in the root list, inject it from URL params
-      if (
-        filterCategoryId &&
-        filterCategoryName &&
-        !cats.find((c) => c._id === filterCategoryId)
-      ) {
-        cats = [
-          ...cats,
-          { _id: filterCategoryId, name: filterCategoryName, slug: "" },
-        ];
-      }
-      setCategories(cats);
+      setCategories(res.data);
     } catch {
       setCategories([]);
     } finally {
       setCategoriesLoading(false);
     }
-  }, [apiFetch, filterCategoryId, filterCategoryName]);
+  }, [apiFetch]);
+
+  const getCategoryDisplayName = (cat: Product["category"]) => {
+    if (!cat) return "-";
+    if (typeof cat === "object") {
+      if (cat.parent && typeof cat.parent === "object" && cat.parent.name) {
+        return `${cat.parent.name} › ${cat.name}`;
+      }
+      for (const parent of categories) {
+        const sub = parent.subcategories?.find((s) => s._id === cat._id);
+        if (sub) {
+          return `${parent.name} › ${sub.name}`;
+        }
+      }
+      return cat.name;
+    }
+    for (const parent of categories) {
+      if (parent._id === cat) return parent.name;
+      const sub = parent.subcategories?.find((s) => s._id === cat);
+      if (sub) return `${parent.name} › ${sub.name}`;
+    }
+    return String(cat);
+  };
 
   useEffect(() => {
     fetchProducts();
@@ -1085,10 +1238,8 @@ function ProductsContent() {
                         </div>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-sm text-slate-400 font-medium capitalize">
-                      {typeof p.category === "object"
-                        ? p.category.name
-                        : p.category}
+                    <td className="px-5 py-4 text-sm text-slate-400 font-medium">
+                      {getCategoryDisplayName(p.category)}
                     </td>
                     <td className="px-5 py-4 whitespace-nowrap">
                       <span className="text-sm font-black text-slate-100">

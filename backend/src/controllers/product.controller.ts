@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { AppError } from "../middleware/error.middleware";
 import Category from "../models/Category";
 import Product from "../models/Product";
+import { ICategoryDocument } from "../types";
 
 // ─── GET /api/products ────────────────────────────────────────────────────────
 
@@ -34,11 +35,29 @@ export const getProducts = asyncHandler(
     }
 
     if (category) {
+      let targetCat = null;
       if (mongoose.Types.ObjectId.isValid(category)) {
-        filter.category = category;
+        targetCat = await Category.findById(category);
       } else {
-        const cat = await Category.findOne({ slug: category });
-        filter.category = cat ? cat._id : new mongoose.Types.ObjectId();
+        targetCat = await Category.findOne({ slug: category });
+      }
+
+      if (targetCat) {
+        const childCats = await Category.find({ parent: targetCat._id });
+        if (childCats.length > 0) {
+          filter.category = {
+            $in: [
+              targetCat._id,
+              ...childCats.map((c: ICategoryDocument) => c._id),
+            ],
+          };
+        } else {
+          filter.category = targetCat._id;
+        }
+      } else {
+        filter.category = mongoose.Types.ObjectId.isValid(category)
+          ? new mongoose.Types.ObjectId(category)
+          : new mongoose.Types.ObjectId();
       }
     }
     if (badge) filter.badge = badge;
@@ -63,7 +82,11 @@ export const getProducts = asyncHandler(
 
     const [products, total] = await Promise.all([
       Product.find(filter)
-        .populate("category", "name slug")
+        .populate({
+          path: "category",
+          select: "name slug parent",
+          populate: { path: "parent", select: "name slug" },
+        })
         .sort(sort)
         .skip(skip)
         .limit(limitNum),
@@ -87,10 +110,11 @@ export const getProducts = asyncHandler(
 
 export const getProduct = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
-    const product = await Product.findById(req.params.id).populate(
-      "category",
-      "name slug",
-    );
+    const product = await Product.findById(req.params.id).populate({
+      path: "category",
+      select: "name slug parent",
+      populate: { path: "parent", select: "name slug" },
+    });
     if (!product) throw new AppError("Product not found", 404);
 
     res.status(200).json({
@@ -169,7 +193,11 @@ export const createProduct = asyncHandler(
       tags: tags ?? [],
     });
 
-    const populated = await product.populate("category", "name slug");
+    const populated = await product.populate({
+      path: "category",
+      select: "name slug parent",
+      populate: { path: "parent", select: "name slug" },
+    });
 
     res.status(201).json({
       success: true,
@@ -217,7 +245,11 @@ export const updateProduct = asyncHandler(
     const product = await Product.findByIdAndUpdate(req.params.id, updates, {
       new: true,
       runValidators: true,
-    }).populate("category", "name slug");
+    }).populate({
+      path: "category",
+      select: "name slug parent",
+      populate: { path: "parent", select: "name slug" },
+    });
 
     if (!product) throw new AppError("Product not found", 404);
 
