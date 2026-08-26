@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Script from "next/script";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
@@ -14,7 +15,13 @@ type View = "tabs" | "verify-email" | "forgot-password";
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#e3f3e8]" />}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-emerald-900 border-t-transparent rounded-full animate-spin" />
+        </div>
+      }
+    >
       <LoginContent />
     </Suspense>
   );
@@ -28,311 +35,218 @@ function LoginContent() {
   const [view, setView] = useState<View>("tabs");
   const [pendingEmail, setPendingEmail] = useState<string | null>(null);
 
-  const subtitles: Record<View, string> = {
-    tabs: activeTab === "login" ? "Welcome back" : "Create your account",
-    "verify-email": "Check your inbox",
-    "forgot-password": "Reset your password",
-  };
+  const isCheckoutRedirect = redirectUrl.includes("checkout");
 
   return (
-    <div className="min-h-screen bg-[#e3f3e8] flex items-center justify-center px-4 py-10">
+    <div className="min-h-screen bg-[#faf8f5] relative overflow-x-clip flex items-center justify-center p-3 sm:p-6 lg:p-10 font-sans selection:bg-emerald-900 selection:text-white">
       <Script src="https://accounts.google.com/gsi/client" strategy="lazyOnload" />
-      <div className="w-full max-w-5xl">
-        <div className="bg-[#f5fff9] rounded-[32px] shadow-soft border border-emerald-50 overflow-hidden flex flex-col md:flex-row">
-          {/* Illustration / story side */}
-          <div className="md:w-1/2 bg-gradient-to-br from-emerald-50 via-emerald-50 to-emerald-100/70 px-8 md:px-10 py-7 md:py-9 flex flex-col">
-            <div className="mb-6 md:mb-7">
-              <p className="text-xs font-semibold tracking-[0.28em] uppercase text-emerald-600 mb-3">
-                ShajSutro
-              </p>
-              <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-emerald-950">
-                Everyday style,
-                <span className="block text-emerald-600 mt-1">
-                  delivered to your doorstep.
-                </span>
-              </h1>
-              <p className="mt-3 text-sm leading-relaxed text-emerald-800/80 max-w-md">
-                Sign in to continue your shopping journey or create a new
-                account in seconds. Save your favourites, track orders, and
-                enjoy a smoother checkout experience.
-              </p>
-            </div>
 
-            <div className="flex-1 flex flex-col gap-4 md:gap-5">
-              <div className="relative w-full max-w-sm mx-auto md:mx-0 rounded-3xl overflow-hidden border border-emerald-200/60 shadow-soft h-52 md:h-60 bg-emerald-50">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="https://i.ibb.co.com/ZzsGXpZ4/b95765f1d5887ef61da112bba5690291-removebg-preview.png"
-                  alt="Customer studying with ShajSutro products"
-                  className="h-full w-full object-contain object-bottom"
-                />
-              </div>
+      {/* Atmospheric Luxury Ambient Gradients */}
+      <div className="absolute -top-32 -left-32 w-96 h-96 bg-emerald-900/5 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-amber-600/5 rounded-full blur-[140px] pointer-events-none" />
 
-              <div className="w-full max-w-sm mx-auto md:mx-0">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-2xl border border-emerald-200/60 bg-white/55 px-3.5 py-3 shadow-soft/30">
-                    <div className="flex items-center gap-2">
-                      <span className="h-8 w-8 rounded-xl bg-emerald-100/70 border border-emerald-200/60 grid place-items-center">
-                        <svg
-                          className="w-4 h-4 text-emerald-700"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.6}
-                            d="M3 7.5h18l-1.5 12H4.5L3 7.5zM9 7.5V6a3 3 0 116 0v1.5"
-                          />
-                        </svg>
-                      </span>
-                      <div>
-                        <p className="text-xs font-semibold text-emerald-950 leading-tight">
-                          Secure checkout
-                        </p>
-                        <p className="text-xs text-emerald-800/80 leading-tight mt-0.5">
-                          Easy, fast payments
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+      {/* Main Luxury Frame */}
+      <div className="w-full max-w-6xl bg-white rounded-3xl lg:rounded-[40px] shadow-[0_30px_90px_rgba(10,35,24,0.06)] border border-stone-200/70 overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative z-10 min-h-[640px]">
+        
+        {/* ─── Left Editorial Visual Canvas (High Fashion & Heritage) ─── */}
+        <div className="lg:col-span-5 relative hidden lg:flex flex-col justify-between p-12 overflow-hidden bg-stone-900 text-white select-none">
+          {/* Background Visual with Rich Editorial Lighting */}
+          <div className="absolute inset-0 z-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1200&q=85"
+              alt="ShajSutro Haute Couture"
+              className="w-full h-full object-cover object-center opacity-65 scale-105 transition-transform duration-1000 ease-out hover:scale-100"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#061e14]/95 via-[#061e14]/60 to-black/30" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent" />
+          </div>
 
-                  <div className="rounded-2xl border border-emerald-200/60 bg-white/55 px-3.5 py-3 shadow-soft/30">
-                    <div className="flex items-center gap-2">
-                      <span className="h-8 w-8 rounded-xl bg-emerald-100/70 border border-emerald-200/60 grid place-items-center">
-                        <svg
-                          className="w-4 h-4 text-emerald-700"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.6}
-                            d="M20 7l-8 8-4-4M7 20h10"
-                          />
-                        </svg>
-                      </span>
-                      <div>
-                        <p className="text-xs font-semibold text-emerald-950 leading-tight">
-                          Quality checked
-                        </p>
-                        <p className="text-xs text-emerald-800/80 leading-tight mt-0.5">
-                          Verified products
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-2xl border border-emerald-200/60 bg-white/55 px-3.5 py-3 shadow-soft/30">
-                    <div className="flex items-center gap-2">
-                      <span className="h-8 w-8 rounded-xl bg-emerald-100/70 border border-emerald-200/60 grid place-items-center">
-                        <svg
-                          className="w-4 h-4 text-emerald-700"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.6}
-                            d="M3.75 12h16.5M12 3.75v16.5"
-                          />
-                        </svg>
-                      </span>
-                      <div>
-                        <p className="text-xs font-semibold text-emerald-950 leading-tight">
-                          New arrivals
-                        </p>
-                        <p className="text-xs text-emerald-800/80 leading-tight mt-0.5">
-                          Weekly drops
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-2xl border border-emerald-200/60 bg-white/55 px-3.5 py-3 shadow-soft/30">
-                    <div className="flex items-center gap-2">
-                      <span className="h-8 w-8 rounded-xl bg-emerald-100/70 border border-emerald-200/60 grid place-items-center">
-                        <svg
-                          className="w-4 h-4 text-emerald-700"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.6}
-                            d="M12 6v6l4 2"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.6}
-                            d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                      </span>
-                      <div>
-                        <p className="text-xs font-semibold text-emerald-950 leading-tight">
-                          Fast delivery
-                        </p>
-                        <p className="text-xs text-emerald-800/80 leading-tight mt-0.5">
-                          Track your order
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-auto flex items-center justify-between text-xs font-medium text-emerald-900/80 pt-2">
-                <div className="flex gap-1.5" aria-hidden="true">
-                  <span className="h-1.5 w-4 rounded-full bg-emerald-500" />
-                  <span className="h-1.5 w-3 rounded-full bg-emerald-300" />
-                  <span className="h-1.5 w-3 rounded-full bg-emerald-200" />
-                </div>
-                <p>Free returns within 7 days</p>
-              </div>
+          {/* Top Brand Monogram */}
+          <div className="relative z-10">
+            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[11px] font-semibold tracking-[0.2em] uppercase text-emerald-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+              Haute Elegance • Atelier
             </div>
           </div>
 
-          {/* Auth side */}
-          <div className="md:w-1/2 bg-[#f9fffb] px-7 md:px-10 py-9 md:py-12 flex flex-col">
-            <div className="mb-7">
-              <p className="text-xs font-semibold tracking-[0.28em] uppercase text-emerald-600">
-                {activeTab === "login" ? "Sign in" : "Create account"}
-              </p>
-              <h2 className="mt-2 text-xl md:text-2xl font-semibold tracking-tight text-charcoal-950">
-                {activeTab === "login" ? "Welcome back" : "Join ShajSutro"}
-              </h2>
-              <p className="text-charcoal-600 text-sm mt-1.5 font-light">
-                {subtitles[view]}
+          {/* Centerpiece Editorial Quote */}
+          <div className="relative z-10 my-auto py-8">
+            <span className="text-amber-300/80 text-4xl font-serif leading-none block mb-2">&ldquo;</span>
+            <h2 className="text-2xl xl:text-3xl font-serif tracking-tight leading-snug text-stone-100 font-light italic">
+              Where timeless Bengali craftsmanship meets modern sophistication.
+            </h2>
+            <p className="mt-4 text-xs font-light text-stone-300/80 tracking-wide uppercase">
+              Curated Wardrobe • Verified Fabrics • Express Delivery
+            </p>
+          </div>
+
+          {/* Bottom Floating Glass Review Pill */}
+          <div className="relative z-10 pt-6 border-t border-white/10">
+            <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/15 space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <div className="flex text-amber-300 text-xs tracking-widest">★★★★★</div>
+                <span className="text-[11px] text-emerald-200 font-medium tracking-wider uppercase">Verified Patron</span>
+              </div>
+              <p className="text-xs text-stone-200 font-light italic leading-relaxed">
+                &ldquo;The fabric texture and fit are exceptional. It feels luxurious from the moment you wear it.&rdquo;
               </p>
             </div>
+          </div>
+        </div>
 
-            {/* Checkout requirement banner */}
-            {redirectUrl.includes("checkout") && (
-              <div className="mb-6 p-4 rounded-2xl bg-emerald-50/90 border border-emerald-200/80 flex items-center gap-3 text-emerald-950 text-xs sm:text-sm shadow-xs">
-                <span className="w-8 h-8 rounded-xl bg-emerald-700 text-white flex items-center justify-center flex-shrink-0 shadow-xs">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                  </svg>
-                </span>
-                <div>
-                  <p className="font-semibold text-emerald-950">Login required for checkout</p>
-                  <p className="text-emerald-800/80 text-xs mt-0.5">Please sign in or create an account to proceed with your order.</p>
-                </div>
+        {/* ─── Right Column: Aesthetic Form Experience ─── */}
+        <div className="lg:col-span-7 p-8 sm:p-12 lg:p-14 flex flex-col justify-between bg-white relative">
+          
+          <div>
+            {/* Minimal Brand Identity & Context */}
+            <div className="flex items-center justify-between mb-8 pb-4 border-b border-stone-100">
+              <div>
+                <Link href="/" className="inline-block group">
+                  <span className="text-xl font-bold tracking-[0.18em] uppercase text-emerald-950 font-serif">
+                    SHAJSUTRO<span className="text-amber-600 font-sans text-sm ml-0.5">.</span>
+                  </span>
+                </Link>
+                <p className="text-[11px] tracking-wider uppercase text-stone-400 font-medium mt-0.5">
+                  Exclusive Member Portal
+                </p>
               </div>
-            )}
 
-            <div className="rounded-2xl border border-emerald-50 bg-white/90 shadow-soft/60">
-              {/* Tabs — only shown on main login/register view */}
               {view === "tabs" && (
-                <div className="flex border-b border-emerald-50 bg-emerald-50/40">
+                <div className="flex items-center p-1 bg-stone-100/80 rounded-full border border-stone-200/60">
                   <button
+                    type="button"
                     onClick={() => setActiveTab("login")}
-                    className={`flex-1 py-4 text-sm font-medium transition-all duration-300 ${
+                    className={`px-4 py-1.5 text-xs font-semibold rounded-full transition-all duration-300 ${
                       activeTab === "login"
-                        ? "text-emerald-950 border-b-2 border-emerald-600 bg-white"
-                        : "text-emerald-700/80 hover:text-emerald-900"
+                        ? "bg-emerald-950 text-white shadow-xs"
+                        : "text-stone-600 hover:text-stone-900"
                     }`}
                   >
                     Sign In
                   </button>
                   <button
+                    type="button"
                     onClick={() => setActiveTab("register")}
-                    className={`flex-1 py-4 text-sm font-medium transition-all duration-300 ${
+                    className={`px-4 py-1.5 text-xs font-semibold rounded-full transition-all duration-300 ${
                       activeTab === "register"
-                        ? "text-emerald-950 border-b-2 border-emerald-600 bg-white"
-                        : "text-emerald-700/80 hover:text-emerald-900"
+                        ? "bg-emerald-950 text-white shadow-xs"
+                        : "text-stone-600 hover:text-stone-900"
                     }`}
                   >
-                    Create Account
+                    Register
                   </button>
                 </div>
               )}
-
-              <div className="p-7 md:p-8">
-                {view === "verify-email" && pendingEmail ? (
-                  <VerifyEmailForm
-                    email={pendingEmail}
-                    redirectUrl={redirectUrl}
-                    onVerified={() => {
-                      setView("tabs");
-                      setActiveTab("login");
-                      setPendingEmail(null);
-                    }}
-                    onBack={() => {
-                      setView("tabs");
-                      setPendingEmail(null);
-                    }}
-                  />
-                ) : view === "forgot-password" ? (
-                  <ForgotPasswordFlow
-                    onBack={() => setView("tabs")}
-                    onDone={() => {
-                      setView("tabs");
-                      setActiveTab("login");
-                    }}
-                  />
-                ) : activeTab === "login" ? (
-                  <LoginForm
-                    redirectUrl={redirectUrl}
-                    showPassword={showPassword}
-                    setShowPassword={setShowPassword}
-                    onForgotPassword={() => setView("forgot-password")}
-                  />
-                ) : (
-                  <RegisterForm
-                    redirectUrl={redirectUrl}
-                    showPassword={showPassword}
-                    setShowPassword={setShowPassword}
-                    onRegistered={(email) => {
-                      setPendingEmail(email);
-                      setView("verify-email");
-                    }}
-                  />
-                )}
-              </div>
             </div>
 
-            <div className="mt-5 text-xs text-charcoal-400 flex items-center justify-between">
-              <Link
-                href="/"
-                className="inline-flex items-center gap-1.5 hover:text-charcoal-700 transition-colors"
-              >
-                <svg
-                  className="w-3.5 h-3.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-                Back to store
-              </Link>
-              <span className="hidden sm:inline">
-                Secure checkout powered by ShajSutro
-              </span>
+            {/* Special Checkout Notice Ribbon */}
+            {isCheckoutRedirect && (
+              <div className="mb-6 p-4 rounded-2xl bg-amber-50/70 border border-amber-200/70 flex items-center gap-3.5 text-stone-900 shadow-xs">
+                <span className="w-9 h-9 rounded-xl bg-emerald-950 text-amber-300 flex items-center justify-center flex-shrink-0 text-sm shadow-xs">
+                  🛍️
+                </span>
+                <div>
+                  <p className="text-xs font-bold text-emerald-950 tracking-tight">Checkout Access Required</p>
+                  <p className="text-[11px] text-stone-600 mt-0.5">
+                    Sign in or create an account to proceed with your saved cart.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Dynamic View Header */}
+            <div className="mb-7">
+              <h3 className="text-2xl sm:text-3xl font-serif font-normal tracking-tight text-emerald-950">
+                {view === "forgot-password"
+                  ? "Recover your account"
+                  : view === "verify-email"
+                  ? "Confirm your email"
+                  : activeTab === "login"
+                  ? "Welcome back"
+                  : "Create your wardrobe account"}
+              </h3>
+              <p className="text-xs sm:text-sm text-stone-500 font-light mt-1.5">
+                {view === "forgot-password"
+                  ? "Enter your email to receive an instant verification code."
+                  : view === "verify-email"
+                  ? "We sent a 6-digit confirmation code to your inbox."
+                  : activeTab === "login"
+                  ? "Access your curated wishlist, past orders, and tailored sizing."
+                  : "Join today for private drop access, bespoke styling, and rapid checkout."}
+              </p>
+            </div>
+
+            {/* Form Switching Container */}
+            <div>
+              {view === "verify-email" && pendingEmail ? (
+                <VerifyEmailForm
+                  email={pendingEmail}
+                  redirectUrl={redirectUrl}
+                  onVerified={() => {
+                    setView("tabs");
+                    setActiveTab("login");
+                    setPendingEmail(null);
+                  }}
+                  onBack={() => {
+                    setView("tabs");
+                    setPendingEmail(null);
+                  }}
+                />
+              ) : view === "forgot-password" ? (
+                <ForgotPasswordFlow
+                  onBack={() => setView("tabs")}
+                  onDone={() => {
+                    setView("tabs");
+                    setActiveTab("login");
+                  }}
+                />
+              ) : activeTab === "login" ? (
+                <LoginForm
+                  redirectUrl={redirectUrl}
+                  showPassword={showPassword}
+                  setShowPassword={setShowPassword}
+                  onForgotPassword={() => setView("forgot-password")}
+                />
+              ) : (
+                <RegisterForm
+                  redirectUrl={redirectUrl}
+                  showPassword={showPassword}
+                  setShowPassword={setShowPassword}
+                  onRegistered={(email) => {
+                    setPendingEmail(email);
+                    setView("verify-email");
+                  }}
+                />
+              )}
             </div>
           </div>
+
+          {/* Minimalist Bottom Footer */}
+          <div className="mt-10 pt-6 border-t border-stone-100 flex items-center justify-between text-xs text-stone-400 font-light">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 font-medium text-stone-600 hover:text-emerald-950 transition-colors group"
+            >
+              <svg className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M15 19l-7-7 7-7" />
+              </svg>
+              Explore Collection
+            </Link>
+
+            <span className="text-[11px] tracking-wide uppercase">
+              256-bit Encrypted
+            </span>
+          </div>
+
         </div>
+
       </div>
     </div>
   );
 }
 
-// ─── Social Buttons ────────────────────────────────────────────────────────────
+// ─── Aesthetic Social Login ───────────────────────────────────────────────────
 
 function SocialButtons({ redirectUrl = "/profile" }: { redirectUrl?: string }) {
   const router = useRouter();
@@ -341,9 +255,7 @@ function SocialButtons({ redirectUrl = "/profile" }: { redirectUrl?: string }) {
   const ensureGoogleScript = (): Promise<any> => {
     return new Promise((resolve, reject) => {
       const g = typeof window !== "undefined" ? (window as any).google : null;
-      if (g?.accounts?.oauth2) {
-        return resolve(g);
-      }
+      if (g?.accounts?.oauth2) return resolve(g);
       const existing = document.getElementById("google-jssdk");
       if (existing) {
         existing.addEventListener("load", () => resolve((window as any).google));
@@ -382,7 +294,6 @@ function SocialButtons({ redirectUrl = "/profile" }: { redirectUrl?: string }) {
         scope: "email profile",
         callback: async (tokenResponse: any) => {
           if (tokenResponse.error) {
-            console.error("Google authentication failed:", tokenResponse.error);
             notifyError("Google authentication failed. Please try again.");
             setGoogleLoading(false);
             return;
@@ -409,8 +320,7 @@ function SocialButtons({ redirectUrl = "/profile" }: { redirectUrl?: string }) {
             notifySuccess("Logged in with Google successfully!");
             router.push(redirectUrl);
           } catch (err: unknown) {
-            const message =
-              err instanceof Error ? err.message : "Google login failed";
+            const message = err instanceof Error ? err.message : "Google login failed";
             notifyError(message);
           } finally {
             setGoogleLoading(false);
@@ -420,22 +330,21 @@ function SocialButtons({ redirectUrl = "/profile" }: { redirectUrl?: string }) {
 
       tokenClient.requestAccessToken();
     } catch (err) {
-      console.error("Failed to initialize Google token client:", err);
       notifyError("An error occurred starting Google Sign-In.");
       setGoogleLoading(false);
     }
   };
 
   return (
-    <div className="space-y-3 mb-7">
+    <div className="grid grid-cols-2 gap-3 mb-6">
       <button
         type="button"
         disabled={googleLoading}
         onClick={handleGoogleLogin}
-        className="w-full flex items-center justify-center gap-3 px-4 py-3.5 border border-charcoal-200 rounded-xl text-sm font-medium text-charcoal-600 hover:bg-charcoal-50 hover:border-charcoal-300 transition-all duration-300 hover:shadow-soft disabled:opacity-60 disabled:cursor-not-allowed"
+        className="flex items-center justify-center gap-2.5 px-4 py-3 rounded-2xl border border-stone-200/80 bg-stone-50/50 hover:bg-stone-100 hover:border-stone-300 text-xs font-semibold text-stone-800 transition-all duration-200 disabled:opacity-60 active:scale-[0.98]"
       >
         {googleLoading ? (
-          <div className="w-4 h-4 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-3.5 h-3.5 border-2 border-emerald-900 border-t-transparent rounded-full animate-spin" />
         ) : (
           <svg className="w-4 h-4" viewBox="0 0 24 24">
             <path
@@ -456,24 +365,18 @@ function SocialButtons({ redirectUrl = "/profile" }: { redirectUrl?: string }) {
             />
           </svg>
         )}
-        {googleLoading ? "Connecting..." : "Continue with Google"}
+        Google
       </button>
+
       <button
         type="button"
-        onClick={() => {
-          console.log("Continue with Apple clicked");
-          notifyInfo("Apple login feature is coming soon!");
-        }}
-        className="w-full flex items-center justify-center gap-3 px-4 py-3.5 border border-charcoal-200 rounded-xl text-sm font-medium text-charcoal-600 hover:bg-charcoal-50 hover:border-charcoal-300 transition-all duration-300 hover:shadow-soft"
+        onClick={() => notifyInfo("Apple ID login is coming soon.")}
+        className="flex items-center justify-center gap-2.5 px-4 py-3 rounded-2xl border border-stone-200/80 bg-stone-50/50 hover:bg-stone-100 hover:border-stone-300 text-xs font-semibold text-stone-800 transition-all duration-200 active:scale-[0.98]"
       >
-        <svg
-          className="w-4 h-4 text-charcoal-900"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg className="w-4 h-4 text-black" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" />
         </svg>
-        Continue with Apple
+        Apple
       </button>
     </div>
   );
@@ -481,17 +384,17 @@ function SocialButtons({ redirectUrl = "/profile" }: { redirectUrl?: string }) {
 
 function Divider() {
   return (
-    <div className="relative flex items-center gap-4 mb-7">
-      <div className="flex-1 h-px bg-charcoal-100" />
-      <span className="text-xs text-charcoal-300 font-medium tracking-wide">
-        or
+    <div className="relative flex items-center gap-4 mb-6">
+      <div className="flex-1 h-px bg-stone-200/70" />
+      <span className="text-[10px] text-stone-400 font-semibold tracking-widest uppercase">
+        or continue with email
       </span>
-      <div className="flex-1 h-px bg-charcoal-100" />
+      <div className="flex-1 h-px bg-stone-200/70" />
     </div>
   );
 }
 
-// ─── Login Form ────────────────────────────────────────────────────────────────
+// ─── Minimal Luxury Login Form ─────────────────────────────────────────────────
 
 function LoginForm({
   redirectUrl = "/profile",
@@ -514,8 +417,8 @@ function LoginForm({
     e.preventDefault();
     setError("");
     if (!email || !password) {
-      setError("Please fill in all fields.");
-      notifyError("Please fill in all fields.");
+      setError("Please complete all fields.");
+      notifyError("Please complete all fields.");
       return;
     }
     setLoading(true);
@@ -528,7 +431,7 @@ function LoginForm({
       const data = await res.json();
       if (!res.ok) throw new Error(data.message ?? "Login failed");
       localStorage.setItem("token", data.token);
-      notifySuccess("Login successful!");
+      notifySuccess("Welcome back!");
       router.push(redirectUrl);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Something went wrong";
@@ -540,86 +443,85 @@ function LoginForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <SocialButtons redirectUrl={redirectUrl} />
       <Divider />
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-600">
+        <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200/80 text-xs text-rose-700 font-medium">
           {error}
         </div>
       )}
 
-      <div>
-        <label className="block text-xs font-medium text-charcoal-600 mb-2">
+      <div className="space-y-1.5">
+        <label className="block text-[11px] font-semibold tracking-wider uppercase text-stone-600">
           Email Address
         </label>
         <input
           type="email"
-          className="input-field"
-          placeholder="you@example.com"
+          className="w-full px-4 py-3.5 rounded-2xl border border-stone-200 bg-stone-50/40 text-stone-900 text-xs sm:text-sm placeholder-stone-400 focus:outline-none focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 transition-all"
+          placeholder="your.email@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
 
-      <div>
-        <div className="flex justify-between items-center mb-2">
-          <label className="text-xs font-medium text-charcoal-600">
+      <div className="space-y-1.5">
+        <div className="flex justify-between items-center">
+          <label className="text-[11px] font-semibold tracking-wider uppercase text-stone-600">
             Password
           </label>
           <button
             type="button"
             onClick={onForgotPassword}
-            className="text-xs text-accent-600 hover:text-accent-700 transition-colors font-medium"
+            className="text-[11px] font-medium text-emerald-950 hover:underline tracking-wide"
           >
-            Forgot password?
+            Forgot?
           </button>
         </div>
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
-            className="input-field pr-10"
-            placeholder="••••••••"
+            className="w-full px-4 py-3.5 pr-11 rounded-2xl border border-stone-200 bg-stone-50/40 text-stone-900 text-xs sm:text-sm placeholder-stone-400 focus:outline-none focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 transition-all"
+            placeholder="••••••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-charcoal-300 hover:text-charcoal-600 transition-colors duration-300"
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 transition-colors"
+            aria-label={showPassword ? "Hide password" : "Show password"}
           >
             <EyeIcon open={showPassword} />
           </button>
         </div>
       </div>
 
-      <div className="flex items-center gap-2.5">
+      <div className="flex items-center gap-2 pt-1">
         <input
           type="checkbox"
           id="remember"
-          className="w-4 h-4 rounded border-charcoal-300 text-charcoal-950 focus:ring-charcoal-950"
+          defaultChecked
+          className="w-4 h-4 rounded border-stone-300 text-emerald-950 focus:ring-emerald-900"
         />
-        <label
-          htmlFor="remember"
-          className="text-sm text-charcoal-500 font-light"
-        >
-          Remember me for 30 days
+        <label htmlFor="remember" className="text-xs text-stone-500 font-light cursor-pointer select-none">
+          Remember my credentials on this device
         </label>
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="btn-primary w-full py-4 disabled:opacity-60 disabled:cursor-not-allowed"
+        className="w-full min-h-[50px] py-3.5 bg-emerald-950 hover:bg-[#072418] text-white font-medium tracking-wide text-xs sm:text-sm rounded-2xl shadow-[0_10px_25px_rgba(6,30,20,0.15)] hover:shadow-[0_15px_35px_rgba(6,30,20,0.22)] transition-all active:scale-[0.99] disabled:opacity-60 mt-3"
       >
-        {loading ? <Spinner /> : "Sign In"}
+        {loading ? <Spinner /> : "Sign In to Portal"}
       </button>
     </form>
   );
 }
 
-// ─── Register Form ─────────────────────────────────────────────────────────────
+// ─── Minimal Luxury Register Form ──────────────────────────────────────────────
 
 function RegisterForm({
   redirectUrl = "/profile",
@@ -636,7 +538,7 @@ function RegisterForm({
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [agreed, setAgreed] = useState(false);
+  const [agreed, setAgreed] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -649,8 +551,8 @@ function RegisterForm({
       return;
     }
     if (!agreed) {
-      setError("Please agree to the Terms of Service.");
-      notifyError("Please agree to the Terms of Service.");
+      setError("Please accept the Terms of Service.");
+      notifyError("Please accept the Terms of Service.");
       return;
     }
     setLoading(true);
@@ -663,7 +565,7 @@ function RegisterForm({
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message ?? "Registration failed");
-      notifyInfo("Account created. Please check your email for the verification code.");
+      notifyInfo("Account registered. Check your email for verification.");
       onRegistered(email);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Something went wrong";
@@ -675,36 +577,36 @@ function RegisterForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <SocialButtons redirectUrl={redirectUrl} />
       <Divider />
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-600">
+        <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200/80 text-xs text-rose-700 font-medium">
           {error}
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-xs font-medium text-charcoal-600 mb-2">
-            First Name
+      <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-1.5">
+          <label className="block text-[11px] font-semibold tracking-wider uppercase text-stone-600">
+            First Name <span className="text-rose-500">*</span>
           </label>
           <input
             type="text"
-            className="input-field"
+            className="w-full px-4 py-3.5 rounded-2xl border border-stone-200 bg-stone-50/40 text-stone-900 text-xs sm:text-sm placeholder-stone-400 focus:outline-none focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 transition-all"
             placeholder="John"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
           />
         </div>
-        <div>
-          <label className="block text-xs font-medium text-charcoal-600 mb-2">
+        <div className="space-y-1.5">
+          <label className="block text-[11px] font-semibold tracking-wider uppercase text-stone-600">
             Last Name
           </label>
           <input
             type="text"
-            className="input-field"
+            className="w-full px-4 py-3.5 rounded-2xl border border-stone-200 bg-stone-50/40 text-stone-900 text-xs sm:text-sm placeholder-stone-400 focus:outline-none focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 transition-all"
             placeholder="Doe"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
@@ -712,27 +614,27 @@ function RegisterForm({
         </div>
       </div>
 
-      <div>
-        <label className="block text-xs font-medium text-charcoal-600 mb-2">
-          Email Address
+      <div className="space-y-1.5">
+        <label className="block text-[11px] font-semibold tracking-wider uppercase text-stone-600">
+          Email Address <span className="text-rose-500">*</span>
         </label>
         <input
           type="email"
-          className="input-field"
-          placeholder="you@example.com"
+          className="w-full px-4 py-3.5 rounded-2xl border border-stone-200 bg-stone-50/40 text-stone-900 text-xs sm:text-sm placeholder-stone-400 focus:outline-none focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 transition-all"
+          placeholder="your.email@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
 
-      <div>
-        <label className="block text-xs font-medium text-charcoal-600 mb-2">
-          Password
+      <div className="space-y-1.5">
+        <label className="block text-[11px] font-semibold tracking-wider uppercase text-stone-600">
+          Password <span className="text-rose-500">*</span>
         </label>
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
-            className="input-field pr-10"
+            className="w-full px-4 py-3.5 pr-11 rounded-2xl border border-stone-200 bg-stone-50/40 text-stone-900 text-xs sm:text-sm placeholder-stone-400 focus:outline-none focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 transition-all"
             placeholder="Min. 6 characters"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -740,51 +642,38 @@ function RegisterForm({
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-charcoal-300 hover:text-charcoal-600 transition-colors duration-300"
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 transition-colors"
           >
             <EyeIcon open={showPassword} />
           </button>
         </div>
       </div>
 
-      <div className="flex items-start gap-2.5">
+      <div className="flex items-center gap-2 pt-1">
         <input
           type="checkbox"
           id="terms"
           checked={agreed}
           onChange={(e) => setAgreed(e.target.checked)}
-          className="w-4 h-4 mt-0.5 rounded border-charcoal-300 text-charcoal-950 focus:ring-charcoal-950"
+          className="w-4 h-4 rounded border-stone-300 text-emerald-950 focus:ring-emerald-900"
         />
-        <label htmlFor="terms" className="text-sm text-charcoal-500 font-light">
-          I agree to the{" "}
-          <a
-            href="#"
-            className="text-accent-600 hover:text-accent-700 transition-colors font-medium"
-          >
-            Terms of Service
-          </a>{" "}
-          and{" "}
-          <a
-            href="#"
-            className="text-accent-600 hover:text-accent-700 transition-colors font-medium"
-          >
-            Privacy Policy
-          </a>
+        <label htmlFor="terms" className="text-xs text-stone-500 font-light cursor-pointer select-none">
+          I accept the <span className="text-emerald-950 font-medium underline">Terms of Service</span> & <span className="text-emerald-950 font-medium underline">Privacy Policy</span>
         </label>
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="btn-primary w-full py-4 disabled:opacity-60 disabled:cursor-not-allowed"
+        className="w-full min-h-[50px] py-3.5 bg-emerald-950 hover:bg-[#072418] text-white font-medium tracking-wide text-xs sm:text-sm rounded-2xl shadow-[0_10px_25px_rgba(6,30,20,0.15)] hover:shadow-[0_15px_35px_rgba(6,30,20,0.22)] transition-all active:scale-[0.99] disabled:opacity-60 mt-3"
       >
-        {loading ? <Spinner /> : "Create Account"}
+        {loading ? <Spinner /> : "Create Member Account"}
       </button>
     </form>
   );
 }
 
-// ─── Forgot Password Flow (3 steps) ──────────────────────────────────────────
+// ─── Forgot Password Flow ──────────────────────────────────────────────────────
 
 type FPStep = "email" | "otp" | "new-password";
 
@@ -832,7 +721,6 @@ function ForgotPasswordFlow({
   );
 }
 
-// Step 1 — Enter email
 function FPStepEmail({
   onSent,
   onBack,
@@ -848,8 +736,8 @@ function FPStepEmail({
     e.preventDefault();
     setError("");
     if (!email) {
-      setError("Please enter your email address.");
-      notifyError("Please enter your email address.");
+      setError("Please enter your email.");
+      notifyError("Please enter your email.");
       return;
     }
     setLoading(true);
@@ -860,8 +748,8 @@ function FPStepEmail({
         body: JSON.stringify({ email }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message ?? "Failed to send code");
-      notifySuccess("Reset code sent. Check your email.");
+      if (!res.ok) throw new Error(data.message ?? "Failed to send reset code");
+      notifySuccess("Reset code dispatched.");
       onSent(email);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Something went wrong";
@@ -873,47 +761,21 @@ function FPStepEmail({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      <div className="flex flex-col items-center gap-3 pb-2">
-        <div className="w-14 h-14 rounded-full bg-charcoal-50 border border-charcoal-100 flex items-center justify-center">
-          <svg
-            className="w-6 h-6 text-charcoal-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
-            />
-          </svg>
-        </div>
-        <div className="text-center">
-          <p className="text-sm font-medium text-charcoal-700">
-            Forgot your password?
-          </p>
-          <p className="text-xs text-charcoal-400 mt-1 font-light leading-relaxed">
-            Enter your email and we&apos;ll send a 6-digit reset code.
-          </p>
-        </div>
-      </div>
-
+    <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-600">
+        <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200/80 text-xs text-rose-700 font-medium">
           {error}
         </div>
       )}
 
-      <div>
-        <label className="block text-xs font-medium text-charcoal-600 mb-2">
-          Email Address
+      <div className="space-y-1.5">
+        <label className="block text-[11px] font-semibold tracking-wider uppercase text-stone-600">
+          Account Email Address
         </label>
         <input
           type="email"
-          className="input-field"
-          placeholder="you@example.com"
+          className="w-full px-4 py-3.5 rounded-2xl border border-stone-200 bg-stone-50/40 text-stone-900 text-xs sm:text-sm placeholder-stone-400 focus:outline-none focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 transition-all"
+          placeholder="your.email@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           autoFocus
@@ -923,36 +785,25 @@ function FPStepEmail({
       <button
         type="submit"
         disabled={loading}
-        className="btn-primary w-full py-4 disabled:opacity-60 disabled:cursor-not-allowed"
+        className="w-full min-h-[50px] py-3.5 bg-emerald-950 hover:bg-[#072418] text-white font-medium tracking-wide text-xs sm:text-sm rounded-2xl shadow-[0_10px_25px_rgba(6,30,20,0.15)] transition-all active:scale-[0.99] disabled:opacity-60"
       >
-        {loading ? <Spinner /> : "Send Reset Code"}
+        {loading ? <Spinner /> : "Dispatch 6-Digit Code"}
       </button>
 
       <button
         type="button"
         onClick={onBack}
-        className="w-full text-sm text-charcoal-400 hover:text-charcoal-600 transition-colors py-1 inline-flex items-center justify-center gap-1.5"
+        className="w-full text-xs font-semibold text-stone-600 hover:text-emerald-950 transition-colors py-1 inline-flex items-center justify-center gap-1.5"
       >
-        <svg
-          className="w-3.5 h-3.5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={1.5}
-            d="M15 19l-7-7 7-7"
-          />
+        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
-        Back to Sign In
+        Return to Sign In
       </button>
     </form>
   );
 }
 
-// Step 2 — Enter OTP
 function FPStepOTP({
   email,
   onVerified,
@@ -982,20 +833,14 @@ function FPStepOTP({
     if (digit && index < 5) inputRefs.current[index + 1]?.focus();
   };
 
-  const handleKeyDown = (
-    index: number,
-    e: React.KeyboardEvent<HTMLInputElement>,
-  ) => {
+  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Backspace" && !digits[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
   const handlePaste = (e: React.ClipboardEvent) => {
-    const pasted = e.clipboardData
-      .getData("text")
-      .replace(/\D/g, "")
-      .slice(0, 6);
+    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
     if (!pasted) return;
     e.preventDefault();
     const next = Array(6).fill("");
@@ -1016,7 +861,6 @@ function FPStepOTP({
     }
     setLoading(true);
     try {
-      // Just validate format locally — actual check happens on reset-password
       onVerified(code);
     } catch {
       setError("Something went wrong.");
@@ -1043,38 +887,15 @@ function FPStepOTP({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="flex flex-col items-center gap-3 pb-2">
-        <div className="w-14 h-14 rounded-full bg-charcoal-50 border border-charcoal-100 flex items-center justify-center">
-          <svg
-            className="w-6 h-6 text-charcoal-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-            />
-          </svg>
-        </div>
-        <div className="text-center">
-          <p className="text-sm font-medium text-charcoal-700">
-            Enter the reset code
-          </p>
-          <p className="text-xs text-charcoal-400 mt-0.5 font-light">{email}</p>
-        </div>
-      </div>
-
+    <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-600 text-center">
+        <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200/80 text-xs text-rose-700 font-medium text-center">
           {error}
         </div>
       )}
 
-      <div className="flex justify-center gap-2.5" onPaste={handlePaste}>
+      {/* 6 Individual Code Boxes */}
+      <div className="flex justify-center gap-2 sm:gap-2.5" onPaste={handlePaste}>
         {digits.map((digit, i) => (
           <input
             key={i}
@@ -1087,10 +908,11 @@ function FPStepOTP({
             value={digit}
             onChange={(e) => handleChange(i, e.target.value)}
             onKeyDown={(e) => handleKeyDown(i, e)}
-            className={`w-11 text-center text-lg font-semibold border rounded-xl outline-none transition-all duration-200
-              ${digit ? "border-charcoal-700 bg-charcoal-50 text-charcoal-950" : "border-charcoal-200 bg-white text-charcoal-950"}
-              focus:border-charcoal-700 focus:ring-2 focus:ring-charcoal-200 focus:bg-white`}
-            style={{ height: "52px" }}
+            className={`w-11 sm:w-12 h-14 text-center text-lg font-bold rounded-2xl border outline-none transition-all duration-200 ${
+              digit
+                ? "border-emerald-950 bg-stone-50 text-emerald-950 shadow-xs"
+                : "border-stone-200 bg-white text-stone-900"
+            } focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5`}
           />
         ))}
       </div>
@@ -1098,29 +920,19 @@ function FPStepOTP({
       <button
         type="submit"
         disabled={loading}
-        className="btn-primary w-full py-4 disabled:opacity-60 disabled:cursor-not-allowed"
+        className="w-full min-h-[50px] py-3.5 bg-emerald-950 hover:bg-[#072418] text-white font-medium tracking-wide text-xs sm:text-sm rounded-2xl shadow-[0_10px_25px_rgba(6,30,20,0.15)] transition-all active:scale-[0.99] disabled:opacity-60"
       >
-        {loading ? <Spinner /> : "Continue"}
+        {loading ? <Spinner /> : "Confirm Security Code"}
       </button>
 
-      <div className="flex items-center justify-between text-sm">
+      <div className="flex items-center justify-between text-xs pt-1">
         <button
           type="button"
           onClick={onBack}
-          className="text-charcoal-400 hover:text-charcoal-600 transition-colors font-light inline-flex items-center gap-1"
+          className="font-medium text-stone-600 hover:text-emerald-950 inline-flex items-center gap-1 transition-colors"
         >
-          <svg
-            className="w-3.5 h-3.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M15 19l-7-7 7-7"
-            />
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
           Back
         </button>
@@ -1128,7 +940,7 @@ function FPStepOTP({
           type="button"
           onClick={handleResend}
           disabled={cooldown > 0}
-          className="text-accent-600 hover:text-accent-700 font-medium transition-colors disabled:text-charcoal-300 disabled:cursor-not-allowed"
+          className="font-medium text-emerald-950 hover:underline transition-colors disabled:text-stone-400 disabled:cursor-not-allowed"
         >
           {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend code"}
         </button>
@@ -1137,7 +949,6 @@ function FPStepOTP({
   );
 }
 
-// Step 3 — New Password
 function FPStepNewPassword({
   email,
   code,
@@ -1179,7 +990,7 @@ function FPStepNewPassword({
       const data = await res.json();
       if (!res.ok) throw new Error(data.message ?? "Reset failed");
       setSuccess("Password reset successfully! Redirecting to Sign In…");
-      notifySuccess("Password reset successfully!");
+      notifySuccess("Password updated.");
       setTimeout(onDone, 1500);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Something went wrong";
@@ -1191,114 +1002,65 @@ function FPStepNewPassword({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      <div className="flex flex-col items-center gap-3 pb-2">
-        <div className="w-14 h-14 rounded-full bg-green-50 border border-green-100 flex items-center justify-center">
-          <svg
-            className="w-6 h-6 text-green-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-        </div>
-        <div className="text-center">
-          <p className="text-sm font-medium text-charcoal-700">
-            Set a new password
-          </p>
-          <p className="text-xs text-charcoal-400 mt-1 font-light">
-            Choose a strong password for your account.
-          </p>
-        </div>
-      </div>
-
+    <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-600">
+        <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200/80 text-xs text-rose-700 font-medium">
           {error}
         </div>
       )}
       {success && (
-        <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 text-sm text-green-700">
+        <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200/80 text-xs text-emerald-900 font-medium">
           {success}
         </div>
       )}
 
-      {[
-        {
-          label: "New Password",
-          value: newPassword,
-          onChange: setNewPassword,
-          placeholder: "Min. 6 characters",
-        },
-        {
-          label: "Confirm Password",
-          value: confirm,
-          onChange: setConfirm,
-          placeholder: "Repeat new password",
-        },
-      ].map(({ label, value, onChange, placeholder }) => (
-        <div key={label}>
-          <label className="block text-xs font-medium text-charcoal-600 mb-2">
-            {label}
-          </label>
-          <div className="relative">
-            <input
-              type={show ? "text" : "password"}
-              className="input-field pr-11"
-              placeholder={placeholder}
-              value={value}
-              onChange={(e) => onChange(e.target.value)}
-            />
-            <button
-              type="button"
-              onClick={() => setShow(!show)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-charcoal-300 hover:text-charcoal-600 transition-colors"
-            >
-              <EyeIcon open={show} />
-            </button>
-          </div>
+      <div className="space-y-1.5">
+        <label className="block text-[11px] font-semibold tracking-wider uppercase text-stone-600">
+          New Password
+        </label>
+        <div className="relative">
+          <input
+            type={show ? "text" : "password"}
+            className="w-full px-4 py-3.5 pr-11 rounded-2xl border border-stone-200 bg-stone-50/40 text-stone-900 text-xs sm:text-sm placeholder-stone-400 focus:outline-none focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 transition-all"
+            placeholder="Min. 6 characters"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <button
+            type="button"
+            onClick={() => setShow(!show)}
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 transition-colors"
+          >
+            <EyeIcon open={show} />
+          </button>
         </div>
-      ))}
+      </div>
+
+      <div className="space-y-1.5">
+        <label className="block text-[11px] font-semibold tracking-wider uppercase text-stone-600">
+          Confirm Password
+        </label>
+        <input
+          type={show ? "text" : "password"}
+          className="w-full px-4 py-3.5 rounded-2xl border border-stone-200 bg-stone-50/40 text-stone-900 text-xs sm:text-sm placeholder-stone-400 focus:outline-none focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 transition-all"
+          placeholder="Repeat new password"
+          value={confirm}
+          onChange={(e) => setConfirm(e.target.value)}
+        />
+      </div>
 
       <button
         type="submit"
         disabled={loading || !!success}
-        className="btn-primary w-full py-4 disabled:opacity-60 disabled:cursor-not-allowed"
+        className="w-full min-h-[50px] py-3.5 bg-emerald-950 hover:bg-[#072418] text-white font-medium tracking-wide text-xs sm:text-sm rounded-2xl shadow-[0_10px_25px_rgba(6,30,20,0.15)] transition-all active:scale-[0.99] disabled:opacity-60 mt-2"
       >
-        {loading ? <Spinner /> : "Reset Password"}
-      </button>
-
-      <button
-        type="button"
-        onClick={onBack}
-        className="w-full text-sm text-charcoal-400 hover:text-charcoal-600 transition-colors py-1 inline-flex items-center justify-center gap-1.5"
-      >
-        <svg
-          className="w-3.5 h-3.5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={1.5}
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-        Back
+        {loading ? <Spinner /> : "Update Password"}
       </button>
     </form>
   );
 }
 
-// ─── Verify Email Form (OTP Step) ─────────────────────────────────────────────
+// ─── Verify Email Form ─────────────────────────────────────────────────────────
 
 function VerifyEmailForm({
   email,
@@ -1316,13 +1078,8 @@ function VerifyEmailForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [cooldown, setCooldown] = useState(0);
+  const [cooldown, setCooldown] = useState(60);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
-  // Start 60-second resend cooldown on mount
-  useEffect(() => {
-    setCooldown(60);
-  }, []);
 
   useEffect(() => {
     if (cooldown <= 0) return;
@@ -1331,30 +1088,21 @@ function VerifyEmailForm({
   }, [cooldown]);
 
   const handleChange = (index: number, value: string) => {
-    // Accept only digits
     const digit = value.replace(/\D/g, "").slice(-1);
     const next = [...digits];
     next[index] = digit;
     setDigits(next);
-    if (digit && index < 5) {
-      inputRefs.current[index + 1]?.focus();
-    }
+    if (digit && index < 5) inputRefs.current[index + 1]?.focus();
   };
 
-  const handleKeyDown = (
-    index: number,
-    e: React.KeyboardEvent<HTMLInputElement>,
-  ) => {
+  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Backspace" && !digits[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
   const handlePaste = (e: React.ClipboardEvent) => {
-    const pasted = e.clipboardData
-      .getData("text")
-      .replace(/\D/g, "")
-      .slice(0, 6);
+    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
     if (!pasted) return;
     e.preventDefault();
     const next = Array(6).fill("");
@@ -1423,45 +1171,20 @@ function VerifyEmailForm({
   }, [email]);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Email icon */}
-      <div className="flex flex-col items-center gap-3 pb-2">
-        <div className="w-14 h-14 rounded-full bg-charcoal-50 border border-charcoal-100 flex items-center justify-center">
-          <svg
-            className="w-6 h-6 text-charcoal-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-            />
-          </svg>
-        </div>
-        <div className="text-center">
-          <p className="text-sm font-medium text-charcoal-700">
-            Verification code sent to
-          </p>
-          <p className="text-sm text-charcoal-400 font-light mt-0.5">{email}</p>
-        </div>
-      </div>
-
+    <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-600 text-center">
+        <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200/80 text-xs text-rose-700 font-medium text-center">
           {error}
         </div>
       )}
       {success && (
-        <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 text-sm text-green-700 text-center">
+        <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200/80 text-xs text-emerald-900 font-medium text-center">
           {success}
         </div>
       )}
 
-      {/* 6-digit OTP input */}
-      <div className="flex justify-center gap-2.5" onPaste={handlePaste}>
+      {/* 6 Individual Code Boxes */}
+      <div className="flex justify-center gap-2 sm:gap-2.5" onPaste={handlePaste}>
         {digits.map((digit, i) => (
           <input
             key={i}
@@ -1474,14 +1197,11 @@ function VerifyEmailForm({
             value={digit}
             onChange={(e) => handleChange(i, e.target.value)}
             onKeyDown={(e) => handleKeyDown(i, e)}
-            className={`w-11 h-13 text-center text-lg font-semibold border rounded-xl outline-none transition-all duration-200
-              ${
-                digit
-                  ? "border-charcoal-700 bg-charcoal-50 text-charcoal-950"
-                  : "border-charcoal-200 bg-white text-charcoal-950"
-              }
-              focus:border-charcoal-700 focus:ring-2 focus:ring-charcoal-200 focus:bg-white`}
-            style={{ height: "52px" }}
+            className={`w-11 sm:w-12 h-14 text-center text-lg font-bold rounded-2xl border outline-none transition-all duration-200 ${
+              digit
+                ? "border-emerald-950 bg-stone-50 text-emerald-950 shadow-xs"
+                : "border-stone-200 bg-white text-stone-900"
+            } focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5`}
           />
         ))}
       </div>
@@ -1489,30 +1209,19 @@ function VerifyEmailForm({
       <button
         type="submit"
         disabled={loading || !!success}
-        className="btn-primary w-full py-4 disabled:opacity-60 disabled:cursor-not-allowed"
+        className="w-full min-h-[50px] py-3.5 bg-emerald-950 hover:bg-[#072418] text-white font-medium tracking-wide text-xs sm:text-sm rounded-2xl shadow-[0_10px_25px_rgba(6,30,20,0.15)] transition-all active:scale-[0.99] disabled:opacity-60"
       >
-        {loading ? <Spinner /> : "Verify Email"}
+        {loading ? <Spinner /> : "Verify & Sign In"}
       </button>
 
-      {/* Resend + Back */}
-      <div className="flex items-center justify-between text-sm">
+      <div className="flex items-center justify-between text-xs pt-1">
         <button
           type="button"
           onClick={onBack}
-          className="text-charcoal-400 hover:text-charcoal-600 transition-colors font-light inline-flex items-center gap-1"
+          className="font-medium text-stone-600 hover:text-emerald-950 inline-flex items-center gap-1 transition-colors"
         >
-          <svg
-            className="w-3.5 h-3.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M15 19l-7-7 7-7"
-            />
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
           Back
         </button>
@@ -1521,7 +1230,7 @@ function VerifyEmailForm({
           type="button"
           onClick={handleResend}
           disabled={cooldown > 0}
-          className="text-accent-600 hover:text-accent-700 font-medium transition-colors disabled:text-charcoal-300 disabled:cursor-not-allowed"
+          className="font-medium text-emerald-950 hover:underline transition-colors disabled:text-stone-400 disabled:cursor-not-allowed"
         >
           {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend code"}
         </button>
@@ -1530,28 +1239,23 @@ function VerifyEmailForm({
   );
 }
 
-// ─── Shared small components ───────────────────────────────────────────────────
+// ─── Shared UI Helpers ─────────────────────────────────────────────────────────
 
 function EyeIcon({ open }: { open: boolean }) {
   return (
-    <svg
-      className="w-4 h-4"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       {open ? (
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
-          strokeWidth={1.5}
+          strokeWidth={1.75}
           d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"
         />
       ) : (
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
-          strokeWidth={1.5}
+          strokeWidth={1.75}
           d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z M15 12a3 3 0 11-6 0 3 3 0 016 0z"
         />
       )}
@@ -1561,24 +1265,9 @@ function EyeIcon({ open }: { open: boolean }) {
 
 function Spinner() {
   return (
-    <svg
-      className="animate-spin mx-auto h-5 w-5 text-white"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-      />
+    <svg className="animate-spin mx-auto h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
     </svg>
   );
 }
