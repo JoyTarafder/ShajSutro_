@@ -894,8 +894,8 @@ function FPStepOTP({
         </div>
       )}
 
-      {/* 6 Individual Code Boxes */}
-      <div className="flex justify-center gap-2 sm:gap-2.5" onPaste={handlePaste}>
+      {/* 6 Individual High-Contrast Code Boxes */}
+      <div className="flex justify-center gap-2 sm:gap-3 py-2" onPaste={handlePaste}>
         {digits.map((digit, i) => (
           <input
             key={i}
@@ -908,11 +908,11 @@ function FPStepOTP({
             value={digit}
             onChange={(e) => handleChange(i, e.target.value)}
             onKeyDown={(e) => handleKeyDown(i, e)}
-            className={`w-11 sm:w-12 h-14 text-center text-lg font-bold rounded-2xl border outline-none transition-all duration-200 ${
+            className={`w-12 h-14 sm:w-13 sm:h-16 text-center text-xl sm:text-2xl font-bold font-mono rounded-2xl border-2 outline-none transition-all duration-200 shadow-sm ${
               digit
-                ? "border-emerald-950 bg-stone-50 text-emerald-950 shadow-xs"
-                : "border-stone-200 bg-white text-stone-900"
-            } focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5`}
+                ? "border-emerald-950 bg-emerald-50/90 text-emerald-950 shadow-md scale-105"
+                : "border-emerald-300/80 bg-emerald-50/30 text-emerald-950 hover:border-emerald-400 hover:bg-emerald-50/60"
+            } focus:border-emerald-950 focus:bg-white focus:ring-4 focus:ring-emerald-950/15 focus:scale-105`}
           />
         ))}
       </div>
@@ -1183,8 +1183,8 @@ function VerifyEmailForm({
         </div>
       )}
 
-      {/* 6 Individual Code Boxes */}
-      <div className="flex justify-center gap-2 sm:gap-2.5" onPaste={handlePaste}>
+      {/* 6 Individual High-Contrast Code Boxes */}
+      <div className="flex justify-center gap-2 sm:gap-3 py-2" onPaste={handlePaste}>
         {digits.map((digit, i) => (
           <input
             key={i}
@@ -1197,11 +1197,11 @@ function VerifyEmailForm({
             value={digit}
             onChange={(e) => handleChange(i, e.target.value)}
             onKeyDown={(e) => handleKeyDown(i, e)}
-            className={`w-11 sm:w-12 h-14 text-center text-lg font-bold rounded-2xl border outline-none transition-all duration-200 ${
+            className={`w-12 h-14 sm:w-13 sm:h-16 text-center text-xl sm:text-2xl font-bold font-mono rounded-2xl border-2 outline-none transition-all duration-200 shadow-sm ${
               digit
-                ? "border-emerald-950 bg-stone-50 text-emerald-950 shadow-xs"
-                : "border-stone-200 bg-white text-stone-900"
-            } focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5`}
+                ? "border-emerald-950 bg-emerald-50/90 text-emerald-950 shadow-md scale-105"
+                : "border-emerald-300/80 bg-emerald-50/30 text-emerald-950 hover:border-emerald-400 hover:bg-emerald-50/60"
+            } focus:border-emerald-950 focus:bg-white focus:ring-4 focus:ring-emerald-950/15 focus:scale-105`}
           />
         ))}
       </div>

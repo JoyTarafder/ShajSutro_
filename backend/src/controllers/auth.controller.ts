@@ -58,7 +58,11 @@ export const register = asyncHandler(
       verificationAttempts: 0,
     });
 
-    await sendVerificationEmail(normalizedEmail, code);
+    try {
+      await sendVerificationEmail(normalizedEmail, code);
+    } catch (mailErr: any) {
+      console.warn("[Register Warning] Could not dispatch verification email via SMTP:", mailErr?.message || mailErr);
+    }
 
     res.status(201).json({
       success: true,
@@ -453,7 +457,11 @@ export const resendVerificationCode = asyncHandler(
     pending.verificationAttempts = 0;
     await pending.save();
 
-    await sendVerificationEmail(normalizedEmail, code);
+    try {
+      await sendVerificationEmail(normalizedEmail, code);
+    } catch (mailErr: any) {
+      console.warn("[Resend Warning] Could not dispatch email via SMTP:", mailErr?.message || mailErr);
+    }
 
     res.status(200).json({
       success: true,
@@ -486,7 +494,11 @@ export const forgotPassword = asyncHandler(
     user.passwordResetAttempts = 0;
     await user.save();
 
-    await sendPasswordResetEmail(user.email, code);
+    try {
+      await sendPasswordResetEmail(user.email, code);
+    } catch (mailErr: any) {
+      console.warn("[Forgot Password Warning] Could not dispatch email via SMTP:", mailErr?.message || mailErr);
+    }
 
     res.status(200).json({
       success: true,

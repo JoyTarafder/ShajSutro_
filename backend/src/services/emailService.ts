@@ -50,15 +50,25 @@ async function sendMailWithAntiSpam(options: {
     headers["Precedence"] = "bulk";
   }
 
-  await transporter.sendMail({
-    from: fromHeader,
-    replyTo: senderEmail,
-    to: options.to,
-    subject: options.subject,
-    text: plainText,
-    html: options.html,
-    headers,
-  });
+  try {
+    await transporter.sendMail({
+      from: fromHeader,
+      replyTo: senderEmail,
+      to: options.to,
+      subject: options.subject,
+      text: plainText,
+      html: options.html,
+      headers,
+    });
+  } catch (err: any) {
+    console.error(
+      `[Email Service Error] Failed to dispatch email to ${options.to}:`,
+      err?.message || err
+    );
+    console.log(
+      `[Email Fallback Info] Email intended for ${options.to} | Subject: "${options.subject}"`
+    );
+  }
 }
 
 // ─── Shared Ultra-Modern Luxury Layout Shell ───────────────────────────────────
@@ -255,6 +265,8 @@ export const sendVerificationEmail = async (
     ${securityNoticeBox("ShajSutro will never request your password or confidential details over email. If you did not sign up for an account, please ignore this email.")}
   `;
 
+  console.log(`[AUTH VERIFICATION OTP] Code for ${email}: ${code}`);
+
   await sendMailWithAntiSpam({
     to: email,
     subject: "Verify your ShajSutro account",
@@ -271,6 +283,8 @@ export const sendPasswordResetEmail = async (
   email: string,
   code: string,
 ): Promise<void> => {
+  console.log(`[AUTH RESET PASSWORD OTP] Code for ${email}: ${code}`);
+
   const body = `
     <!-- Header Greeting -->
     <div style="text-align:center;margin-bottom:32px;">
