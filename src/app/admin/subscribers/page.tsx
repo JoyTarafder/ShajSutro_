@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useAdminAuth } from "@/context/AdminAuthContext";
+import { getApiBase } from "@/lib/apiBase";
 
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API = `${getApiBase()}/api`;
 
 interface Subscriber {
   _id: string;

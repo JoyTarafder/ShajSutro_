@@ -1,8 +1,7 @@
 "use client";
 
+import { getApiBase } from "@/lib/apiBase";
 import { useState } from "react";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default function NewsletterSection() {
   const [email, setEmail] = useState("");
@@ -17,7 +16,7 @@ export default function NewsletterSection() {
     setErrorMessage("");
 
     try {
-      const res = await fetch(`${API_BASE}/api/newsletter/subscribe`, {
+      const res = await fetch(`${getApiBase()}/api/newsletter/subscribe`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.trim() }),

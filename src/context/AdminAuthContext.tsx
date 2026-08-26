@@ -9,12 +9,12 @@ import React, {
 } from "react";
 import { useRouter } from "next/navigation";
 
-// Strip trailing /api or / then always append /api — so the env var works
-// whether set as "http://host:5000" OR "http://host:5000/api"
-const _rawBase = (
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000"
-).replace(/\/api\/?$/, "").replace(/\/$/, "");
-const API_BASE = `${_rawBase}/api`;
+import { getApiBase } from "@/lib/apiBase";
+
+function getAdminApiBase(): string {
+  const base = getApiBase();
+  return base ? `${base}/api` : "/api";
+}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -94,7 +94,7 @@ export const AdminAuthProvider = ({
   const apiFetch = useCallback(
     async <T,>(path: string, options: RequestInit = {}): Promise<T> => {
       const storedToken = localStorage.getItem("admin_token");
-      const res = await fetch(`${API_BASE}${path}`, {
+      const res = await fetch(`${getAdminApiBase()}${path}`, {
         ...options,
         headers: {
           "Content-Type": "application/json",
@@ -126,7 +126,7 @@ export const AdminAuthProvider = ({
 
   const login = useCallback(
     async (email: string, password: string) => {
-      const res = await fetch(`${API_BASE}/auth/login`, {
+      const res = await fetch(`${getAdminApiBase()}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
