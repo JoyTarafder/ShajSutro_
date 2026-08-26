@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect, Suspense } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Product, SortOption } from "@/types";
 import ProductCard from "@/components/product/ProductCard";
@@ -146,6 +147,7 @@ function ShopContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category") ?? "";
   const initialBadge = searchParams.get("badge") ?? "";
+  const searchQuery = searchParams.get("search") ?? searchParams.get("q") ?? "";
 
   // ── Data state ──
   const [allProducts, setAllProducts] = useState<Product[]>([]);
@@ -178,7 +180,7 @@ function ShopContent() {
       const dynamicMax = Math.max(5000, Math.ceil(highest / 1000) * 1000);
       setPriceRange([0, dynamicMax]);
     }
-  }, [initialCategory, initialBadge, allProducts]);
+  }, [initialCategory, initialBadge, searchQuery, allProducts]);
 
   // Fetch categories for the filter panel
   useEffect(() => {
@@ -188,11 +190,12 @@ function ShopContent() {
       .catch(() => {});
   }, []);
 
-  // Fetch products whenever the badge URL param changes (category filtering is client-side)
+  // Fetch products whenever the badge or search URL param changes
   useEffect(() => {
     setLoading(true);
     const params = new URLSearchParams({ limit: "100" });
     if (initialBadge) params.set("badge", initialBadge);
+    if (searchQuery) params.set("search", searchQuery);
 
     fetch(`${getApiBase()}/api/products?${params.toString()}`)
       .then((r) => r.json())
@@ -217,11 +220,23 @@ function ShopContent() {
         setPriceRange([0, dynamicMax]);
       })
       .finally(() => setLoading(false));
-  }, [initialBadge]);
+  }, [initialBadge, searchQuery]);
 
   // ── Client-side filtering + sorting ──
   const filteredProducts = useMemo(() => {
     let list = [...allProducts];
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      list = list.filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q) ||
+          (p.sku && p.sku.toLowerCase().includes(q)) ||
+          p.category.toLowerCase().includes(q) ||
+          (p.tags && p.tags.some((t) => t.toLowerCase().includes(q)))
+      );
+    }
 
     if (selectedCategories.length > 0) {
       const selectedLower = selectedCategories.map((c) => c.toLowerCase());
@@ -258,7 +273,7 @@ function ShopContent() {
     }
 
     return list;
-  }, [allProducts, selectedCategories, selectedSizes, priceRange, sortBy, categories]);
+  }, [allProducts, selectedCategories, selectedSizes, priceRange, sortBy, categories, searchQuery]);
 
   const toggleCategory = (cat: string) => {
     setSelectedCategories((prev) =>
@@ -294,12 +309,14 @@ function ShopContent() {
   };
 
   const hasActiveFilters =
+    Boolean(searchQuery) ||
     selectedCategories.length > 0 ||
     selectedSizes.length > 0 ||
     priceRange[0] > 0 ||
     priceRange[1] < maxPrice;
 
   const activeFiltersCount =
+    (searchQuery ? 1 : 0) +
     selectedCategories.length +
     selectedSizes.length +
     (priceRange[0] > 0 || priceRange[1] < maxPrice ? 1 : 0);
@@ -532,10 +549,11 @@ function ShopContent() {
   };
 
   const headingText = useMemo(() => {
+    if (searchQuery) return `Search Results for "${searchQuery}"`;
     if (initialBadge) return initialBadge;
     if (!initialCategory) return "All Products";
     return getCategoryLabel(initialCategory);
-  }, [initialBadge, initialCategory, categories]);
+  }, [searchQuery, initialBadge, initialCategory, categories]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f5fff9] via-[#eef9f2] to-white relative overflow-hidden">
@@ -613,6 +631,19 @@ function ShopContent() {
             {hasActiveFilters && (
               <div className="flex flex-wrap items-center gap-2 mb-8 animate-fade-in">
                 <span className="text-xs text-emerald-900/50 font-medium mr-1 uppercase tracking-wider">Active:</span>
+                {searchQuery && (
+                  <Link
+                    href={`/shop${initialCategory ? `?category=${initialCategory}` : ""}${initialBadge ? `${initialCategory ? "&" : "?"}badge=${initialBadge}` : ""}`}
+                    className="group flex items-center gap-2 px-4 py-2 bg-amber-500 text-slate-950 text-xs font-bold rounded-full transition-all duration-300 hover:bg-amber-400 hover:scale-105 active:scale-95 shadow-soft hover:shadow-soft-lg"
+                  >
+                    <span>Search: &ldquo;{searchQuery}&rdquo;</span>
+                    <span className="bg-black/15 rounded-full p-0.5 group-hover:bg-black/25 transition-colors">
+                      <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </span>
+                  </Link>
+                )}
                 {selectedCategories.map((cat) => (
                   <button
                     key={cat}

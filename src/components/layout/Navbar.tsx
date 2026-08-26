@@ -1,6 +1,7 @@
 "use client";
 
 import Logo from "@/components/layout/Logo";
+import SearchModal from "@/components/layout/SearchModal";
 import { useCart } from "@/context/CartContext";
 import { getApiBase } from "@/lib/apiBase";
 import Link from "next/link";
@@ -109,6 +110,7 @@ export default function Navbar() {
   const [userInitial, setUserInitial] = useState("");
   const [avatarImg, setAvatarImg] = useState<string | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [categories, setCategories] = useState<NavCategory[]>([]);
   const [openCat, setOpenCat] = useState<string | null>(null); // desktop hover
   const [mobileOpenCat, setMobileOpenCat] = useState<string | null>(null); // mobile expand
@@ -372,10 +374,12 @@ export default function Navbar() {
 
             {/* Right icons */}
             <div className="flex items-center gap-1">
-              <Link
-                href="/shop"
-                className="hidden sm:flex p-2.5 text-charcoal-400 hover:text-charcoal-900 rounded-full hover:bg-charcoal-50 transition-all duration-300"
-                aria-label="Search"
+              <button
+                type="button"
+                onClick={() => setSearchModalOpen(true)}
+                className="flex p-2.5 text-charcoal-400 hover:text-charcoal-900 rounded-full hover:bg-charcoal-50 transition-all duration-300 active:scale-95 cursor-pointer"
+                aria-label="Search products"
+                title="Search products (Ctrl+K)"
               >
                 <svg
                   className="w-[18px] h-[18px]"
@@ -390,7 +394,7 @@ export default function Navbar() {
                     d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
                   />
                 </svg>
-              </Link>
+              </button>
 
               {isLoggedIn ? (
                 <div ref={acctRef} className="relative hidden sm:block">
@@ -854,17 +858,23 @@ export default function Navbar() {
                   Sign Out
                 </button>
               </>
-            ) : (
-              <Link
-                href="/login"
-                className="btn-secondary w-full text-center text-sm"
-              >
-                Sign in
-              </Link>
-            )}
+              ) : (
+                <Link
+                  href="/login"
+                  className="btn-secondary w-full text-center text-sm"
+                >
+                  Sign in
+                </Link>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </>
-  );
-}
+
+        {/* Global Search Modal */}
+        <SearchModal
+          isOpen={searchModalOpen}
+          onClose={() => setSearchModalOpen(false)}
+        />
+      </>
+    );
+  }

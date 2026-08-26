@@ -72,8 +72,23 @@ export const getProducts = asyncHandler(
         (filter.price as Record<string, number>).$lte = Number(maxPrice);
     }
 
-    if (search) {
-      filter.$text = { $search: search };
+    if (search && search.trim()) {
+      const cleanSearch = search.trim();
+      const escaped = cleanSearch.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const matchingCategories = await Category.find({
+        name: { $regex: escaped, $options: "i" },
+      }).select("_id");
+      const matchedCatIds = matchingCategories.map((c) => c._id);
+
+      filter.$or = [
+        { sku: { $regex: escaped, $options: "i" } },
+        { name: { $regex: escaped, $options: "i" } },
+        { tags: { $regex: escaped, $options: "i" } },
+        { description: { $regex: escaped, $options: "i" } },
+        ...(matchedCatIds.length > 0
+          ? [{ category: { $in: matchedCatIds } }]
+          : []),
+      ];
     }
 
     const pageNum = Math.max(1, parseInt(page));
