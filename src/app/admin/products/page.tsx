@@ -1393,27 +1393,30 @@ function ProductsContent() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-white/10 bg-white/[0.04]">
-                  {[
-                    "Product",
-                    "Category",
-                    "Price",
-                    "Badge",
-                    "Stock Qty",
-                    "Orders",
-                    "Premium Gallery",
-                    "Status",
-                    "",
-                  ].map((h) => (
-                    <th
-                      key={h}
-                      className="text-left text-xs font-bold text-slate-200 uppercase tracking-wider px-5 py-3.5"
-                    >
-                      {h}
-                    </th>
-                  ))}
+                  <th className="text-left text-xs font-bold text-slate-200 uppercase tracking-wider px-4 py-3.5 min-w-[200px]">
+                    Product
+                  </th>
+                  <th className="text-left text-xs font-bold text-slate-200 uppercase tracking-wider px-3 py-3.5">
+                    Category
+                  </th>
+                  <th className="text-left text-xs font-bold text-slate-200 uppercase tracking-wider px-3 py-3.5">
+                    Price
+                  </th>
+                  <th className="text-left text-xs font-bold text-slate-200 uppercase tracking-wider px-3 py-3.5">
+                    Stock & Orders
+                  </th>
+                  <th className="text-left text-xs font-bold text-slate-200 uppercase tracking-wider px-3 py-3.5">
+                    Gallery
+                  </th>
+                  <th className="text-left text-xs font-bold text-slate-200 uppercase tracking-wider px-3 py-3.5">
+                    Status
+                  </th>
+                  <th className="text-right text-xs font-bold text-slate-200 uppercase tracking-wider px-4 py-3.5">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/[0.03]">
@@ -1422,21 +1425,22 @@ function ProductsContent() {
                     key={p._id}
                     className={`hover:bg-violet-50/20 transition-colors duration-100 group ${!p.isVisible ? "opacity-60" : ""}`}
                   >
-                    <td className="px-5 py-4">
+                    {/* Product & SKU */}
+                    <td className="px-4 py-3 min-w-[200px]">
                       <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 rounded-xl overflow-hidden bg-white/[0.04] relative flex-shrink-0">
+                        <div className="w-10 h-10 rounded-xl overflow-hidden bg-white/[0.04] relative flex-shrink-0">
                           {p.images[0] ? (
                             <Image
                               src={p.images[0]}
                               alt={p.name}
                               fill
                               className="object-cover"
-                              sizes="44px"
+                              sizes="40px"
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-gray-300">
                               <svg
-                                className="w-5 h-5"
+                                className="w-4 h-4"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -1451,66 +1455,57 @@ function ProductsContent() {
                             </div>
                           )}
                         </div>
-                        <div className="min-w-0 max-w-xs sm:max-w-sm space-y-1">
-                          <p className="text-sm font-semibold text-slate-100 line-clamp-1 capitalize" title={p.name}>
-                            {p.name.toLowerCase()}
-                          </p>
+                        <div className="min-w-0 flex-1 space-y-1">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <p className="text-xs sm:text-sm font-semibold text-slate-100 line-clamp-1 capitalize" title={p.name}>
+                              {p.name.toLowerCase()}
+                            </p>
+                            {p.badge && (
+                              <span
+                                className={`inline-block px-1.5 py-0.2 rounded text-[9px] font-bold uppercase whitespace-nowrap ${BADGE_STYLE[p.badge] ?? "bg-white/[0.06] text-slate-300"}`}
+                              >
+                                {p.badge}
+                              </span>
+                            )}
+                          </div>
                           {p.sku && (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-mono font-medium bg-amber-400/10 text-amber-300 border border-amber-400/25">
-                              <span className="font-sans text-[11px] font-bold text-amber-400/80 uppercase">SKU:</span>
-                              <span className="font-bold tracking-tight">{p.sku}</span>
-                            </span>
+                            <div className="flex items-center">
+                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] sm:text-[11px] font-mono font-bold bg-amber-400/10 text-amber-300 border border-amber-400/25 whitespace-nowrap shrink-0">
+                                <span className="font-sans text-[9px] font-extrabold text-amber-400/75 uppercase">SKU:</span>
+                                <span className="tracking-tight">{p.sku}</span>
+                              </span>
+                            </div>
                           )}
-                          <p className="text-xs text-slate-400 line-clamp-1 leading-relaxed" title={p.description}>
-                            {p.description}
-                          </p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-sm text-slate-400 font-medium">
+
+                    {/* Category */}
+                    <td className="px-3 py-3 text-xs sm:text-sm text-slate-400 font-medium whitespace-nowrap">
                       {getCategoryDisplayName(p.category)}
                     </td>
-                    <td className="px-5 py-4 whitespace-nowrap">
-                      <span className="text-sm font-black text-slate-100">
+
+                    {/* Price */}
+                    <td className="px-3 py-3 whitespace-nowrap">
+                      <span className="text-xs sm:text-sm font-bold text-slate-100">
                         ৳{p.price}
                       </span>
                       {p.originalPrice && p.originalPrice > p.price && (
-                        <>
-                          <span className="text-xs text-slate-500 line-through ml-1.5">
-                            ৳{p.originalPrice}
-                          </span>
-                          <span className="ml-1.5 text-[10px] font-extrabold text-rose-400 bg-rose-950/40 px-1.5 py-0.5 rounded border border-rose-500/30">
-                            {Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100)}% OFF
-                          </span>
-                        </>
-                      )}
-                    </td>
-                    <td className="px-5 py-4">
-                      {p.badge ? (
-                        <span
-                          className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${BADGE_STYLE[p.badge] ?? "bg-white/[0.06] text-slate-300"}`}
-                        >
-                          {p.badge}
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium text-slate-500 bg-white/[0.02] border border-white/5">
-                          None
+                        <span className="text-[11px] text-slate-500 line-through ml-1.5">
+                          ৳{p.originalPrice}
                         </span>
                       )}
                     </td>
-                    {/* Stock Qty */}
-                    <td className="px-5 py-4">
+
+                    {/* Stock & Orders */}
+                    <td className="px-3 py-3 whitespace-nowrap">
                       {(() => {
                         const qty = p.stock ?? 0;
                         if (!p.inStock)
                           return (
-                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold text-rose-400 bg-rose-950/30 border border-rose-500/20">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold text-rose-400 bg-rose-950/30 border border-rose-500/20">
                               Out of stock
                             </span>
-                          );
-                        if (qty === 0)
-                          return (
-                            <span className="text-xs text-slate-500">0</span>
                           );
                         const color =
                           qty <= 3
@@ -1519,18 +1514,18 @@ function ProductsContent() {
                               ? "text-amber-400 font-semibold"
                               : "text-emerald-400 font-semibold";
                         return (
-                          <span className={`text-sm ${color}`}>{qty}</span>
+                          <div className="leading-tight">
+                            <span className={`text-xs sm:text-sm ${color}`}>{qty} in stock</span>
+                            <p className="text-[10px] text-slate-400">
+                              {(p.totalOrdered ?? 0)} order{(p.totalOrdered ?? 0) !== 1 ? "s" : ""}
+                            </p>
+                          </div>
                         );
                       })()}
                     </td>
-                    {/* Total Ordered */}
-                    <td className="px-5 py-4">
-                      <span className="text-sm font-semibold text-slate-300">
-                        {(p.totalOrdered ?? 0).toLocaleString()}
-                      </span>
-                    </td>
+
                     {/* Premium Gallery Toggle */}
-                    <td className="px-5 py-4 whitespace-nowrap">
+                    <td className="px-3 py-3 whitespace-nowrap">
                       <button
                         type="button"
                         onClick={() => toggleFeatured(p)}
@@ -1539,71 +1534,72 @@ function ProductsContent() {
                             ? "Click to remove from Premium Gallery"
                             : "Click to add to Premium Gallery"
                         }
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
                           p.isFeatured
                             ? "bg-amber-400/15 text-amber-300 border border-amber-400/30 hover:bg-amber-400/25 shadow-xs"
-                            : "text-slate-500 bg-white/[0.02] border border-white/5 hover:border-amber-400/30 hover:text-amber-300 hover:bg-amber-400/10"
+                            : "text-slate-400 bg-white/[0.02] border border-white/10 hover:border-amber-400/30 hover:text-amber-300 hover:bg-amber-400/10"
                         }`}
                       >
                         <span>{p.isFeatured ? "✨" : "+"}</span>
-                        <span>{p.isFeatured ? "In Gallery" : "Add to Gallery"}</span>
+                        <span>{p.isFeatured ? "Gallery" : "Add"}</span>
                       </button>
                     </td>
-                    {/* Visibility toggle */}
-                    <td className="px-5 py-4">
+
+                    {/* Visibility toggle switch */}
+                    <td className="px-3 py-3 whitespace-nowrap">
                       <button
                         type="button"
                         role="switch"
                         aria-checked={p.isVisible}
-                        aria-label={`Toggle visibility for ${p.name}`}
+                        aria-label={`Toggle visibility for ${p.name} (${p.isVisible ? "Currently Visible" : "Currently Hidden"})`}
                         onClick={() => toggleVisibility(p)}
                         title={
                           p.isVisible
-                            ? "Click to hide from store"
-                            : "Click to show on store"
+                            ? "Visible on store (Click to hide)"
+                            : "Hidden from store (Click to show)"
                         }
-                        className={`inline-flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
+                        className={`inline-flex items-center p-1 rounded-full border transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500/40 ${
                           p.isVisible
-                            ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/25"
-                            : "bg-white/[0.04] text-slate-400 border-white/10 hover:bg-white/[0.08]"
+                            ? "bg-emerald-500/15 border-emerald-500/40 hover:bg-emerald-500/25"
+                            : "bg-white/[0.04] border-white/10 hover:bg-white/[0.08]"
                         }`}
                       >
-                        {/* Standard Switch Toggle track & knob */}
                         <span
                           className={`relative inline-flex items-center w-8 h-4.5 rounded-full transition-colors ${
                             p.isVisible ? "bg-emerald-500" : "bg-slate-700"
                           }`}
                         >
                           <span
-                            className={`w-3.5 h-3.5 bg-white rounded-full transition-transform shadow-xs ${
+                            className={`w-3.5 h-3.5 bg-white rounded-full transition-transform shadow-sm ${
                               p.isVisible ? "translate-x-4" : "translate-x-0.5"
                             }`}
                           />
                         </span>
-                        <span>{p.isVisible ? "Visible" : "Hidden"}</span>
                       </button>
                     </td>
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-2 justify-end">
+
+                    {/* Actions */}
+                    <td className="px-4 py-3 whitespace-nowrap text-right">
+                      <div className="flex items-center gap-1.5 justify-end">
                         <button
                           onClick={() => setModalProduct(p)}
                           aria-label={`Edit ${p.name}`}
-                          className="px-3 py-1.5 text-xs font-semibold text-slate-200 bg-white/[0.06] border border-white/10 rounded-xl hover:bg-white/[0.12] hover:text-white transition-all shadow-sm flex items-center gap-1"
+                          className="p-1.5 sm:px-2.5 sm:py-1 text-xs font-semibold text-slate-200 bg-white/[0.06] border border-white/10 rounded-lg hover:bg-white/[0.12] hover:text-white transition-all shadow-sm flex items-center gap-1"
                         >
-                          <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
                           </svg>
-                          Edit
+                          <span className="hidden sm:inline">Edit</span>
                         </button>
                         <button
                           onClick={() => setDeleteId(p._id)}
                           aria-label={`Delete ${p.name}`}
-                          className="px-3 py-1.5 text-xs font-semibold text-rose-400 bg-rose-950/30 border border-rose-500/20 rounded-xl hover:bg-rose-900/40 hover:text-rose-300 transition-all shadow-sm flex items-center gap-1"
+                          className="p-1.5 sm:px-2.5 sm:py-1 text-xs font-semibold text-rose-400 bg-rose-950/30 border border-rose-500/20 rounded-lg hover:bg-rose-900/40 hover:text-rose-300 transition-all shadow-sm flex items-center gap-1"
                         >
                           <svg className="w-3.5 h-3.5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                           </svg>
-                          Delete
+                          <span className="hidden sm:inline">Delete</span>
                         </button>
                       </div>
                     </td>
