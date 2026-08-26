@@ -1,3 +1,4 @@
+import Logo from "@/components/layout/Logo";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -35,12 +36,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 lg:gap-16 text-center sm:text-left">
           <div className="col-span-2 md:col-span-1 flex flex-col items-center sm:items-start text-center sm:text-left">
-            <Link
-              href="/"
-              className="text-xl font-bold text-charcoal-950 hover:opacity-70 transition-opacity duration-300"
-            >
-              ShajSutro
-            </Link>
+            <Logo size="md" />
             <p className="mt-3 text-xs sm:text-sm text-charcoal-400 leading-relaxed font-light max-w-sm sm:max-w-none">
               Thoughtfully crafted clothing for the modern wardrobe. Quality over quantity.
             </p>

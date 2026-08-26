@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     "Thoughtfully crafted clothing for the modern wardrobe. Minimalist designs, premium materials, enduring style.",
   keywords: ["clothing", "fashion", "minimalist", "ShajSutro", "sustainable"],
   icons: {
-    icon: "/images/SSLogos.png",
+    icon: "/images/shajsutro-logo.png",
   },
   openGraph: {
     title: "ShajSutro",

@@ -1,6 +1,8 @@
 "use client";
 
 import { useAdminAuth } from "@/context/AdminAuthContext";
+import Logo from "@/components/layout/Logo";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -285,26 +287,17 @@ export default function AdminSidebar() {
         style={{ background: "#09090b" }}
       >
       {/* Brand */}
-      <div className="px-5 py-5 border-b border-white/10 relative overflow-hidden bg-gradient-to-r from-violet-950/30 via-slate-900 to-indigo-950/30 shrink-0">
+      <div className="px-5 py-5 border-b border-white/10 relative overflow-hidden bg-gradient-to-r from-violet-950/30 via-slate-900 to-indigo-950/30 shrink-0 flex items-center justify-between">
         <Link
           href="/admin/dashboard"
           className="flex items-center gap-3 group relative z-10"
         >
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-500 via-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-600/40 group-hover:shadow-violet-500/60 transition-all duration-300 ring-1 ring-white/20">
-            <span className="text-white text-xs font-black tracking-tight drop-shadow-sm">
-              SS
-            </span>
-          </div>
-          <div>
-            <p className="text-white text-base font-extrabold tracking-tight leading-none bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-violet-200">
-              ShajSutro
-            </p>
-            <p className="text-violet-400/90 text-[10px] font-extrabold tracking-[0.18em] uppercase mt-1 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
-              {isRootAdmin ? "Root Admin" : "Sub Admin"}
-            </p>
-          </div>
+          <Logo size="sm" dark={false} />
         </Link>
+        <span className="text-violet-400/90 text-[10px] font-extrabold tracking-[0.15em] uppercase px-2 py-0.5 rounded-md bg-white/5 border border-white/10 flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
+          {isRootAdmin ? "Root" : "Admin"}
+        </span>
       </div>
 
       {/* Navigation */}
