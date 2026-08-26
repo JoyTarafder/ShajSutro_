@@ -352,7 +352,7 @@ function ShopContent() {
                       <span
                         className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${
                           isSelected
-                            ? "bg-emerald-600 border-emerald-600 shadow-xs"
+                            ? "bg-emerald-950 border-emerald-950 shadow-xs"
                             : "border-emerald-200 bg-white"
                         }`}
                         aria-hidden="true"
@@ -368,7 +368,7 @@ function ShopContent() {
                       </span>
                     </div>
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                      isSelected ? "bg-emerald-600/15 text-emerald-900 font-bold" : "bg-emerald-100/50 text-emerald-700"
+                      isSelected ? "bg-emerald-950 text-white font-bold" : "bg-emerald-100/50 text-emerald-800"
                     }`}>
                       {parentProductCount}
                     </span>
@@ -392,14 +392,14 @@ function ShopContent() {
                             className={`w-full flex items-center justify-between rounded-lg px-2.5 py-1.5 border transition-all duration-200 ${
                               isSubSelected
                                 ? "border-emerald-300 bg-emerald-500/15 text-emerald-950 font-bold"
-                                : "border-transparent text-emerald-900/65 hover:bg-emerald-50/50 hover:text-emerald-950"
+                                : "border-transparent text-emerald-900/70 hover:bg-emerald-50/50 hover:text-emerald-950"
                             }`}
                           >
                             <div className="flex items-center gap-2 min-w-0">
                               <span
                                 className={`w-3.5 h-3.5 rounded border flex items-center justify-center transition-all ${
                                   isSubSelected
-                                    ? "bg-emerald-600 border-emerald-600"
+                                    ? "bg-emerald-950 border-emerald-950"
                                     : "border-emerald-200 bg-white"
                                 }`}
                               >
@@ -414,7 +414,7 @@ function ShopContent() {
                               </span>
                             </div>
                             <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-medium ${
-                              isSubSelected ? "bg-emerald-600/25 text-emerald-950 font-bold" : "bg-emerald-100/40 text-emerald-600"
+                              isSubSelected ? "bg-emerald-950 text-white font-bold" : "bg-emerald-100/40 text-emerald-800"
                             }`}>
                               {subProductCount}
                             </span>
@@ -436,7 +436,7 @@ function ShopContent() {
         </h2>
         <div className="grid grid-cols-2 gap-3 mb-5">
           <div>
-            <label className="block text-xs text-emerald-900/60 font-medium mb-1.5">
+            <label className="block text-xs text-emerald-900/70 font-medium mb-1.5">
               Min Price (৳)
             </label>
             <input
@@ -449,7 +449,7 @@ function ShopContent() {
             />
           </div>
           <div>
-            <label className="block text-xs text-emerald-900/60 font-medium mb-1.5">
+            <label className="block text-xs text-emerald-900/70 font-medium mb-1.5">
               Max Price (৳)
             </label>
             <input
@@ -471,7 +471,7 @@ function ShopContent() {
             step={50}
             value={priceRange[0]}
             onChange={(e) => setPriceMin(Number(e.target.value))}
-            className="absolute w-full accent-emerald-700 h-1 bg-emerald-200 rounded-lg appearance-none cursor-pointer"
+            className="absolute w-full accent-emerald-950 h-1 bg-emerald-200 rounded-lg appearance-none cursor-pointer"
           />
           <input
             type="range"
@@ -480,10 +480,10 @@ function ShopContent() {
             step={50}
             value={priceRange[1]}
             onChange={(e) => setPriceMax(Number(e.target.value))}
-            className="absolute w-full accent-emerald-700 h-1 bg-transparent appearance-none cursor-pointer"
+            className="absolute w-full accent-emerald-950 h-1 bg-transparent appearance-none cursor-pointer"
           />
         </div>
-        <div className="flex justify-between text-xs text-emerald-900/60 mt-2 font-medium">
+        <div className="flex justify-between text-xs text-emerald-900/70 mt-2 font-medium">
           <span>৳0</span>
           <span>৳{maxPrice}</span>
         </div>
@@ -504,7 +504,7 @@ function ShopContent() {
                 className={`py-2 text-xs font-semibold rounded-xl border transition-all ${
                   isSelected
                     ? "bg-emerald-950 text-white border-emerald-950 shadow-xs"
-                    : "border-emerald-200/80 bg-white text-emerald-900/80 hover:border-emerald-300 hover:bg-emerald-50/50"
+                    : "border-emerald-200/80 bg-white text-emerald-950 hover:border-emerald-300 hover:bg-emerald-50/50"
                 }`}
               >
                 {size}
@@ -597,26 +597,27 @@ function ShopContent() {
             {/* Sorting & mobile layout controls */}
             <div className="flex items-center justify-between gap-4 mb-8 bg-white/40 backdrop-blur-md border border-emerald-100/50 rounded-2xl p-4 shadow-soft">
               <button
+                type="button"
                 onClick={() => setIsMobileFiltersOpen(true)}
-                className="flex lg:hidden items-center gap-2 text-sm font-semibold text-emerald-950 border border-emerald-200/80 bg-white/70 px-5 py-2.5 rounded-full hover:bg-white transition-all duration-300 shadow-soft"
+                className="flex lg:hidden items-center gap-2 text-xs sm:text-sm font-semibold text-emerald-950 border border-emerald-200/80 bg-white/90 px-4 py-2.5 rounded-xl hover:bg-white transition-all shadow-xs"
               >
-                <svg className="w-4 h-4 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-emerald-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
                 </svg>
                 Filters
                 {hasActiveFilters && (
-                  <span className="w-4 h-4 rounded-full bg-emerald-600 text-white text-[10px] flex items-center justify-center font-bold">
+                  <span className="w-4 h-4 rounded-full bg-emerald-950 text-white text-[10px] flex items-center justify-center font-bold">
                     {Math.min(9, activeFiltersCount)}
                   </span>
                 )}
               </button>
 
               <div className="flex items-center gap-3 ml-auto">
-                <label className="text-xs font-semibold uppercase tracking-wider text-emerald-900/60 hidden sm:block">Sort By</label>
+                <label className="text-xs font-semibold uppercase tracking-wider text-emerald-900/70 hidden sm:block">Sort By</label>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as SortOption)}
-                  className="text-sm font-medium border border-emerald-100 rounded-full px-5 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-400/30 bg-white text-emerald-950 shadow-soft cursor-pointer hover:border-emerald-300 transition-all"
+                  className="text-sm font-medium border border-emerald-200/80 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-400/30 bg-white text-emerald-950 shadow-xs cursor-pointer hover:border-emerald-300 transition-all"
                 >
                   {SORT_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -627,17 +628,17 @@ function ShopContent() {
               </div>
             </div>
 
-            {/* Micro-animated Active Filter Chips */}
+            {/* Micro-animated Active Filter Chips (Standardized unified pill style) */}
             {hasActiveFilters && (
               <div className="flex flex-wrap items-center gap-2 mb-8 animate-fade-in">
-                <span className="text-xs text-emerald-900/50 font-medium mr-1 uppercase tracking-wider">Active:</span>
+                <span className="text-xs text-emerald-900/70 font-medium mr-1 uppercase tracking-wider">Active:</span>
                 {searchQuery && (
                   <Link
                     href={`/shop${initialCategory ? `?category=${initialCategory}` : ""}${initialBadge ? `${initialCategory ? "&" : "?"}badge=${initialBadge}` : ""}`}
-                    className="group flex items-center gap-2 px-4 py-2 bg-amber-500 text-slate-950 text-xs font-bold rounded-full transition-all duration-300 hover:bg-amber-400 hover:scale-105 active:scale-95 shadow-soft hover:shadow-soft-lg"
+                    className="group flex items-center gap-2 px-3.5 py-1.5 bg-emerald-950 text-white text-xs font-medium rounded-full transition-all duration-200 hover:bg-emerald-800 shadow-xs"
                   >
                     <span>Search: &ldquo;{searchQuery}&rdquo;</span>
-                    <span className="bg-black/15 rounded-full p-0.5 group-hover:bg-black/25 transition-colors">
+                    <span className="bg-white/20 rounded-full p-0.5 group-hover:bg-white/30 transition-colors">
                       <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
                       </svg>
@@ -647,8 +648,9 @@ function ShopContent() {
                 {selectedCategories.map((cat) => (
                   <button
                     key={cat}
+                    type="button"
                     onClick={() => toggleCategory(cat)}
-                    className="group flex items-center gap-2 px-4 py-2 bg-emerald-950 text-white text-xs font-medium rounded-full transition-all duration-300 hover:bg-emerald-800 hover:scale-105 active:scale-95 shadow-soft hover:shadow-soft-lg"
+                    className="group flex items-center gap-2 px-3.5 py-1.5 bg-emerald-950 text-white text-xs font-medium rounded-full transition-all duration-200 hover:bg-emerald-800 shadow-xs"
                   >
                     <span>{getCategoryLabel(cat)}</span>
                     <span className="bg-white/20 rounded-full p-0.5 group-hover:bg-white/30 transition-colors">
@@ -661,8 +663,9 @@ function ShopContent() {
                 {selectedSizes.map((size) => (
                   <button
                     key={size}
+                    type="button"
                     onClick={() => toggleSize(size)}
-                    className="group flex items-center gap-2 px-4 py-2 bg-emerald-950 text-white text-xs font-medium rounded-full transition-all duration-300 hover:bg-emerald-800 hover:scale-105 active:scale-95 shadow-soft hover:shadow-soft-lg"
+                    className="group flex items-center gap-2 px-3.5 py-1.5 bg-emerald-950 text-white text-xs font-medium rounded-full transition-all duration-200 hover:bg-emerald-800 shadow-xs"
                   >
                     <span>{size}</span>
                     <span className="bg-white/20 rounded-full p-0.5 group-hover:bg-white/30 transition-colors">
@@ -674,8 +677,9 @@ function ShopContent() {
                 ))}
                 {(priceRange[0] > 0 || priceRange[1] < maxPrice) && (
                   <button
+                    type="button"
                     onClick={() => setPriceRange([0, maxPrice])}
-                    className="group flex items-center gap-2 px-4 py-2 bg-emerald-950 text-white text-xs font-medium rounded-full transition-all duration-300 hover:bg-emerald-800 hover:scale-105 active:scale-95 shadow-soft hover:shadow-soft-lg"
+                    className="group flex items-center gap-2 px-3.5 py-1.5 bg-emerald-950 text-white text-xs font-medium rounded-full transition-all duration-200 hover:bg-emerald-800 shadow-xs"
                   >
                     <span>৳{priceRange[0]} – ৳{priceRange[1]}</span>
                     <span className="bg-white/20 rounded-full p-0.5 group-hover:bg-white/30 transition-colors">
@@ -687,8 +691,9 @@ function ShopContent() {
                 )}
                 
                 <button 
+                  type="button"
                   onClick={clearFilters}
-                  className="text-xs text-emerald-600 hover:text-emerald-800 hover:underline font-semibold ml-2 transition-all"
+                  className="text-xs text-emerald-800 hover:text-emerald-950 hover:underline font-semibold ml-2 transition-all"
                 >
                   Clear All
                 </button>
@@ -709,13 +714,17 @@ function ShopContent() {
             ) : filteredProducts.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center bg-white/40 backdrop-blur-md border border-emerald-100/40 rounded-3xl p-8 shadow-glass mt-4">
                 <div className="w-16 h-16 rounded-2xl bg-emerald-100/30 border border-emerald-200/50 flex items-center justify-center mb-6">
-                  <svg className="w-7 h-7 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-7 h-7 text-emerald-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                   </svg>
                 </div>
                 <h3 className="text-xl font-semibold text-emerald-950">No products match your criteria</h3>
-                <p className="text-emerald-900/50 mt-2 text-sm font-light max-w-sm leading-relaxed">Try resetting the price range, unselecting size filters, or exploring other categories.</p>
-                <button onClick={clearFilters} className="btn-primary mt-8 px-8 py-3.5 text-sm shadow-soft hover:shadow-soft-lg transition-all transform active:scale-95">
+                <p className="text-emerald-900/70 mt-2 text-sm font-normal max-w-sm leading-relaxed">Try resetting the price range, unselecting size filters, or exploring other categories.</p>
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="mt-8 px-6 py-3 min-h-[44px] bg-emerald-950 text-white font-semibold text-sm rounded-xl hover:bg-emerald-800 transition-all shadow-sm active:scale-95"
+                >
                   Reset All Filters
                 </button>
               </div>
@@ -734,15 +743,16 @@ function ShopContent() {
       {isMobileFiltersOpen && (
         <>
           <div
-            className="fixed inset-0 z-50 bg-charcoal-950/20 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-emerald-950/30 backdrop-blur-sm"
             onClick={() => setIsMobileFiltersOpen(false)}
           />
           <div className="fixed inset-y-0 left-0 z-50 w-80 bg-gradient-to-b from-[#f5fff9] to-white flex flex-col shadow-soft-xl border-r border-emerald-100/50 animate-slide-in">
             <div className="flex items-center justify-between px-7 py-6 border-b border-emerald-100/30">
               <h2 className="text-base font-semibold text-emerald-950 uppercase tracking-wider">Filters</h2>
               <button
+                type="button"
                 onClick={() => setIsMobileFiltersOpen(false)}
-                className="p-2 text-emerald-400 hover:text-emerald-900 rounded-full transition-colors duration-300"
+                className="p-2 text-emerald-800/70 hover:text-emerald-950 rounded-full transition-colors duration-200"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
@@ -755,15 +765,17 @@ function ShopContent() {
             <div className="px-7 py-5 border-t border-emerald-100/30 bg-white/40 backdrop-blur-md">
               <div className="flex gap-3">
                 <button
+                  type="button"
                   onClick={clearFilters}
                   disabled={!hasActiveFilters}
-                  className="btn-secondary flex-1 disabled:opacity-50 disabled:cursor-not-allowed text-xs uppercase tracking-wider font-bold border-emerald-200 py-3"
+                  className="flex-1 min-h-[44px] rounded-xl border border-emerald-200 bg-white text-emerald-950 hover:bg-emerald-50 py-3 text-xs font-semibold uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   Reset
                 </button>
                 <button
+                  type="button"
                   onClick={() => setIsMobileFiltersOpen(false)}
-                  className="btn-primary flex-1 text-xs uppercase tracking-wider font-bold py-3"
+                  className="flex-1 min-h-[44px] rounded-xl bg-emerald-950 text-white hover:bg-emerald-800 py-3 text-xs font-semibold uppercase tracking-wider transition-all shadow-sm"
                 >
                   Apply ({filteredProducts.length})
                 </button>
