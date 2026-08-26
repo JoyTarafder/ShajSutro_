@@ -1,26 +1,6 @@
-import path from "path";
-import fs from "fs";
 import transporter from "../config/mailer";
 
 const YEAR = new Date().getFullYear();
-
-// ─── Resolve Logo File Path for Inline Attachment ─────────────────────────────
-
-function getLogoAttachmentPath(): string | null {
-  const candidatePaths = [
-    path.join(__dirname, "../assets/shajsutro-logo.png"),
-    path.resolve(process.cwd(), "src/assets/shajsutro-logo.png"),
-    path.resolve(process.cwd(), "public/images/shajsutro-logo.png"),
-    path.resolve(process.cwd(), "../public/images/shajsutro-logo.png"),
-  ];
-
-  for (const p of candidatePaths) {
-    if (fs.existsSync(p)) {
-      return p;
-    }
-  }
-  return null;
-}
 
 // ─── Anti-Spam Plain Text Stripper ─────────────────────────────────────────────
 
@@ -41,7 +21,7 @@ function stripHtmlToText(html: string): string {
     .trim();
 }
 
-// ─── Central Anti-Spam Email Delivery Helper ────────────────────────────────────
+// ─── Central Anti-Spam Email Delivery Helper (No File Attachments) ─────────────
 
 async function sendMailWithAntiSpam(options: {
   to: string;
@@ -67,18 +47,6 @@ async function sendMailWithAntiSpam(options: {
     headers["Precedence"] = "bulk";
   }
 
-  const logoPath = getLogoAttachmentPath();
-  const attachments: any[] = [];
-
-  // Attach logo as CID so all email clients render it reliably
-  if (logoPath) {
-    attachments.push({
-      filename: "shajsutro-logo.png",
-      path: logoPath,
-      cid: "shajsutro-logo",
-    });
-  }
-
   try {
     const info = await transporter.sendMail({
       from: fromHeader,
@@ -88,7 +56,6 @@ async function sendMailWithAntiSpam(options: {
       text: plainText,
       html: options.html,
       headers,
-      attachments,
     });
     console.log(
       `[Email Service Success] Successfully sent to: ${options.to} | Message ID: ${info?.messageId}`,
@@ -140,17 +107,16 @@ function emailShell(bodyContent: string, previewText = ""): string {
             <td style="background:linear-gradient(90deg, #00B14F 0%, #10B981 40%, #FF6200 100%);height:6px;font-size:0;line-height:0;">&nbsp;</td>
           </tr>
 
-          <!-- ── PROMINENT CENTERED LOGO HEADER ── -->
+          <!-- ── PROMINENT CENTERED LOGO HEADER (NO ATTACHMENT) ── -->
           <tr>
             <td style="background:#ffffff;padding:40px 32px 30px;text-align:center;border-bottom:1px solid #f1f5f9;">
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center">
                     <a href="${frontendUrl}" target="_blank" style="text-decoration:none;display:inline-block;">
-                      <!-- Prominent, High-Res ShajSutro Logo (Extra Large) -->
+                      <!-- Hosted URL Logo without Email Attachment -->
                       <img 
-                        src="cid:shajsutro-logo" 
-                        onerror="this.onerror=null;this.src='${hostedLogoUrl}';" 
+                        src="${hostedLogoUrl}" 
                         alt="ShajSutro — Happy Shopping" 
                         width="340" 
                         style="display:block;margin:0 auto;max-width:340px;width:100%;height:auto;border:0;outline:none;" 
