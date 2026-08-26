@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { getColorHex } from "@/lib/colors";
 
 import { notifyError, notifySuccess } from "@/lib/notify";
 
@@ -62,39 +63,6 @@ function mapProduct(p: ApiProduct): Product {
     tags: p.tags,
   };
 }
-
-const colorToHex: Record<string, string> = {
-  White: "#FFFFFF",
-  "Off-White": "#F5F5F0",
-  Black: "#111111",
-  Beige: "#F5F0E8",
-  "Light Blue": "#BFD7ED",
-  Blue: "#3B82F6",
-  Navy: "#1E3A5F",
-  Charcoal: "#36454F",
-  Camel: "#C19A6B",
-  Khaki: "#C3B091",
-  Olive: "#708238",
-  Stone: "#928E85",
-  Oatmeal: "#E8E0D0",
-  "Forest Green": "#228B22",
-  Champagne: "#F7E7CE",
-  "Midnight Blue": "#191970",
-  Blush: "#FFB6C1",
-  Tan: "#D2B48C",
-  Burgundy: "#800020",
-  Taupe: "#8B7D7B",
-  Ivory: "#FFFFF0",
-  "Dusty Rose": "#DCAE96",
-  Ecru: "#F2EFE4",
-  Sand: "#F4E4C1",
-  Sage: "#BCB88A",
-  Cream: "#FFFDD0",
-  Grey: "#808080",
-  "Light Gray": "#D3D3D3",
-  Pink: "#F4A0B0",
-  Lavender: "#B4A7D6",
-};
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
@@ -579,23 +547,27 @@ export default function ProductDetailPage() {
                     </span>
                   )}
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {product.colors.map((color) => (
-                    <button
-                      key={color}
-                      type="button"
-                      onClick={() => setSelectedColor(color)}
-                      title={color}
-                      className={`w-8 h-8 rounded-full border-2 transition-all hover:scale-110 ${
-                        selectedColor === color
-                          ? "border-emerald-950 scale-110 shadow-xs"
-                          : "border-charcoal-200"
-                      }`}
-                      style={{
-                        backgroundColor: colorToHex[color] ?? "#E5E7EB",
-                      }}
-                    />
-                  ))}
+                <div className="flex flex-wrap gap-2.5">
+                  {product.colors.map((color) => {
+                    const hex = getColorHex(color);
+                    const isSelected = selectedColor === color;
+                    return (
+                      <button
+                        key={color}
+                        type="button"
+                        onClick={() => setSelectedColor(color)}
+                        title={color}
+                        className={`relative w-8 h-8 rounded-full transition-all duration-200 hover:scale-110 shadow-xs border ${
+                          isSelected
+                            ? "ring-2 ring-charcoal-950 ring-offset-2 scale-110 border-charcoal-950"
+                            : "border-black/15 hover:border-charcoal-400"
+                        }`}
+                        style={{
+                          backgroundColor: hex,
+                        }}
+                      />
+                    );
+                  })}
                 </div>
               </div>
             )}

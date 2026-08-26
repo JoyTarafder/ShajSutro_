@@ -1,5 +1,6 @@
 "use client";
 
+import { getColorHex } from "@/lib/colors";
 import { useCart } from "@/context/CartContext";
 import { useFavorites } from "@/context/FavoritesContext";
 import { notifyInfo, notifySuccess } from "@/lib/notify";
@@ -153,8 +154,8 @@ export default function ProductCard({ product }: ProductCardProps) {
               {product.colors.slice(0, 4).map((color) => (
                 <div
                   key={color}
-                  className="w-3.5 h-3.5 rounded-full border border-charcoal-200 shadow-xs transition-transform duration-200 hover:scale-125"
-                  style={{ backgroundColor: colorToHex(color) }}
+                  className="w-3.5 h-3.5 rounded-full border border-black/15 shadow-xs transition-transform duration-200 hover:scale-125"
+                  style={{ backgroundColor: getColorHex(color) }}
                   title={color}
                 />
               ))}
@@ -231,50 +232,4 @@ function StockBadge({ stock, inStock }: { stock?: number; inStock: boolean }) {
       {stock} in stock
     </span>
   );
-}
-
-function colorToHex(colorName: string): string {
-  const map: Record<string, string> = {
-    White: "#FFFFFF",
-    "Off-White": "#F5F5F0",
-    Black: "#111111",
-    Beige: "#F5F0E8",
-    "Light Blue": "#BFD7ED",
-    Blue: "#3B82F6",
-    Navy: "#1E3A5F",
-    Charcoal: "#36454F",
-    Camel: "#C19A6B",
-    Khaki: "#C3B091",
-    Olive: "#708238",
-    Stone: "#928E85",
-    Oatmeal: "#E8E0D0",
-    "Forest Green": "#228B22",
-    "Floral Blue": "#7EB2D6",
-    "Floral Rose": "#F4A0B0",
-    Champagne: "#F7E7CE",
-    "Midnight Blue": "#191970",
-    Blush: "#FFB6C1",
-    Tan: "#D2B48C",
-    Burgundy: "#800020",
-    Taupe: "#8B7D7B",
-    Ivory: "#FFFFF0",
-    "Dusty Rose": "#DCAE96",
-    "Dusty Pink": "#E8B4B8",
-    Ecru: "#F2EFE4",
-    Sand: "#F4E4C1",
-    Sage: "#BCB88A",
-    Cream: "#FFFDD0",
-    Grey: "#808080",
-    "Light Gray": "#D3D3D3",
-    "Light Wash": "#C8D8E8",
-    "Dark Wash": "#2C3E6B",
-    "Dark Brown": "#5C4033",
-    Natural: "#F5F5DC",
-    "Silver/White": "#C0C0C0",
-    "Gold/Beige": "#D4AF6A",
-    "Black/Black": "#111111",
-    Pink: "#F4A0B0",
-    Lavender: "#B4A7D6",
-  };
-  return map[colorName] || "#E5E7EB";
 }

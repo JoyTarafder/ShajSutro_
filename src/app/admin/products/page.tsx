@@ -2,6 +2,7 @@
 
 import AdminAuthGuard from "@/components/admin/AdminAuthGuard";
 import { useAdminAuth } from "@/context/AdminAuthContext";
+import { getColorHex } from "@/lib/colors";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState } from "react";
@@ -39,6 +40,7 @@ interface Product {
   images: string[];
   sizes: string[];
   colors: string[];
+  tags?: string[];
   badge?: string;
   inStock: boolean;
   isFeatured: boolean;
@@ -56,6 +58,7 @@ type ProductForm = {
   images: string;
   sizes: string;
   colors: string;
+  tags: string;
   badge: string;
   inStock: boolean;
   isFeatured: boolean;
@@ -80,6 +83,7 @@ const EMPTY_FORM: ProductForm = {
   images: "",
   sizes: "",
   colors: "",
+  tags: "",
   badge: "",
   inStock: true,
   isFeatured: false,
@@ -238,6 +242,7 @@ function ProductModal({
           images: product.images.join(", "),
           sizes: product.sizes.join(", "),
           colors: product.colors.join(", "),
+          tags: product.tags?.join(", ") ?? "",
           badge: product.badge ?? "",
           inStock: product.inStock,
           isFeatured: product.isFeatured ?? false,
@@ -287,6 +292,13 @@ function ProductModal({
     const exists = current.includes(color);
     const updated = exists ? current.filter((c) => c !== color) : [...current, color];
     setForm((p) => ({ ...p, colors: updated.join(", ") }));
+  };
+
+  const toggleTag = (tag: string) => {
+    const current = form.tags.split(",").map((t) => t.trim()).filter(Boolean);
+    const exists = current.includes(tag);
+    const updated = exists ? current.filter((t) => t !== tag) : [...current, tag];
+    setForm((p) => ({ ...p, tags: updated.join(", ") }));
   };
 
   const imageList = form.images
@@ -341,6 +353,10 @@ function ProductModal({
             .split(",")
             .map((s) => s.trim())
             .filter(Boolean),
+          tags: form.tags
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
           badge: (form.badge || "") as Product["badge"],
           inStock: form.inStock,
           isFeatured: form.isFeatured,
@@ -356,6 +372,25 @@ function ProductModal({
 
   const presetSizes = ["S", "M", "L", "XL", "XXL", "Free Size"];
   const presetColors = ["Black", "White", "Red", "Navy Blue", "Emerald", "Pink", "Gold"];
+  const presetTags = [
+    "kids",
+    "traditional",
+    "festive",
+    "lehenga",
+    "panjabi",
+    "saree",
+    "jamdani",
+    "silk",
+    "cotton",
+    "linen",
+    "casual",
+    "wedding",
+    "party",
+    "boys",
+    "girls",
+    "mens",
+    "womens",
+  ];
 
   return (
     <div
@@ -732,6 +767,38 @@ function ProductModal({
                     })}
                   </div>
                 </div>
+
+                <div>
+                  <Field label="Product Tags (Comma Separated)">
+                    <input
+                      name="tags"
+                      value={form.tags}
+                      onChange={set}
+                      placeholder="e.g. kids, lehenga, girls, traditional"
+                      className="w-full px-4 py-3 rounded-2xl text-sm bg-slate-900/90 border border-white/10 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-amber-500 font-medium mb-2"
+                    />
+                  </Field>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-[11px] font-bold text-slate-400 mr-1">Quick Select:</span>
+                    {presetTags.map((t) => {
+                      const active = form.tags.split(",").map((x) => x.trim()).includes(t);
+                      return (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => toggleTag(t)}
+                          className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all border ${
+                            active
+                              ? "bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm"
+                              : "bg-white/[0.03] text-slate-400 border-white/8 hover:bg-white/[0.06]"
+                          }`}
+                        >
+                          {active ? `✓ ${t}` : `+ ${t}`}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
 
               {/* Image URLs input */}
@@ -840,6 +907,42 @@ function ProductModal({
                         </span>
                       )}
                     </div>
+
+                    {/* Color swatches preview */}
+                    {form.colors && (
+                      <div className="flex items-center gap-1.5 pt-1">
+                        {form.colors
+                          .split(",")
+                          .map((c) => c.trim())
+                          .filter(Boolean)
+                          .map((c) => (
+                            <span
+                              key={c}
+                              title={c}
+                              className="w-3.5 h-3.5 rounded-full border border-white/20 shadow-xs inline-block"
+                              style={{ backgroundColor: getColorHex(c) }}
+                            />
+                          ))}
+                      </div>
+                    )}
+
+                    {/* Tags preview */}
+                    {form.tags && (
+                      <div className="flex flex-wrap gap-1 pt-1.5 border-t border-white/5">
+                        {form.tags
+                          .split(",")
+                          .map((t) => t.trim())
+                          .filter(Boolean)
+                          .map((t) => (
+                            <span
+                              key={t}
+                              className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-white/[0.04] text-slate-300 border border-white/10"
+                            >
+                              #{t}
+                            </span>
+                          ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
