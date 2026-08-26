@@ -4,11 +4,12 @@ import DemoMfsGatewayModal from "@/components/checkout/DemoMfsGatewayModal";
 import { useCart } from "@/context/CartContext";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { getApiBase } from "@/lib/apiBase";
 import { DIVISIONS, getDistricts, getThanas } from "@/lib/bangladeshLocations";
-import { notifyError, notifySuccess } from "@/lib/notify";
+import { notifyError, notifyInfo, notifySuccess } from "@/lib/notify";
 
 const API = getApiBase();
 
@@ -24,6 +25,7 @@ interface PromoResult {
 const steps = ["Shipping", "Payment", "Review"];
 
 export default function CheckoutPage() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
@@ -87,7 +89,11 @@ export default function CheckoutPage() {
   useEffect(() => {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("token") : null;
-    if (!token) return;
+    if (!token) {
+      notifyInfo("Please log in to proceed with your checkout.");
+      router.push("/login?redirect=/checkout");
+      return;
+    }
 
     fetch(`${API}/api/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },

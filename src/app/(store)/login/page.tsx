@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import Script from "next/script";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 import { getApiBase } from "@/lib/apiBase";
 import { notifyError, notifyInfo, notifySuccess } from "@/lib/notify";
@@ -13,6 +13,16 @@ const API = getApiBase();
 type View = "tabs" | "verify-email" | "forgot-password";
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#e3f3e8]" />}>
+      <LoginContent />
+    </Suspense>
+  );
+}
+
+function LoginContent() {
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get("redirect") || searchParams.get("from") || "/profile";
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
   const [showPassword, setShowPassword] = useState(false);
   const [view, setView] = useState<View>("tabs");
@@ -205,6 +215,21 @@ export default function LoginPage() {
               </p>
             </div>
 
+            {/* Checkout requirement banner */}
+            {redirectUrl.includes("checkout") && (
+              <div className="mb-6 p-4 rounded-2xl bg-emerald-50/90 border border-emerald-200/80 flex items-center gap-3 text-emerald-950 text-xs sm:text-sm shadow-xs">
+                <span className="w-8 h-8 rounded-xl bg-emerald-700 text-white flex items-center justify-center flex-shrink-0 shadow-xs">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                </span>
+                <div>
+                  <p className="font-semibold text-emerald-950">Login required for checkout</p>
+                  <p className="text-emerald-800/80 text-xs mt-0.5">Please sign in or create an account to proceed with your order.</p>
+                </div>
+              </div>
+            )}
+
             <div className="rounded-2xl border border-emerald-50 bg-white/90 shadow-soft/60">
               {/* Tabs — only shown on main login/register view */}
               {view === "tabs" && (
@@ -236,6 +261,7 @@ export default function LoginPage() {
                 {view === "verify-email" && pendingEmail ? (
                   <VerifyEmailForm
                     email={pendingEmail}
+                    redirectUrl={redirectUrl}
                     onVerified={() => {
                       setView("tabs");
                       setActiveTab("login");
@@ -256,12 +282,14 @@ export default function LoginPage() {
                   />
                 ) : activeTab === "login" ? (
                   <LoginForm
+                    redirectUrl={redirectUrl}
                     showPassword={showPassword}
                     setShowPassword={setShowPassword}
                     onForgotPassword={() => setView("forgot-password")}
                   />
                 ) : (
                   <RegisterForm
+                    redirectUrl={redirectUrl}
                     showPassword={showPassword}
                     setShowPassword={setShowPassword}
                     onRegistered={(email) => {
@@ -306,7 +334,7 @@ export default function LoginPage() {
 
 // ─── Social Buttons ────────────────────────────────────────────────────────────
 
-function SocialButtons() {
+function SocialButtons({ redirectUrl = "/profile" }: { redirectUrl?: string }) {
   const router = useRouter();
   const [googleLoading, setGoogleLoading] = useState(false);
 
@@ -379,7 +407,7 @@ function SocialButtons() {
 
             localStorage.setItem("token", data.token);
             notifySuccess("Logged in with Google successfully!");
-            router.push("/profile");
+            router.push(redirectUrl);
           } catch (err: unknown) {
             const message =
               err instanceof Error ? err.message : "Google login failed";
@@ -466,10 +494,12 @@ function Divider() {
 // ─── Login Form ────────────────────────────────────────────────────────────────
 
 function LoginForm({
+  redirectUrl = "/profile",
   showPassword,
   setShowPassword,
   onForgotPassword,
 }: {
+  redirectUrl?: string;
   showPassword: boolean;
   setShowPassword: (v: boolean) => void;
   onForgotPassword: () => void;
@@ -499,7 +529,7 @@ function LoginForm({
       if (!res.ok) throw new Error(data.message ?? "Login failed");
       localStorage.setItem("token", data.token);
       notifySuccess("Login successful!");
-      router.push("/profile");
+      router.push(redirectUrl);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Something went wrong";
       setError(message);
@@ -511,7 +541,7 @@ function LoginForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      <SocialButtons />
+      <SocialButtons redirectUrl={redirectUrl} />
       <Divider />
 
       {error && (
@@ -592,10 +622,12 @@ function LoginForm({
 // ─── Register Form ─────────────────────────────────────────────────────────────
 
 function RegisterForm({
+  redirectUrl = "/profile",
   showPassword,
   setShowPassword,
   onRegistered,
 }: {
+  redirectUrl?: string;
   showPassword: boolean;
   setShowPassword: (v: boolean) => void;
   onRegistered: (email: string) => void;
@@ -644,7 +676,7 @@ function RegisterForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      <SocialButtons />
+      <SocialButtons redirectUrl={redirectUrl} />
       <Divider />
 
       {error && (
@@ -1270,10 +1302,12 @@ function FPStepNewPassword({
 
 function VerifyEmailForm({
   email,
+  redirectUrl = "/profile",
   onVerified,
   onBack,
 }: {
   email: string;
+  redirectUrl?: string;
   onVerified: () => void;
   onBack: () => void;
 }) {
@@ -1354,7 +1388,7 @@ function VerifyEmailForm({
       notifySuccess("Email verified successfully!");
       setTimeout(() => {
         onVerified();
-        router.push("/profile");
+        router.push(redirectUrl);
       }, 1200);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Something went wrong";

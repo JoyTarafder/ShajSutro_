@@ -3,10 +3,24 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
+import { notifyInfo } from "@/lib/notify";
 
 export default function CartDrawer() {
+  const router = useRouter();
   const { state, removeItem, updateQuantity, closeCart, subtotal, totalItems } = useCart();
+
+  const handleCheckoutClick = () => {
+    closeCart();
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    if (!token) {
+      notifyInfo("Please log in to proceed to checkout.");
+      router.push("/login?redirect=/checkout");
+    } else {
+      router.push("/checkout");
+    }
+  };
 
   useEffect(() => {
     if (state.isOpen) {
@@ -187,13 +201,13 @@ export default function CartDrawer() {
             </div>
 
             <div className="space-y-2.5 pt-1">
-              <Link
-                href="/checkout"
-                onClick={closeCart}
+              <button
+                type="button"
+                onClick={handleCheckoutClick}
                 className="btn-primary w-full text-center"
               >
                 Checkout — ৳{subtotal.toFixed(2)}
-              </Link>
+              </button>
               <Link
                 href="/cart"
                 onClick={closeCart}

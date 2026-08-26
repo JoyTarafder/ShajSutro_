@@ -3,9 +3,11 @@
 import ProductCard from "@/components/product/ProductCard";
 import { useCart } from "@/context/CartContext";
 import { getApiBase } from "@/lib/apiBase";
+import { notifyInfo } from "@/lib/notify";
 import { Product } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface ApiProduct {
@@ -50,8 +52,19 @@ function mapProduct(p: ApiProduct): Product {
 }
 
 export default function CartPage() {
+  const router = useRouter();
   const { state, removeItem, updateQuantity, subtotal, totalItems } = useCart();
   const [suggested, setSuggested] = useState<Product[]>([]);
+
+  const handleCheckoutClick = () => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    if (!token) {
+      notifyInfo("Please log in to proceed to checkout.");
+      router.push("/login?redirect=/checkout");
+    } else {
+      router.push("/checkout");
+    }
+  };
 
   useEffect(() => {
     fetch(`${getApiBase()}/api/products?badge=Best+Seller&limit=4`)
@@ -361,12 +374,13 @@ export default function CartPage() {
                 </span>
               </div>
 
-              <Link
-                href="/checkout"
+              <button
+                type="button"
+                onClick={handleCheckoutClick}
                 className="btn-primary w-full text-center mt-6 block"
               >
                 Proceed to Checkout
-              </Link>
+              </button>
 
               <div className="mt-5 flex items-center justify-center gap-2 text-xs text-charcoal-300">
                 <svg
