@@ -126,11 +126,11 @@ export default function HeroSection() {
 
           {/* Grid visual side */}
           <div className="lg:col-span-6 order-1 lg:order-2 grid grid-cols-2 gap-4 h-[480px] sm:h-[550px] lg:h-[620px] w-full animate-fade-in">
-            {/* Tall Image */}
+            {/* Tall Image - Saree */}
             <div className="relative rounded-[2.5rem] overflow-hidden mt-8 shadow-soft-lg border-4 border-white animate-float">
               <Image
-                src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&q=80"
-                alt="Woman in minimalist outfit"
+                src="https://zaribanaras.com/cdn/shop/products/BF-183E.jpg?v=1756359508"
+                alt="Woman wearing elegant luxury Saree"
                 fill
                 className="object-cover transition-transform duration-1000 ease-premium hover:scale-105"
                 priority
@@ -141,19 +141,21 @@ export default function HeroSection() {
 
             {/* Split Images */}
             <div className="space-y-4 h-full flex flex-col justify-between">
+              {/* Top Split Image - Panjabi */}
               <div
                 className="relative rounded-[2rem] overflow-hidden h-[48%] shadow-soft-lg border-4 border-white animate-float"
                 style={{ animationDelay: "1.5s", animationDuration: "7s" }}
               >
                 <Image
-                  src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&q=80"
-                  alt="Man in tailored suit"
+                  src="https://images.unsplash.com/photo-1595152772835-219674b2a8a6?q=80&w=800"
+                  alt="Man wearing traditional Panjabi"
                   fill
                   className="object-cover transition-transform duration-1000 ease-premium hover:scale-105"
                   sizes="(max-width: 1024px) 40vw, 25vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
               </div>
+              {/* Bottom Split Image - Kids */}
               <div
                 className="relative rounded-[2rem] overflow-hidden h-[48%] shadow-soft-lg border-4 border-white animate-float"
                 style={{ animationDelay: "3s", animationDuration: "5s" }}
