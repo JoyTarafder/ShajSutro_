@@ -82,12 +82,22 @@ const userSchema = new Schema<IUserDocument>(
       type: Date,
       select: false,
     },
+    verificationAttempts: {
+      type: Number,
+      default: 0,
+      select: false,
+    },
     passwordResetCode: {
       type: String,
       select: false,
     },
     passwordResetCodeExpiry: {
       type: Date,
+      select: false,
+    },
+    passwordResetAttempts: {
+      type: Number,
+      default: 0,
       select: false,
     },
     lastLoginAt: {

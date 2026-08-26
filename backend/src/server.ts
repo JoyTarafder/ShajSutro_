@@ -1,6 +1,8 @@
 import cors from "cors";
 import "dotenv/config";
 import express from "express";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import connectDB from "./config/db";
 import { errorHandler, notFound } from "./middleware/error.middleware";
 
@@ -29,6 +31,47 @@ connectDB();
 // ─── Express app setup ────────────────────────────────────────────────────────
 const app = express();
 
+// Trust reverse proxies (Vercel, Nginx, Cloudflare) for accurate client IP rate limiting
+app.set("trust proxy", 1);
+
+// HTTP Security Headers via Helmet
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
+
+// ─── Rate Limiting ────────────────────────────────────────────────────────────
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 500, // 500 requests per 15 mins
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many requests from this IP, please try again later.",
+  },
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 25, // 25 attempts per 15 mins
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many authentication attempts. Please try again after 15 minutes.",
+  },
+});
+
+app.use("/api", generalLimiter);
+app.use("/api/auth/login", authLimiter);
+app.use("/api/auth/register", authLimiter);
+app.use("/api/auth/verify-email", authLimiter);
+app.use("/api/auth/forgot-password", authLimiter);
+app.use("/api/auth/reset-password", authLimiter);
+app.use("/api/orders/track", authLimiter);
+
 // CORS — allow localhost, *.vercel.app, and any origins in CLIENT_URL (comma-separated)
 const allowedOrigins = (process.env.CLIENT_URL ?? "")
   .split(",")
@@ -54,7 +97,7 @@ app.use(
       }
       // Allow any explicitly listed origin
       if (allowedOrigins.includes(origin)) return callback(null, true);
-      // Allow all origins in non-strict mode
+      // Default: allow origin
       return callback(null, true);
     },
     credentials: true,

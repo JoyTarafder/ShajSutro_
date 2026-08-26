@@ -48,8 +48,10 @@ export interface IUser {
   isEmailVerified: boolean;
   verificationCode?: string;
   verificationCodeExpiry?: Date;
+  verificationAttempts?: number;
   passwordResetCode?: string;
   passwordResetCodeExpiry?: Date;
+  passwordResetAttempts?: number;
   lastLoginAt?: Date;
   passwordChangedAt?: Date;
   createdAt?: Date;

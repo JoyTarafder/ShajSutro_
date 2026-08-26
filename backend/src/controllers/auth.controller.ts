@@ -23,11 +23,10 @@ const generateToken = (id: string): string => {
 
 export const register = asyncHandler(
   async (req: AuthRequest, res: Response): Promise<void> => {
-    const { name, email, password, role } = req.body as {
+    const { name, email, password } = req.body as {
       name: string;
       email: string;
       password: string;
-      role?: "user" | "admin";
     };
 
     if (!name || !email || !password) {
@@ -48,14 +47,15 @@ export const register = asyncHandler(
     // Delete any previous pending registration attempt for this email
     await PendingUser.deleteMany({ email: normalizedEmail });
 
-    // Store temporary data in PendingUser collection (Do NOT save to User DB collection yet!)
+    // Store temporary data in PendingUser collection (Strictly user role only)
     await PendingUser.create({
       name,
       email: normalizedEmail,
       password,
-      role: role ?? "user",
+      role: "user",
       verificationCode: code,
       verificationCodeExpiry: expiry,
+      verificationAttempts: 0,
     });
 
     await sendVerificationEmail(normalizedEmail, code);
@@ -378,19 +378,32 @@ export const verifyEmail = asyncHandler(
     }
 
     if (new Date() > pending.verificationCodeExpiry) {
+      await PendingUser.deleteOne({ _id: pending._id });
       throw new AppError("Verification code has expired. Please sign up again or request a new code.", 400);
     }
 
-    if (pending.verificationCode !== code.trim()) {
-      throw new AppError("Invalid verification code", 400);
+    const currentAttempts = pending.verificationAttempts || 0;
+    if (currentAttempts >= 5) {
+      await PendingUser.deleteOne({ _id: pending._id });
+      throw new AppError("Too many incorrect attempts. Please sign up or request a new code.", 429);
     }
 
-    // 🌟 OTP Verification Successful -> NOW save user to main User database collection!
+    if (pending.verificationCode !== code.trim()) {
+      pending.verificationAttempts = currentAttempts + 1;
+      await pending.save();
+      const remaining = 5 - pending.verificationAttempts;
+      throw new AppError(
+        `Invalid verification code.${remaining > 0 ? ` ${remaining} attempt(s) remaining.` : " Please request a new code."}`,
+        400
+      );
+    }
+
+    // 🌟 OTP Verification Successful -> Save strictly as user role!
     const user = await User.create({
       name: pending.name,
       email: pending.email,
       password: pending.password,
-      role: pending.role || "user",
+      role: "user",
       isEmailVerified: true,
     });
 
@@ -437,6 +450,7 @@ export const resendVerificationCode = asyncHandler(
     const code = generateVerificationCode();
     pending.verificationCode = code;
     pending.verificationCodeExpiry = new Date(Date.now() + 10 * 60 * 1000);
+    pending.verificationAttempts = 0;
     await pending.save();
 
     await sendVerificationEmail(normalizedEmail, code);
@@ -456,7 +470,7 @@ export const forgotPassword = asyncHandler(
 
     if (!email) throw new AppError("Please provide an email address", 400);
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
     // Always respond success to prevent email enumeration
     if (!user) {
       res.status(200).json({
@@ -469,9 +483,10 @@ export const forgotPassword = asyncHandler(
     const code = generateVerificationCode();
     user.passwordResetCode = code;
     user.passwordResetCodeExpiry = new Date(Date.now() + 10 * 60 * 1000);
+    user.passwordResetAttempts = 0;
     await user.save();
 
-    await sendPasswordResetEmail(email, code);
+    await sendPasswordResetEmail(user.email, code);
 
     res.status(200).json({
       success: true,
@@ -497,8 +512,8 @@ export const resetPassword = asyncHandler(
       throw new AppError("Password must be at least 6 characters", 400);
     }
 
-    const user = await User.findOne({ email }).select(
-      "+passwordResetCode +passwordResetCodeExpiry"
+    const user = await User.findOne({ email: email.toLowerCase().trim() }).select(
+      "+passwordResetCode +passwordResetCodeExpiry +passwordResetAttempts"
     );
 
     if (!user) throw new AppError("No account found with that email", 404);
@@ -506,15 +521,36 @@ export const resetPassword = asyncHandler(
       throw new AppError("No reset code found. Please request a new one.", 400);
     }
     if (new Date() > user.passwordResetCodeExpiry) {
+      user.passwordResetCode = undefined;
+      user.passwordResetCodeExpiry = undefined;
+      user.passwordResetAttempts = 0;
+      await user.save();
       throw new AppError("Reset code has expired. Please request a new one.", 400);
     }
-    if (user.passwordResetCode !== code) {
-      throw new AppError("Invalid reset code", 400);
+
+    const attempts = user.passwordResetAttempts || 0;
+    if (attempts >= 5) {
+      user.passwordResetCode = undefined;
+      user.passwordResetCodeExpiry = undefined;
+      user.passwordResetAttempts = 0;
+      await user.save();
+      throw new AppError("Too many incorrect attempts. Please request a new password reset code.", 429);
+    }
+
+    if (user.passwordResetCode !== code.trim()) {
+      user.passwordResetAttempts = attempts + 1;
+      await user.save();
+      const remaining = 5 - user.passwordResetAttempts;
+      throw new AppError(
+        `Invalid reset code.${remaining > 0 ? ` ${remaining} attempt(s) remaining.` : " Please request a new code."}`,
+        400
+      );
     }
 
     user.password = newPassword;
     user.passwordResetCode = undefined;
     user.passwordResetCodeExpiry = undefined;
+    user.passwordResetAttempts = 0;
     await user.save();
 
     res.status(200).json({

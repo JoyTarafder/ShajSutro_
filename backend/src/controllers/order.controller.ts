@@ -28,14 +28,12 @@ export const placeOrder = asyncHandler(
       paymentMethod,
       txnId = "",
       items: frontendItems,
-      discount = 0,
       promoCode = "",
     } = req.body as {
       shippingAddress: IShippingAddress;
       paymentMethod: "bkash" | "nagad" | "rocket" | "cod";
       txnId?: string;
       items: FrontendOrderItem[];
-      discount?: number;
       promoCode?: string;
     };
 
@@ -47,7 +45,7 @@ export const placeOrder = asyncHandler(
     if (!frontendItems || frontendItems.length === 0) throw new AppError("Order must contain at least one item", 400);
     if (paymentMethod !== "cod" && !txnId.trim()) throw new AppError("Transaction ID is required for mobile payments", 400);
 
-    // Build order items and validate stock (when product exists in DB)
+    // Build order items and strictly validate price & stock from database
     const orderItems = [];
     const stockOps: Promise<unknown>[] = [];
     for (const item of frontendItems) {
@@ -57,8 +55,7 @@ export const placeOrder = asyncHandler(
 
       const product = mongoose.isValidObjectId(rawId)
         ? await Product.findById(rawId)
-        : // Fallbacks for when frontend uses a non-Mongo id (e.g. local dataset)
-          (await Product.findOne({ slug: rawId.toLowerCase() })) ??
+        : (await Product.findOne({ slug: rawId.toLowerCase() })) ??
           (await Product.findOne({
             name: { $regex: `^${rawId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" },
           })) ??
@@ -66,50 +63,73 @@ export const placeOrder = asyncHandler(
             name: { $regex: `^${itemName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" },
           }));
 
-      // If product isn't in DB, still allow order placement using frontend snapshot
-      // (useful when the storefront uses local/static products)
       if (!product) {
-        orderItems.push({
-          name: itemName,
-          price: item.price ?? 0,
-          quantity: item.quantity ?? 1,
-          size: item.size,
-          color: item.color,
-          image: item.image ?? "",
-        });
-        continue;
+        throw new AppError(`Product "${itemName}" is invalid or no longer available`, 400);
       }
 
-      if (!product.inStock) throw new AppError(`"${product.name}" is out of stock`, 400);
-      if (product.stock > 0 && item.quantity > product.stock) {
+      if (!product.inStock || product.stock <= 0) {
+        throw new AppError(`"${product.name}" is out of stock`, 400);
+      }
+      const qty = Math.max(1, Math.floor(Number(item.quantity) || 1));
+      if (product.stock > 0 && qty > product.stock) {
         throw new AppError(
           `Only ${product.stock} unit${product.stock !== 1 ? "s" : ""} of "${product.name}" available`,
           400
         );
       }
 
+      // Strictly use verified price from MongoDB
       orderItems.push({
         product: product._id,
         name: product.name,
         price: product.price,
-        quantity: item.quantity,
-        size: item.size,
-        color: item.color,
-        image: product.images[0] ?? "",
+        quantity: qty,
+        size: item.size || "",
+        color: item.color || "",
+        image: product.images && product.images[0] ? product.images[0] : "",
       });
 
       stockOps.push(
         Product.findByIdAndUpdate(product._id, {
-          $inc: { stock: -item.quantity, totalOrdered: item.quantity },
+          $inc: { stock: -qty, totalOrdered: qty },
         })
       );
+    }
+
+    if (orderItems.length === 0) {
+      throw new AppError("No valid items in the order", 400);
     }
 
     const subtotal     = parseFloat(orderItems.reduce((s, i) => s + i.price * i.quantity, 0).toFixed(2));
     const shippingCost = subtotal >= 1200 ? 0 : 9.99;
     const tax          = 0;
-    const discountAmt  = parseFloat(Math.min(discount, subtotal).toFixed(2));
-    const total        = parseFloat((subtotal + shippingCost - discountAmt).toFixed(2));
+
+    // Server-side promo code validation & discount calculation
+    let calculatedDiscount = 0;
+    let validatedPromoCode = "";
+
+    if (promoCode && typeof promoCode === "string" && promoCode.trim()) {
+      const codeUpper = promoCode.trim().toUpperCase();
+      const promo = await PromoCode.findOne({ code: codeUpper, isActive: true });
+
+      if (promo) {
+        const isNotExpired = !promo.expiresAt || new Date() <= new Date(promo.expiresAt);
+        const hasUsesLeft = promo.maxUses === null || promo.maxUses === undefined || promo.usedCount < promo.maxUses;
+        const meetsMinAmount = subtotal >= (promo.minOrderAmount || 0);
+
+        if (isNotExpired && hasUsesLeft && meetsMinAmount) {
+          validatedPromoCode = codeUpper;
+          if (promo.type === "percentage") {
+            calculatedDiscount = parseFloat(((subtotal * promo.value) / 100).toFixed(2));
+          } else {
+            calculatedDiscount = parseFloat(Math.min(promo.value, subtotal).toFixed(2));
+          }
+        }
+      }
+    }
+
+    const discountAmt = Math.min(calculatedDiscount, subtotal);
+    const total       = parseFloat((subtotal + shippingCost - discountAmt).toFixed(2));
 
     const paymentStatus = paymentMethod === "cod" ? "pending_delivery" : "paid";
 
@@ -124,7 +144,7 @@ export const placeOrder = asyncHandler(
       shippingCost,
       tax,
       discount: discountAmt,
-      promoCode: promoCode.trim().toUpperCase(),
+      promoCode: validatedPromoCode,
       total,
       status: "pending",
       statusHistory: [
@@ -136,13 +156,13 @@ export const placeOrder = asyncHandler(
       ],
     });
 
-    // Decrement stock and increment totalOrdered (only for DB-backed products)
+    // Decrement stock and increment totalOrdered
     await Promise.all(stockOps);
 
-    // Increment promo code usage count if a promo code was applied
-    if (promoCode && typeof promoCode === "string" && promoCode.trim()) {
+    // Increment promo code usage count if a valid promo code was applied
+    if (validatedPromoCode) {
       await PromoCode.findOneAndUpdate(
-        { code: promoCode.trim().toUpperCase() },
+        { code: validatedPromoCode },
         { $inc: { usedCount: 1 } }
       ).catch((err) => {
         console.error("Failed to increment promo code usage count:", err);
@@ -436,40 +456,57 @@ export const trackOrder = asyncHandler(
     const rawSearch = (orderId || query || "").trim();
 
     if (!rawSearch) {
-      throw new AppError("Please enter an Order ID, Phone number, or Transaction ID", 400);
+      throw new AppError("Please enter a valid Order ID, Phone number, or Transaction ID", 400);
     }
 
     // Strip leading '#' if customer copied reference like '#E1841066'
-    const searchId = rawSearch.replace(/^#/g, "").trim();
+    const cleanSearch = rawSearch.replace(/^#/g, "").trim();
 
     let order = null;
 
-    if (mongoose.isValidObjectId(searchId)) {
-      order = await Order.findById(searchId).populate("user", "name email");
+    if (mongoose.isValidObjectId(cleanSearch)) {
+      order = await Order.findById(cleanSearch);
+    }
+
+    // Exact phone match (e.g. 01XXXXXXXXX)
+    if (!order && /^01[3-9]\d{8}$/.test(cleanSearch)) {
+      order = await Order.findOne({ "shippingAddress.phone": cleanSearch }).sort({ createdAt: -1 });
+    }
+
+    // Exact transaction ID match (alphanumeric, at least 4 chars)
+    if (!order && cleanSearch.length >= 4 && /^[a-zA-Z0-9_-]+$/.test(cleanSearch)) {
+      order = await Order.findOne({ txnId: cleanSearch }).sort({ createdAt: -1 });
     }
 
     if (!order) {
-      const escaped = searchId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const regex = new RegExp(escaped, "i");
-      order = await Order.findOne({
-        $or: [
-          { $expr: { $regexMatch: { input: { $toString: "$_id" }, regex: escaped, options: "i" } } },
-          { "shippingAddress.phone": regex },
-          { "shippingAddress.email": regex },
-          { txnId: regex },
-        ],
-      })
-        .sort({ createdAt: -1 })
-        .populate("user", "name email");
+      throw new AppError("No order found matching your search. Please verify your exact Order ID, Phone number, or Txn ID.", 404);
     }
 
-    if (!order) {
-      throw new AppError("No order found matching your search. Please check your Order ID, Phone number, or Txn ID.", 404);
-    }
+    // Privacy-preserving response: Mask phone and address for public tracking queries
+    const sanitizedOrder = {
+      _id: order._id,
+      status: order.status,
+      paymentMethod: order.paymentMethod,
+      paymentStatus: order.paymentStatus,
+      subtotal: order.subtotal,
+      shippingCost: order.shippingCost,
+      discount: order.discount,
+      total: order.total,
+      items: order.items,
+      statusHistory: order.statusHistory,
+      shippingAddress: {
+        firstName: order.shippingAddress?.firstName || "Customer",
+        lastName: (order.shippingAddress?.lastName || "").charAt(0) ? `${(order.shippingAddress?.lastName || "").charAt(0)}.` : "",
+        city: order.shippingAddress?.city || "",
+        state: order.shippingAddress?.state || "",
+        country: order.shippingAddress?.country || "Bangladesh",
+      },
+      createdAt: order.createdAt,
+    };
 
     res.status(200).json({
       success: true,
-      data: order,
+      data: sanitizedOrder,
     });
   }
 );
