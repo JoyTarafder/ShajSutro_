@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAdminAuth } from "@/context/AdminAuthContext";
 import { getApiBase } from "@/lib/apiBase";
+import Logo from "@/components/layout/Logo";
 
 const API = `${getApiBase()}/api`;
 
@@ -656,29 +657,30 @@ export default function AdminSubscribersPage() {
                   /* LIVE EMAIL PREVIEW CONTAINER */
                   <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 sm:p-6 overflow-hidden">
                     <div className="max-w-md mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden text-slate-900 border border-slate-200">
-                      {/* Luxury Shell Header */}
-                      <div className="bg-gradient-to-r from-zinc-950 via-zinc-900 to-zinc-950 p-6 text-center border-b border-zinc-800">
-                        <div className="inline-block px-3 py-1 bg-amber-500/10 border border-amber-500/30 rounded-full mb-2">
-                          <span className="text-[9px] font-extrabold tracking-[0.25em] text-amber-400 uppercase">Official Broadcast</span>
+                      {/* Top Brand Accent Bar */}
+                      <div className="h-1.5 bg-gradient-to-r from-[#00B14F] via-emerald-400 to-[#FF6200]" />
+
+                      {/* Prominent Centered Logo Header */}
+                      <div className="p-6 text-center border-b border-slate-100 bg-white">
+                        <div className="flex justify-center">
+                          <Logo size="xl" href="" />
                         </div>
-                        <h1 className="text-2xl font-black text-white tracking-[0.25em] uppercase font-sans">SHAJSUTRO</h1>
-                        <p className="text-[10px] text-zinc-400 font-medium tracking-[0.18em] uppercase mt-1">Fashion &bull; Elegance &bull; Modern Wardrobe</p>
                       </div>
 
                       {/* Email Body Preview */}
                       <div className="p-6">
                         {broadcastBadge && (
                           <div className="text-center mb-3">
-                            <span className="inline-block px-3.5 py-1 bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-300 text-amber-900 font-black text-[10px] uppercase tracking-wider rounded-full shadow-sm">
-                              ✨ {broadcastBadge}
+                            <span className="inline-block px-4 py-1.5 bg-gradient-to-r from-[#FF6200] to-orange-600 text-white font-black text-[10px] uppercase tracking-wider rounded-full shadow-md shadow-orange-500/20">
+                              🔥 {broadcastBadge}
                             </span>
                           </div>
                         )}
 
-                        <h2 className="text-xl font-black text-center text-slate-900 mb-2 tracking-tight leading-tight">
+                        <h2 className="text-2xl font-black text-center text-slate-900 mb-2 tracking-tight leading-tight">
                           {broadcastTitle || "Your Offer Title Here"}
                         </h2>
-                        <div className="w-10 h-0.5 bg-amber-500 mx-auto mb-5 rounded-full" />
+                        <div className="w-12 h-1 bg-gradient-to-r from-[#00B14F] to-[#FF6200] mx-auto mb-5 rounded-full" />
 
                         {broadcastBannerUrl && (
                           <div className="mb-5 rounded-2xl overflow-hidden shadow-lg border border-slate-200">
@@ -688,7 +690,7 @@ export default function AdminSubscribersPage() {
                         )}
 
                         {/* Styled Message Body Box */}
-                        <div className="bg-slate-50 border-l-4 border-amber-500 border-t border-r border-b border-slate-200 rounded-r-xl p-4 mb-5 text-xs text-slate-700 leading-relaxed space-y-2">
+                        <div className="bg-slate-50 border-l-4 border-[#00B14F] border-t border-r border-b border-slate-200 rounded-r-xl p-4 mb-5 text-xs text-slate-700 leading-relaxed space-y-2">
                           {(broadcastMessage || "Your promotional offer message body will appear here...")
                             .split("\n")
                             .filter(Boolean)
@@ -697,29 +699,38 @@ export default function AdminSubscribersPage() {
                             ))}
                         </div>
 
-                        {/* Selling Points Grid */}
-                        <div className="grid grid-cols-3 gap-1 bg-white border border-slate-100 rounded-xl p-2.5 mb-6 text-center text-[10px] text-slate-600 font-medium">
-                          <div className="border-r border-slate-100 pr-1">
+                        {/* Store Value Signals */}
+                        <div className="grid grid-cols-3 gap-1 bg-slate-50 border border-slate-200 rounded-xl p-2.5 mb-6 text-center text-[10px] text-slate-600 font-medium">
+                          <div className="border-r border-slate-200 pr-1">
                             <p className="text-sm mb-0.5">🚚</p>
                             <p className="font-bold text-slate-900">Fast Delivery</p>
+                            <p className="text-[9px] text-slate-500">3-5 Days in BD</p>
                           </div>
-                          <div className="border-r border-slate-100 px-1">
+                          <div className="border-r border-slate-200 px-1">
                             <p className="text-sm mb-0.5">✨</p>
-                            <p className="font-bold text-slate-900">Premium Quality</p>
+                            <p className="font-bold text-slate-900">100% Genuine</p>
+                            <p className="text-[9px] text-slate-500">Quality Checked</p>
                           </div>
                           <div className="pl-1">
                             <p className="text-sm mb-0.5">🔒</p>
-                            <p className="font-bold text-slate-900">Secure Payment</p>
+                            <p className="font-bold text-slate-900">Safe Payments</p>
+                            <p className="text-[9px] text-slate-500">COD & MFS</p>
                           </div>
                         </div>
 
                         {broadcastCtaText && (
                           <div className="text-center">
-                            <span className="inline-block bg-gradient-to-r from-zinc-950 to-zinc-900 text-white font-black text-xs uppercase tracking-widest px-7 py-3.5 rounded-full shadow-xl">
+                            <span className="inline-block bg-gradient-to-r from-[#FF6200] to-orange-600 text-white font-black text-xs uppercase tracking-widest px-8 py-3.5 rounded-full shadow-lg shadow-orange-500/30">
                               {broadcastCtaText} &rarr;
                             </span>
                           </div>
                         )}
+                      </div>
+
+                      {/* Footer */}
+                      <div className="bg-[#0f172a] p-4 text-center text-[10px] text-slate-400 border-t border-slate-800">
+                        <p className="font-bold text-slate-200 mb-1">ShajSutro • Happy Shopping</p>
+                        <p className="text-slate-500">Dhaka, Bangladesh • shajsutro.com</p>
                       </div>
                     </div>
                   </div>

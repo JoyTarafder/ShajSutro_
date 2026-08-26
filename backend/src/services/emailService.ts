@@ -1,6 +1,26 @@
+import path from "path";
+import fs from "fs";
 import transporter from "../config/mailer";
 
 const YEAR = new Date().getFullYear();
+
+// ─── Resolve Logo File Path for Inline Attachment ─────────────────────────────
+
+function getLogoAttachmentPath(): string | null {
+  const candidatePaths = [
+    path.join(__dirname, "../assets/shajsutro-logo.png"),
+    path.resolve(process.cwd(), "src/assets/shajsutro-logo.png"),
+    path.resolve(process.cwd(), "public/images/shajsutro-logo.png"),
+    path.resolve(process.cwd(), "../public/images/shajsutro-logo.png"),
+  ];
+
+  for (const p of candidatePaths) {
+    if (fs.existsSync(p)) {
+      return p;
+    }
+  }
+  return null;
+}
 
 // ─── Anti-Spam Plain Text Stripper ─────────────────────────────────────────────
 
@@ -39,12 +59,24 @@ async function sendMailWithAntiSpam(options: {
   const headers: Record<string, string> = {
     "X-Mailer": "ShajSutro Notification System",
     "X-Priority": "1",
-    "Importance": "High",
+    Importance: "High",
   };
 
   if (options.isBroadcast) {
     headers["List-Unsubscribe"] = `<mailto:${senderEmail}?subject=unsubscribe>`;
     headers["Precedence"] = "bulk";
+  }
+
+  const logoPath = getLogoAttachmentPath();
+  const attachments: any[] = [];
+
+  // Attach logo as CID so all email clients render it reliably
+  if (logoPath) {
+    attachments.push({
+      filename: "shajsutro-logo.png",
+      path: logoPath,
+      cid: "shajsutro-logo",
+    });
   }
 
   try {
@@ -56,24 +88,28 @@ async function sendMailWithAntiSpam(options: {
       text: plainText,
       html: options.html,
       headers,
+      attachments,
     });
     console.log(
-      `[Email Service Success] Successfully sent to: ${options.to} | Message ID: ${info?.messageId}`
+      `[Email Service Success] Successfully sent to: ${options.to} | Message ID: ${info?.messageId}`,
     );
   } catch (err: any) {
     console.error(
       `[Email Service Error] Failed to dispatch email to ${options.to}:`,
-      err?.message || err
+      err?.message || err,
     );
     console.log(
-      `[Email Fallback Info] Email intended for ${options.to} | Subject: "${options.subject}"`
+      `[Email Fallback Info] Email intended for ${options.to} | Subject: "${options.subject}"`,
     );
   }
 }
 
-// ─── Shared Ultra-Modern Luxury Layout Shell ───────────────────────────────────
+// ─── Shared Modern ShajSutro Email Shell ───────────────────────────────────────
 
 function emailShell(bodyContent: string, previewText = ""): string {
+  const frontendUrl = (process.env.FRONTEND_URL || "https://shajsutro.com").replace(/\/$/, "");
+  const hostedLogoUrl = `${frontendUrl}/images/shajsutro-logo.png`;
+
   return `
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -81,30 +117,45 @@ function emailShell(bodyContent: string, previewText = ""): string {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>ShajSutro</title>
+  <title>ShajSutro — Happy Shopping</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;">
 
-  <!-- Preheader text for inbox preview without spam flags -->
-  ${previewText ? `<div style="display:none;font-size:1px;color:#f1f5f9;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">${previewText}</div>` : ""}
+  <!-- Preheader preview text -->
+  ${
+    previewText
+      ? `<div style="display:none;font-size:1px;color:#f1f5f9;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">${previewText}</div>`
+      : ""
+  }
 
-  <!-- Outer Canvas Wrapper -->
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f5f9;padding:48px 16px;">
+  <!-- Canvas Container -->
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f5f9;padding:32px 12px;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;box-shadow:0 20px 40px rgba(0,0,0,0.08);border-radius:24px;overflow:hidden;">
+        <!-- Main Email Card -->
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.08);border:1px solid #e2e8f0;">
 
-          <!-- ── LUXURY HEADER ── -->
+          <!-- Top Brand Accent Bar (Emerald to Orange Gradient) -->
           <tr>
-            <td style="background:linear-gradient(135deg, #09090b 0%, #18181b 100%);padding:40px 48px 36px;text-align:center;">
+            <td style="background:linear-gradient(90deg, #00B14F 0%, #10B981 40%, #FF6200 100%);height:6px;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+
+          <!-- ── PROMINENT CENTERED LOGO HEADER ── -->
+          <tr>
+            <td style="background:#ffffff;padding:40px 32px 30px;text-align:center;border-bottom:1px solid #f1f5f9;">
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center">
-                    <div style="display:inline-block;padding:6px 18px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);border-radius:100px;margin-bottom:12px;">
-                      <span style="font-size:10px;font-weight:700;letter-spacing:0.25em;color:#f59e0b;text-transform:uppercase;">Official Verification</span>
-                    </div>
-                    <h1 style="margin:0;font-size:32px;font-weight:900;letter-spacing:4px;color:#ffffff;text-transform:uppercase;font-family:'Segoe UI',Roboto,sans-serif;">SHAJSUTRO</h1>
-                    <p style="margin:8px 0 0;font-size:12px;color:#a1a1aa;font-weight:400;letter-spacing:0.2em;text-transform:uppercase;">Fashion · Elegance · Modern Wardrobe</p>
+                    <a href="${frontendUrl}" target="_blank" style="text-decoration:none;display:inline-block;">
+                      <!-- Prominent, High-Res ShajSutro Logo (Extra Large) -->
+                      <img 
+                        src="cid:shajsutro-logo" 
+                        onerror="this.onerror=null;this.src='${hostedLogoUrl}';" 
+                        alt="ShajSutro — Happy Shopping" 
+                        width="340" 
+                        style="display:block;margin:0 auto;max-width:340px;width:100%;height:auto;border:0;outline:none;" 
+                      />
+                    </a>
                   </td>
                 </tr>
               </table>
@@ -113,23 +164,48 @@ function emailShell(bodyContent: string, previewText = ""): string {
 
           <!-- ── MAIN CONTENT BODY ── -->
           <tr>
-            <td style="background-color:#ffffff;padding:48px 48px 40px;">
+            <td style="background-color:#ffffff;padding:36px 36px 28px;">
               ${bodyContent}
             </td>
           </tr>
 
-          <!-- ── HELP & SUPPORT BANNER ── -->
+          <!-- ── STORE VALUE PROPOSITIONS ── -->
           <tr>
-            <td style="background-color:#ffffff;padding:0 48px 36px;">
-              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:20px 24px;">
+            <td style="background-color:#f8fafc;padding:18px 32px;border-top:1px solid #f1f5f9;border-bottom:1px solid #f1f5f9;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="width:33.33%;padding:4px;">
+                    <p style="margin:0;font-size:16px;">🚚</p>
+                    <p style="margin:2px 0 0;font-size:11px;font-weight:800;color:#0f172a;text-transform:uppercase;">Fast Delivery</p>
+                    <p style="margin:1px 0 0;font-size:10px;color:#64748b;">3-5 Days in BD</p>
+                  </td>
+                  <td align="center" style="width:33.33%;padding:4px;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;">
+                    <p style="margin:0;font-size:16px;">✨</p>
+                    <p style="margin:2px 0 0;font-size:11px;font-weight:800;color:#0f172a;text-transform:uppercase;">100% Genuine</p>
+                    <p style="margin:1px 0 0;font-size:10px;color:#64748b;">Quality Checked</p>
+                  </td>
+                  <td align="center" style="width:33.33%;padding:4px;">
+                    <p style="margin:0;font-size:16px;">🔒</p>
+                    <p style="margin:2px 0 0;font-size:11px;font-weight:800;color:#0f172a;text-transform:uppercase;">Safe Payments</p>
+                    <p style="margin:1px 0 0;font-size:10px;color:#64748b;">COD &amp; bKash/Nagad</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ── NEED HELP BANNER ── -->
+          <tr>
+            <td style="background-color:#ffffff;padding:24px 36px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:14px;padding:16px 20px;">
                 <tr>
                   <td style="vertical-align:middle;">
-                    <p style="margin:0 0 2px;font-size:13px;font-weight:700;color:#0f172a;">Need Assistance?</p>
-                    <p style="margin:0;font-size:12px;color:#64748b;line-height:1.5;">Our support team is available Mon – Sat (10 AM – 6 PM)</p>
+                    <p style="margin:0 0 2px;font-size:13px;font-weight:800;color:#166534;">💬 Need Any Assistance?</p>
+                    <p style="margin:0;font-size:12px;color:#15803d;">We are here to support your shopping experience 7 days a week.</p>
                   </td>
                   <td style="vertical-align:middle;text-align:right;">
-                    <a href="mailto:support@shajsutro.com" style="display:inline-block;background-color:#0f172a;color:#ffffff;font-size:11px;font-weight:700;letter-spacing:0.08em;text-decoration:none;padding:10px 20px;border-radius:100px;box-shadow:0 4px 12px rgba(15,23,42,0.15);">
-                      Get Support
+                    <a href="mailto:support@shajsutro.com" style="display:inline-block;background:#00B14F;color:#ffffff;font-size:11px;font-weight:900;letter-spacing:0.04em;text-decoration:none;padding:9px 18px;border-radius:100px;box-shadow:0 3px 8px rgba(0,177,79,0.25);">
+                      Help Center
                     </a>
                   </td>
                 </tr>
@@ -139,22 +215,24 @@ function emailShell(bodyContent: string, previewText = ""): string {
 
           <!-- ── FOOTER ── -->
           <tr>
-            <td style="background-color:#09090b;padding:32px 48px;text-align:center;">
+            <td style="background-color:#0f172a;padding:28px 32px;text-align:center;">
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td style="text-align:center;padding-bottom:16px;">
-                    <a href="https://shajsutro.com/privacy-policy" style="font-size:11px;color:#a1a1aa;text-decoration:none;margin:0 12px;font-weight:500;">Privacy Policy</a>
-                    <span style="color:#3f3f46;font-size:11px;">•</span>
-                    <a href="https://shajsutro.com/terms-of-service" style="font-size:11px;color:#a1a1aa;text-decoration:none;margin:0 12px;font-weight:500;">Terms of Service</a>
-                    <span style="color:#3f3f46;font-size:11px;">•</span>
-                    <a href="https://shajsutro.com/unsubscribe" style="font-size:11px;color:#a1a1aa;text-decoration:none;margin:0 12px;font-weight:500;">Unsubscribe</a>
+                  <td style="text-align:center;padding-bottom:14px;">
+                    <a href="${frontendUrl}/shop" style="font-size:11px;color:#94a3b8;text-decoration:none;margin:0 10px;font-weight:700;">SHOP NOW</a>
+                    <span style="color:#334155;font-size:11px;">•</span>
+                    <a href="${frontendUrl}/track" style="font-size:11px;color:#94a3b8;text-decoration:none;margin:0 10px;font-weight:700;">TRACK ORDER</a>
+                    <span style="color:#334155;font-size:11px;">•</span>
+                    <a href="${frontendUrl}/privacy-policy" style="font-size:11px;color:#94a3b8;text-decoration:none;margin:0 10px;font-weight:700;">PRIVACY</a>
+                    <span style="color:#334155;font-size:11px;">•</span>
+                    <a href="${frontendUrl}/terms-of-service" style="font-size:11px;color:#94a3b8;text-decoration:none;margin:0 10px;font-weight:700;">TERMS</a>
                   </td>
                 </tr>
                 <tr>
                   <td style="text-align:center;">
-                    <p style="margin:0;font-size:11px;color:#71717a;line-height:1.8;">
-                      &copy; ${YEAR} ShajSutro Ltd. All rights reserved.<br />
-                      Dhaka, Bangladesh • <a href="https://shajsutro.com" style="color:#f59e0b;text-decoration:none;">shajsutro.com</a>
+                    <p style="margin:0;font-size:11px;color:#64748b;line-height:1.6;">
+                      &copy; ${YEAR} <strong style="color:#ffffff;">ShajSutro</strong> &bull; Happy Shopping.<br />
+                      Dhaka, Bangladesh &bull; <a href="${frontendUrl}" style="color:#00B14F;text-decoration:none;font-weight:700;">shajsutro.com</a>
                     </p>
                   </td>
                 </tr>
@@ -172,18 +250,27 @@ function emailShell(bodyContent: string, previewText = ""): string {
   `.trim();
 }
 
-// ─── Ultra-Modern High-Contrast OTP Code Box ────────────────────────────────────
+// ─── Ultra-Vibrant High-Contrast OTP Code Box ───────────────────────────────────
 
-function otpBox(code: string): string {
+function otpBox(code: string, colorTheme: "green" | "orange" = "green"): string {
+  const isGreen = colorTheme === "green";
+  const primaryColor = isGreen ? "#00B14F" : "#FF6200";
+  const bgLight = isGreen ? "#f0fdf4" : "#fff7ed";
+  const borderTone = isGreen ? "#86efac" : "#fdba74";
+  const badgeBg = isGreen ? "#dcfce7" : "#ffedd5";
+  const badgeText = isGreen ? "#15803d" : "#c2410c";
+
   return `
-<table width="100%" cellpadding="0" cellspacing="0" style="margin:32px 0;">
+<table width="100%" cellpadding="0" cellspacing="0" style="margin:26px 0;">
   <tr>
     <td align="center">
-      <div style="background:linear-gradient(135deg, #0f172a 0%, #1e293b 100%);border:2px solid #f59e0b;border-radius:20px;padding:28px 40px;box-shadow:0 12px 24px rgba(245,158,11,0.15);text-align:center;max-width:380px;">
-        <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#f59e0b;text-transform:uppercase;">Your Verification Passcode</p>
-        <p style="margin:0 0 10px;font-size:42px;font-weight:900;letter-spacing:14px;color:#ffffff;font-family:'Courier New',Consolas,monospace;text-shadow:0 2px 10px rgba(0,0,0,0.5);">${code}</p>
-        <div style="display:inline-block;padding:4px 14px;background:rgba(255,255,255,0.08);border-radius:100px;">
-          <span style="font-size:11px;color:#cbd5e1;font-weight:600;">⏱️ Valid for 10 minutes</span>
+      <div style="background:${bgLight};border:2.5px dashed ${primaryColor};border-radius:18px;padding:24px 32px;box-shadow:0 8px 24px rgba(0,0,0,0.04);text-align:center;max-width:360px;">
+        <div style="display:inline-block;padding:4px 14px;background:${badgeBg};border:1px solid ${borderTone};border-radius:100px;margin-bottom:10px;">
+          <span style="font-size:10px;font-weight:900;letter-spacing:0.15em;color:${badgeText};text-transform:uppercase;">⚡ 6-Digit Verification Code</span>
+        </div>
+        <p style="margin:0 0 10px;font-size:46px;font-weight:900;letter-spacing:14px;color:#0f172a;font-family:'Courier New',Consolas,monospace;">${code}</p>
+        <div style="display:inline-block;padding:3px 12px;background:#ffffff;border:1px solid #e2e8f0;border-radius:100px;">
+          <span style="font-size:11px;color:#64748b;font-weight:700;">⏱️ Valid for 10 minutes</span>
         </div>
       </div>
     </td>
@@ -197,17 +284,17 @@ function otpBox(code: string): string {
 function stepCardRow(num: string, title: string, desc: string): string {
   return `
 <tr>
-  <td style="padding-bottom:12px;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:14px 18px;">
+  <td style="padding-bottom:8px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px 16px;">
       <tr>
-        <td style="width:36px;vertical-align:middle;">
-          <div style="width:32px;height:32px;border-radius:10px;background:#0f172a;color:#f59e0b;font-size:13px;font-weight:800;line-height:32px;text-align:center;">
+        <td style="width:28px;vertical-align:middle;">
+          <div style="width:26px;height:26px;border-radius:8px;background:#00B14F;color:#ffffff;font-size:12px;font-weight:900;line-height:26px;text-align:center;">
             ${num}
           </div>
         </td>
-        <td style="padding-left:14px;vertical-align:middle;">
-          <p style="margin:0;font-size:13px;font-weight:700;color:#0f172a;">${title}</p>
-          <p style="margin:2px 0 0;font-size:12px;color:#64748b;line-height:1.5;">${desc}</p>
+        <td style="padding-left:12px;vertical-align:middle;">
+          <p style="margin:0;font-size:13px;font-weight:800;color:#0f172a;">${title}</p>
+          <p style="margin:1px 0 0;font-size:12px;color:#64748b;line-height:1.4;">${desc}</p>
         </td>
       </tr>
     </table>
@@ -220,11 +307,11 @@ function stepCardRow(num: string, title: string, desc: string): string {
 
 function securityNoticeBox(text: string): string {
   return `
-<table width="100%" cellpadding="0" cellspacing="0" style="margin-top:32px;">
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px;">
   <tr>
-    <td style="background:#fffbeb;border-left:4px solid #f59e0b;border-top:1px solid #fef3c7;border-right:1px solid #fef3c7;border-bottom:1px solid #fef3c7;border-radius:0 12px 12px 0;padding:16px 20px;">
-      <p style="margin:0;font-size:12px;color:#92400e;line-height:1.6;">
-        <strong style="color:#b45309;">🔒 Security Notice:</strong> ${text}
+    <td style="background:#fffbeb;border-left:4px solid #FF6200;border-top:1px solid #fef3c7;border-right:1px solid #fef3c7;border-bottom:1px solid #fef3c7;border-radius:0 12px 12px 0;padding:12px 16px;">
+      <p style="margin:0;font-size:12px;color:#9a3412;line-height:1.5;">
+        <strong style="color:#c2410c;">🔒 Security Note:</strong> ${text}
       </p>
     </td>
   </tr>
@@ -239,37 +326,37 @@ export const sendVerificationEmail = async (
   code: string,
 ): Promise<void> => {
   const body = `
-    <!-- Header Greeting -->
-    <div style="text-align:center;margin-bottom:32px;">
-      <div style="width:64px;height:64px;margin:0 auto 16px;border-radius:20px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);line-height:64px;font-size:28px;">
-        ✉️
+    <!-- Top Celebration Badge -->
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="display:inline-block;padding:5px 16px;background:#ecfdf5;border:1.5px solid #a7f3d0;border-radius:100px;margin-bottom:10px;">
+        <span style="font-size:11px;font-weight:900;color:#047857;text-transform:uppercase;letter-spacing:0.1em;">✨ WELCOME TO SHAJSUTRO</span>
       </div>
-      <h2 style="margin:0 0 10px;font-size:26px;font-weight:800;color:#0f172a;letter-spacing:-0.5px;">Verify Your Email Address</h2>
-      <p style="margin:0;font-size:15px;color:#64748b;line-height:1.6;max-width:440px;margin:0 auto;">
-        Welcome to <strong style="color:#0f172a;">ShajSutro</strong>! Please enter the passcode below to activate your account and start your fashion journey.
+      <h2 style="margin:4px 0 8px;font-size:26px;font-weight:900;color:#0f172a;letter-spacing:-0.5px;">Verify Your Email Address</h2>
+      <p style="margin:0;font-size:14px;color:#64748b;line-height:1.5;max-width:440px;margin:0 auto;">
+        Enter the passcode below to activate your account and start your happy shopping journey!
       </p>
     </div>
 
-    <!-- Passcode Display Box -->
-    ${otpBox(code)}
+    <!-- Vibrant Code Box -->
+    ${otpBox(code, "green")}
 
-    <!-- Step Timeline Instructions -->
-    <p style="margin:0 0 16px;font-size:12px;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:0.1em;">Simple Verification Steps</p>
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
-      ${stepCardRow("01", "Copy Passcode", "Copy the 6-digit security code displayed above.")}
-      ${stepCardRow("02", "Return to Browser", "Switch back to the ShajSutro sign-up page.")}
-      ${stepCardRow("03", "Paste & Verify", "Enter the code in the verification screen and submit.")}
+    <!-- 3 Quick Steps -->
+    <p style="margin:0 0 10px;font-size:11px;font-weight:900;color:#0f172a;text-transform:uppercase;letter-spacing:0.08em;">Quick Steps</p>
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:18px;">
+      ${stepCardRow("1", "Copy Code", "Copy the 6-digit code shown in the box above.")}
+      ${stepCardRow("2", "Paste & Verify", "Paste it into the verification screen in your browser.")}
+      ${stepCardRow("3", "Start Shopping", "Enjoy fast checkout and exclusive member deals.")}
     </table>
 
     <!-- Security Notice -->
-    ${securityNoticeBox("ShajSutro will never request your password or confidential details over email. If you did not sign up for an account, please ignore this email.")}
+    ${securityNoticeBox("Never share this code with anyone. If you didn't create a ShajSutro account, you can safely disregard this email.")}
   `;
 
   console.log(`[AUTH VERIFICATION OTP] Code for ${email}: ${code}`);
 
   await sendMailWithAntiSpam({
     to: email,
-    subject: "Verify your ShajSutro account",
+    subject: "Verify your ShajSutro account — Happy Shopping!",
     html: emailShell(
       body,
       "Your ShajSutro verification code is inside — valid for 10 minutes.",
@@ -286,30 +373,30 @@ export const sendPasswordResetEmail = async (
   console.log(`[AUTH RESET PASSWORD OTP] Code for ${email}: ${code}`);
 
   const body = `
-    <!-- Header Greeting -->
-    <div style="text-align:center;margin-bottom:32px;">
-      <div style="width:64px;height:64px;margin:0 auto 16px;border-radius:20px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);line-height:64px;font-size:28px;">
-        🔑
+    <!-- Top Badge & Title -->
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="display:inline-block;padding:5px 16px;background:#fff7ed;border:1.5px solid #fed7aa;border-radius:100px;margin-bottom:10px;">
+        <span style="font-size:11px;font-weight:900;color:#c2410c;text-transform:uppercase;letter-spacing:0.1em;">🔒 PASSWORD RESET</span>
       </div>
-      <h2 style="margin:0 0 10px;font-size:26px;font-weight:800;color:#0f172a;letter-spacing:-0.5px;">Reset Your Password</h2>
-      <p style="margin:0;font-size:15px;color:#64748b;line-height:1.6;max-width:440px;margin:0 auto;">
-        We received a request to reset the password for your ShajSutro account linked to <strong style="color:#0f172a;">${email}</strong>.
+      <h2 style="margin:4px 0 8px;font-size:26px;font-weight:900;color:#0f172a;letter-spacing:-0.5px;">Reset Your Password</h2>
+      <p style="margin:0;font-size:14px;color:#64748b;line-height:1.5;max-width:440px;margin:0 auto;">
+        We received a request to reset your password for <strong style="color:#0f172a;">${email}</strong>.
       </p>
     </div>
 
-    <!-- Passcode Display Box -->
-    ${otpBox(code)}
+    <!-- Vibrant Code Box -->
+    ${otpBox(code, "orange")}
 
-    <!-- Step Timeline Instructions -->
-    <p style="margin:0 0 16px;font-size:12px;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:0.1em;">How to Reset Password</p>
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
-      ${stepCardRow("01", "Copy Code", "Copy the 6-digit passcode shown above.")}
-      ${stepCardRow("02", "Enter Code", "Paste the code in the password reset form.")}
-      ${stepCardRow("03", "Create New Password", "Set a strong new password to secure your account.")}
+    <!-- Reset Steps -->
+    <p style="margin:0 0 10px;font-size:11px;font-weight:900;color:#0f172a;text-transform:uppercase;letter-spacing:0.08em;">How to Complete</p>
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:18px;">
+      ${stepCardRow("1", "Copy Code", "Copy the 6-digit passcode shown above.")}
+      ${stepCardRow("2", "Enter Code", "Paste the code in your password reset form.")}
+      ${stepCardRow("3", "Set Password", "Choose a strong new password to protect your account.")}
     </table>
 
     <!-- Security Notice -->
-    ${securityNoticeBox("If you did not request a password reset, your account is safe. No changes will be made unless you confirm with this passcode.")}
+    ${securityNoticeBox("If you didn't request a password reset, your account is completely safe and no action is required.")}
   `;
 
   await sendMailWithAntiSpam({
@@ -357,10 +444,10 @@ export const sendOrderConfirmationEmail = async (
 
   const paymentStatusText =
     order.paymentStatus === "paid"
-      ? `Paid ${order.txnId ? `(TxnID: ${order.txnId})` : ""}`
+      ? `Paid ${order.txnId ? `(Txn: ${order.txnId})` : ""}`
       : order.paymentStatus === "refunded"
-        ? "Payment Returned"
-        : "Cash on Delivery / Verification Pending";
+        ? "Refunded"
+        : "Pending (COD / Verification)";
 
   const itemsHtml = (order.items || [])
     .map(
@@ -370,14 +457,14 @@ export const sendOrderConfirmationEmail = async (
         <table width="100%" cellpadding="0" cellspacing="0">
           <tr>
             <td style="vertical-align:middle;">
-              <p style="margin:0;font-size:14px;font-weight:700;color:#0f172a;">${item.name}</p>
-              <p style="margin:4px 0 0;font-size:12px;color:#64748b;">
-                ${item.size ? `Size: <strong>${item.size}</strong> &nbsp;•&nbsp; ` : ""}
-                ${item.color ? `Color: <strong>${item.color}</strong> &nbsp;•&nbsp; ` : ""}
-                Qty: <strong>${item.quantity}</strong>
+              <p style="margin:0;font-size:14px;font-weight:800;color:#0f172a;">${item.name}</p>
+              <p style="margin:3px 0 0;font-size:12px;color:#64748b;">
+                ${item.size ? `Size: <strong style="color:#0f172a;">${item.size}</strong> &bull; ` : ""}
+                ${item.color ? `Color: <strong style="color:#0f172a;">${item.color}</strong> &bull; ` : ""}
+                Qty: <strong style="color:#00B14F;">${item.quantity}</strong>
               </p>
             </td>
-            <td style="text-align:right;vertical-align:middle;font-size:14px;font-weight:800;color:#0f172a;">
+            <td style="text-align:right;vertical-align:middle;font-size:15px;font-weight:900;color:#0f172a;">
               ৳${(item.price * item.quantity).toFixed(2)}
             </td>
           </tr>
@@ -388,32 +475,51 @@ export const sendOrderConfirmationEmail = async (
     )
     .join("");
 
+  const frontendUrl = (process.env.FRONTEND_URL || "https://shajsutro.com").replace(/\/$/, "");
+
   const body = `
-    <!-- Header Badge & Title -->
-    <div style="text-align:center;margin-bottom:32px;">
-      <div style="width:64px;height:64px;margin:0 auto 16px;border-radius:20px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);line-height:64px;font-size:28px;">
-        🛍️
+    <!-- Top Celebration Badge & Headline -->
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="display:inline-block;padding:6px 18px;background:linear-gradient(135deg, #00B14F 0%, #10B981 100%);border-radius:100px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,177,79,0.25);">
+        <span style="font-size:11px;font-weight:900;color:#ffffff;text-transform:uppercase;letter-spacing:0.12em;">🎉 ORDER CONFIRMED!</span>
       </div>
-      <span style="display:inline-block;padding:4px 14px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:100px;font-size:11px;font-weight:800;color:#047857;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">
-        Order Confirmed
-      </span>
-      <h2 style="margin:8px 0 6px;font-size:26px;font-weight:800;color:#0f172a;letter-spacing:-0.5px;">Thank You For Your Order!</h2>
-      <p style="margin:0;font-size:14px;color:#64748b;">Order Reference: <strong style="color:#0f172a;font-family:monospace;">#${orderId}</strong> &bull; ${dateStr}</p>
+      <h2 style="margin:4px 0 6px;font-size:26px;font-weight:900;color:#0f172a;letter-spacing:-0.5px;">Thank You For Your Order!</h2>
+      <p style="margin:0;font-size:14px;color:#64748b;">
+        Order Ref: <strong style="color:#00B14F;font-family:monospace;font-size:15px;">#${orderId}</strong> &bull; ${dateStr}
+      </p>
     </div>
 
-    <!-- Customer & Shipping Summary Box -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:20px 24px;margin-bottom:28px;">
+    <!-- Visual Order Tracker -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:14px 16px;margin-bottom:24px;">
       <tr>
-        <td style="vertical-align:top;width:50%;padding-right:12px;">
-          <p style="margin:0 0 6px;font-size:11px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:0.1em;">Customer Details</p>
-          <p style="margin:0;font-size:14px;font-weight:700;color:#0f172a;">${customerName}</p>
-          <p style="margin:3px 0 0;font-size:12px;color:#64748b;">${recipientEmail}</p>
+        <td align="center" style="width:33.33%;">
+          <span style="display:inline-block;width:24px;height:24px;border-radius:50%;background:#00B14F;color:#fff;font-size:11px;font-weight:900;line-height:24px;text-align:center;">✓</span>
+          <p style="margin:4px 0 0;font-size:11px;font-weight:800;color:#00B14F;">Order Placed</p>
+        </td>
+        <td align="center" style="width:33.33%;border-left:2px solid #e2e8f0;border-right:2px solid #e2e8f0;">
+          <span style="display:inline-block;width:24px;height:24px;border-radius:50%;background:#FF6200;color:#fff;font-size:11px;font-weight:900;line-height:24px;text-align:center;">📦</span>
+          <p style="margin:4px 0 0;font-size:11px;font-weight:800;color:#FF6200;">Processing</p>
+        </td>
+        <td align="center" style="width:33.33%;">
+          <span style="display:inline-block;width:24px;height:24px;border-radius:50%;background:#cbd5e1;color:#64748b;font-size:11px;font-weight:900;line-height:24px;text-align:center;">🚚</span>
+          <p style="margin:4px 0 0;font-size:11px;font-weight:800;color:#64748b;">Delivery (3-5 Days)</p>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Customer & Shipping Summary Box -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:16px 20px;margin-bottom:24px;">
+      <tr>
+        <td style="vertical-align:top;width:50%;padding-right:10px;">
+          <p style="margin:0 0 4px;font-size:10px;font-weight:900;color:#94a3b8;text-transform:uppercase;letter-spacing:0.1em;">Customer Details</p>
+          <p style="margin:0;font-size:14px;font-weight:800;color:#0f172a;">${customerName}</p>
+          <p style="margin:2px 0 0;font-size:12px;color:#64748b;">${recipientEmail}</p>
           <p style="margin:2px 0 0;font-size:12px;color:#64748b;">📞 ${order.shippingAddress?.phone || "N/A"}</p>
         </td>
-        <td style="vertical-align:top;width:50%;padding-left:12px;border-left:1px solid #e2e8f0;">
-          <p style="margin:0 0 6px;font-size:11px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:0.1em;">Shipping Address</p>
-          <p style="margin:0;font-size:13px;color:#334155;line-height:1.5;">${order.shippingAddress?.address || ""}</p>
-          <p style="margin:3px 0 0;font-size:12px;color:#64748b;">
+        <td style="vertical-align:top;width:50%;padding-left:10px;border-left:1px solid #e2e8f0;">
+          <p style="margin:0 0 4px;font-size:10px;font-weight:900;color:#94a3b8;text-transform:uppercase;letter-spacing:0.1em;">Shipping Address</p>
+          <p style="margin:0;font-size:12px;color:#334155;line-height:1.4;">${order.shippingAddress?.address || ""}</p>
+          <p style="margin:2px 0 0;font-size:12px;color:#64748b;">
             ${[order.shippingAddress?.city, order.shippingAddress?.state, order.shippingAddress?.zip].filter(Boolean).join(", ")}
           </p>
         </td>
@@ -421,53 +527,59 @@ export const sendOrderConfirmationEmail = async (
     </table>
 
     <!-- Order Items List -->
-    <p style="margin:0 0 12px;font-size:12px;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:0.1em;">Order Items (${(order.items || []).length})</p>
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+    <p style="margin:0 0 8px;font-size:11px;font-weight:900;color:#0f172a;text-transform:uppercase;letter-spacing:0.08em;">
+      Ordered Items (${(order.items || []).length})
+    </p>
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
       ${itemsHtml}
     </table>
 
-    <!-- Financial Breakdown -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:20px 24px;margin-bottom:28px;">
+    <!-- Financial Breakdown Card -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:16px 20px;margin-bottom:24px;">
       <tr>
         <td style="padding:4px 0;font-size:13px;color:#64748b;">Subtotal</td>
-        <td style="padding:4px 0;text-align:right;font-size:13px;font-weight:600;color:#0f172a;">৳${(order.subtotal || 0).toFixed(2)}</td>
+        <td style="padding:4px 0;text-align:right;font-size:13px;font-weight:700;color:#0f172a;">৳${(order.subtotal || 0).toFixed(2)}</td>
       </tr>
       <tr>
         <td style="padding:4px 0;font-size:13px;color:#64748b;">Delivery Fee</td>
-        <td style="padding:4px 0;text-align:right;font-size:13px;font-weight:600;color:#0f172a;">${order.shippingCost === 0 ? "FREE" : `৳${(order.shippingCost || 0).toFixed(2)}`}</td>
+        <td style="padding:4px 0;text-align:right;font-size:13px;font-weight:800;color:#00B14F;">
+          ${order.shippingCost === 0 ? "FREE" : `৳${(order.shippingCost || 0).toFixed(2)}`}
+        </td>
       </tr>
       ${
         order.discount > 0
           ? `
       <tr>
-        <td style="padding:4px 0;font-size:13px;color:#059669;font-weight:600;">Promo Discount</td>
-        <td style="padding:4px 0;text-align:right;font-size:13px;font-weight:700;color:#059669;">-৳${order.discount.toFixed(2)}</td>
+        <td style="padding:4px 0;font-size:13px;color:#FF6200;font-weight:700;">Promo Discount</td>
+        <td style="padding:4px 0;text-align:right;font-size:13px;font-weight:800;color:#FF6200;">-৳${order.discount.toFixed(2)}</td>
       </tr>
       `
           : ""
       }
       <tr>
-        <td style="padding:12px 0 0;border-top:1px solid #e2e8f0;font-size:16px;font-weight:800;color:#0f172a;">Total Payable</td>
-        <td style="padding:12px 0 0;border-top:1px solid #e2e8f0;text-align:right;font-size:18px;font-weight:900;color:#0f172a;">৳${(order.total || 0).toFixed(2)}</td>
+        <td style="padding:10px 0 0;border-top:1px solid #e2e8f0;font-size:16px;font-weight:900;color:#0f172a;">Total Payable</td>
+        <td style="padding:10px 0 0;border-top:1px solid #e2e8f0;text-align:right;font-size:20px;font-weight:900;color:#00B14F;">
+          ৳${(order.total || 0).toFixed(2)}
+        </td>
       </tr>
     </table>
 
-    <!-- Payment & Delivery Info -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+    <!-- Payment Badge -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
       <tr>
-        <td style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:16px 20px;">
-          <p style="margin:0 0 4px;font-size:12px;font-weight:800;color:#1e40af;text-transform:uppercase;letter-spacing:0.05em;">Payment Details</p>
-          <p style="margin:0;font-size:13px;color:#1e3a8a;">
-            Method: <strong>${paymentMethodLabel}</strong> &nbsp;•&nbsp; Status: <strong>${paymentStatusText}</strong>
+        <td style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:12px 16px;">
+          <p style="margin:0 0 2px;font-size:10px;font-weight:900;color:#15803d;text-transform:uppercase;letter-spacing:0.05em;">Payment Details</p>
+          <p style="margin:0;font-size:12px;color:#166534;font-weight:600;">
+            Method: <strong>${paymentMethodLabel}</strong> &bull; Status: <strong>${paymentStatusText}</strong>
           </p>
         </td>
       </tr>
     </table>
 
-    <!-- Action Button -->
-    <div style="text-align:center;margin-top:32px;">
-      <a href="https://shajsutro.com/profile" style="display:inline-block;background:#0f172a;color:#ffffff;font-size:13px;font-weight:800;letter-spacing:0.08em;text-decoration:none;padding:14px 32px;border-radius:100px;box-shadow:0 10px 20px rgba(15,23,42,0.2);">
-        TRACK ORDER STATUS →
+    <!-- Track Order Action Button -->
+    <div style="text-align:center;margin-top:28px;">
+      <a href="${frontendUrl}/track" style="display:inline-block;background:linear-gradient(135deg, #00B14F 0%, #059669 100%);color:#ffffff;font-size:13px;font-weight:900;letter-spacing:0.08em;text-decoration:none;padding:15px 36px;border-radius:100px;box-shadow:0 10px 24px rgba(0,177,79,0.35);text-transform:uppercase;">
+        TRACK YOUR ORDER &rarr;
       </a>
     </div>
   `;
@@ -475,10 +587,10 @@ export const sendOrderConfirmationEmail = async (
   try {
     await sendMailWithAntiSpam({
       to: recipientEmail,
-      subject: `✨ Order Confirmation #${orderId} — ShajSutro`,
+      subject: `🎉 Order Confirmed #${orderId} — ShajSutro`,
       html: emailShell(
         body,
-        `Your ShajSutro order #${orderId} for ৳${(order.total || 0).toFixed(2)} has been placed successfully!`
+        `Your ShajSutro order #${orderId} for ৳${(order.total || 0).toFixed(2)} has been placed successfully!`,
       ),
     });
   } catch (err) {
@@ -488,26 +600,51 @@ export const sendOrderConfirmationEmail = async (
 
 // ─── Send: Newsletter Welcome Email ──────────────────────────────────────────
 
-export const sendNewsletterWelcomeEmail = async (email: string): Promise<void> => {
+export const sendNewsletterWelcomeEmail = async (
+  email: string,
+): Promise<void> => {
+  const frontendUrl = (process.env.FRONTEND_URL || "https://shajsutro.com").replace(/\/$/, "");
+
   const body = `
-    <div style="text-align:center;margin-bottom:32px;">
-      <div style="width:64px;height:64px;margin:0 auto 16px;border-radius:20px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);line-height:64px;font-size:28px;">
-        📩
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="display:inline-block;padding:6px 18px;background:linear-gradient(135deg, #FF6200 0%, #EA580C 100%);border-radius:100px;margin-bottom:12px;box-shadow:0 4px 12px rgba(255,98,0,0.25);">
+        <span style="font-size:11px;font-weight:900;color:#ffffff;text-transform:uppercase;letter-spacing:0.12em;">🎉 WELCOME VIP CLUB</span>
       </div>
-      <span style="display:inline-block;padding:4px 14px;background:#fef3c7;border:1px solid #fde047;border-radius:100px;font-size:11px;font-weight:800;color:#92400e;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">
-        Welcome to VIP Circle
-      </span>
-      <h2 style="margin:8px 0 6px;font-size:26px;font-weight:800;color:#0f172a;">Welcome to ShajSutro!</h2>
+      <h2 style="margin:4px 0 8px;font-size:26px;font-weight:900;color:#0f172a;">Welcome to ShajSutro!</h2>
       <p style="margin:0;font-size:14px;color:#64748b;line-height:1.6;max-width:440px;margin:0 auto;">
-        Thank you for subscribing to our newsletter. You&apos;re now on the VIP list for early drop alerts, private sales, and minimalist style guides.
+        You're officially on our VIP list for exclusive drops, early flash sale alerts, and private discounts!
       </p>
     </div>
+
+    <!-- Exclusive VIP Voucher Box -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#fff7ed;border:2px dashed #FF6200;border-radius:16px;padding:20px;text-align:center;margin-bottom:24px;">
+      <tr>
+        <td align="center">
+          <p style="margin:0 0 4px;font-size:11px;font-weight:900;color:#c2410c;text-transform:uppercase;letter-spacing:0.1em;">Special Welcome Gift</p>
+          <p style="margin:0 0 8px;font-size:20px;font-weight:900;color:#ea580c;">ENJOY 10% OFF YOUR FIRST ORDER</p>
+          <div style="display:inline-block;padding:6px 20px;background:#ffffff;border:1.5px solid #fdba74;border-radius:8px;">
+            <span style="font-family:monospace;font-size:16px;font-weight:900;color:#0f172a;letter-spacing:2px;">WELCOME10</span>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Call to action button -->
+    <div style="text-align:center;margin-top:24px;">
+      <a href="${frontendUrl}/shop" style="display:inline-block;background:linear-gradient(135deg, #00B14F 0%, #059669 100%);color:#ffffff;font-size:13px;font-weight:900;letter-spacing:0.08em;text-decoration:none;padding:15px 36px;border-radius:100px;box-shadow:0 10px 24px rgba(0,177,79,0.3);text-transform:uppercase;">
+        START SHOPPING NOW &rarr;
+      </a>
+    </div>
   `;
+
   try {
     await sendMailWithAntiSpam({
       to: email,
-      subject: "Welcome to ShajSutro Newsletter!",
-      html: emailShell(body, "Welcome to ShajSutro! You are now subscribed to VIP updates."),
+      subject: "🎉 Welcome to ShajSutro — Here's 10% OFF!",
+      html: emailShell(
+        body,
+        "Welcome to ShajSutro! You are now subscribed to VIP updates & offers.",
+      ),
     });
   } catch (err) {
     console.error("Failed to send newsletter welcome email:", err);
@@ -528,7 +665,7 @@ export interface IBroadcastMailPayload {
 }
 
 export const sendBroadcastEmail = async (
-  payload: IBroadcastMailPayload
+  payload: IBroadcastMailPayload,
 ): Promise<{ sentCount: number; failedCount: number }> => {
   const {
     recipientEmails,
@@ -537,7 +674,7 @@ export const sendBroadcastEmail = async (
     title,
     messageBody,
     bannerImageUrl,
-    ctaButtonText = "SHOP NOW",
+    ctaButtonText = "SHOP THE SALE NOW",
     ctaButtonUrl = "https://shajsutro.com/shop",
   } = payload;
 
@@ -546,69 +683,48 @@ export const sendBroadcastEmail = async (
     .filter((p) => p.trim())
     .map(
       (p) =>
-        `<p style="margin:0 0 14px;font-size:14px;color:#334155;line-height:1.75;">${p.trim()}</p>`
+        `<p style="margin:0 0 12px;font-size:14px;color:#334155;line-height:1.7;">${p.trim()}</p>`,
     )
     .join("");
 
   const body = `
-    <!-- Header Badge & Celebration Title -->
-    <div style="text-align:center;margin-bottom:32px;">
+    <!-- Header Badge & Title -->
+    <div style="text-align:center;margin-bottom:24px;">
       ${
         badgeText
           ? `
-      <div style="display:inline-block;padding:6px 20px;background:linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);border:1px solid #fde047;border-radius:100px;margin-bottom:14px;box-shadow:0 4px 12px rgba(245,158,11,0.12);">
-        <span style="font-size:11px;font-weight:900;color:#b45309;text-transform:uppercase;letter-spacing:0.2em;">✨ ${badgeText}</span>
+      <div style="display:inline-block;padding:6px 18px;background:linear-gradient(135deg, #FF6200 0%, #EA580C 100%);border-radius:100px;margin-bottom:12px;box-shadow:0 4px 12px rgba(255,98,0,0.25);">
+        <span style="font-size:11px;font-weight:900;color:#ffffff;text-transform:uppercase;letter-spacing:0.15em;">🔥 ${badgeText}</span>
       </div>
       `
           : ""
       }
-      <h2 style="margin:6px 0 10px;font-size:30px;font-weight:900;color:#0f172a;letter-spacing:-0.5px;line-height:1.2;">${title}</h2>
-      <div style="width:40px;height:3px;background:linear-gradient(90deg, #f59e0b, #d97706);margin:0 auto;border-radius:100px;"></div>
+      <h2 style="margin:4px 0 8px;font-size:28px;font-weight:900;color:#0f172a;letter-spacing:-0.5px;line-height:1.25;">${title}</h2>
+      <div style="width:56px;height:4px;background:linear-gradient(90deg, #00B14F, #FF6200);margin:0 auto;border-radius:100px;"></div>
     </div>
 
     <!-- Banner Image Poster (if provided) -->
     ${
       bannerImageUrl
         ? `
-    <div style="margin-bottom:32px;border-radius:20px;overflow:hidden;box-shadow:0 16px 32px rgba(0,0,0,0.12);border:1px solid #e2e8f0;">
+    <div style="margin-bottom:24px;border-radius:16px;overflow:hidden;box-shadow:0 10px 24px rgba(0,0,0,0.08);border:1px solid #e2e8f0;">
       <img src="${bannerImageUrl}" alt="${title}" style="width:100%;max-height:320px;object-fit:cover;display:block;border:0;" />
     </div>
     `
         : ""
     }
 
-    <!-- Main Message Content Box with Amber Accent -->
-    <div style="background:#f8fafc;border-left:4px solid #f59e0b;border-top:1px solid #e2e8f0;border-right:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;border-radius:0 16px 16px 0;padding:26px 30px;margin-bottom:32px;box-shadow:0 4px 12px rgba(0,0,0,0.02);">
+    <!-- Main Message Content Box with Emerald Accent -->
+    <div style="background:#f8fafc;border-left:4px solid #00B14F;border-top:1px solid #e2e8f0;border-right:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;border-radius:0 16px 16px 0;padding:22px 24px;margin-bottom:24px;">
       ${formattedMessage}
     </div>
 
-    <!-- Store Selling Points Grid -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;background:#ffffff;border:1px solid #f1f5f9;border-radius:16px;padding:16px;">
-      <tr>
-        <td style="text-align:center;width:33.33%;padding:8px 4px;border-right:1px solid #f1f5f9;">
-          <p style="margin:0 0 2px;font-size:16px;">🚚</p>
-          <p style="margin:0;font-size:11px;font-weight:700;color:#0f172a;">Fast Delivery</p>
-          <p style="margin:2px 0 0;font-size:10px;color:#64748b;">3-5 Days Nationwide</p>
-        </td>
-        <td style="text-align:center;width:33.33%;padding:8px 4px;border-right:1px solid #f1f5f9;">
-          <p style="margin:0 0 2px;font-size:16px;">✨</p>
-          <p style="margin:0;font-size:11px;font-weight:700;color:#0f172a;">Premium Quality</p>
-          <p style="margin:2px 0 0;font-size:10px;color:#64748b;">100% Authentic</p>
-        </td>
-        <td style="text-align:center;width:33.33%;padding:8px 4px;">
-          <p style="margin:0 0 2px;font-size:16px;">🔒</p>
-          <p style="margin:0;font-size:11px;font-weight:700;color:#0f172a;">Secure Payment</p>
-          <p style="margin:2px 0 0;font-size:10px;color:#64748b;">COD & Online</p>
-        </td>
-      </tr>
-    </table>
-
-    <!-- Call-To-Action Button -->
+    <!-- High-Converting Call-To-Action Button -->
     ${
       ctaButtonText && ctaButtonUrl
         ? `
-    <div style="text-align:center;margin-top:36px;margin-bottom:16px;">
-      <a href="${ctaButtonUrl}" style="display:inline-block;background:linear-gradient(135deg, #09090b 0%, #1e293b 100%);color:#ffffff;font-size:13px;font-weight:900;letter-spacing:0.15em;text-decoration:none;padding:18px 44px;border-radius:100px;box-shadow:0 14px 28px rgba(15,23,42,0.3);text-transform:uppercase;">
+    <div style="text-align:center;margin-top:28px;margin-bottom:8px;">
+      <a href="${ctaButtonUrl}" style="display:inline-block;background:linear-gradient(135deg, #FF6200 0%, #EA580C 100%);color:#ffffff;font-size:14px;font-weight:900;letter-spacing:0.12em;text-decoration:none;padding:16px 40px;border-radius:100px;box-shadow:0 10px 24px rgba(255,98,0,0.35);text-transform:uppercase;">
         ${ctaButtonText} &rarr;
       </a>
     </div>
@@ -638,9 +754,11 @@ export const sendBroadcastEmail = async (
           console.error(`Failed to send broadcast email to ${email}:`, err);
           failedCount++;
         }
-      })
+      }),
     );
   }
 
   return { sentCount, failedCount };
 };
+
+

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 interface LogoProps {
   href?: string;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "xl" | "2xl";
   className?: string;
   dark?: boolean;
 }
@@ -17,6 +17,8 @@ export default function Logo({
     sm: { h: 36, w: 140 },
     md: { h: 46, w: 180 },
     lg: { h: 56, w: 220 },
+    xl: { h: 68, w: 270 },
+    "2xl": { h: 80, w: 320 },
   }[size];
 
   const sutroColor = dark ? "#474D52" : "#FFFFFF";
