@@ -25,14 +25,34 @@ const promoCodeSchema = new Schema<IPromoCodeDocument>(
       type: Number,
       default: 0,
     },
+    maxDiscountAmount: {
+      type: Number,
+      default: null,
+    },
     maxUses: {
       type: Number,
       default: null,
+    },
+    usageLimitPerUser: {
+      type: Number,
+      default: 1,
+    },
+    isFirstOrderOnly: {
+      type: Boolean,
+      default: false,
     },
     usedCount: {
       type: Number,
       default: 0,
     },
+    usedByUsers: [
+      {
+        userId: { type: Schema.Types.ObjectId, ref: "User" },
+        email: { type: String, lowercase: true, trim: true },
+        orderId: { type: Schema.Types.ObjectId, ref: "Order" },
+        usedAt: { type: Date, default: Date.now },
+      },
+    ],
     isActive: {
       type: Boolean,
       default: true,

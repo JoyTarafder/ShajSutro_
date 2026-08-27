@@ -6,12 +6,12 @@ import {
   deletePromoCode,
   applyPromoCode,
 } from "../controllers/promoCode.controller";
-import { protect, adminOnly } from "../middleware/auth.middleware";
+import { protect, adminOnly, optionalProtect } from "../middleware/auth.middleware";
 
 const router = Router();
 
-// Public — anyone can validate/apply a promo code
-router.post("/apply", applyPromoCode);
+// Validate/apply promo code (checks user first order / usage limits if token provided)
+router.post("/apply", optionalProtect, applyPromoCode);
 
 // Admin only — CRUD
 router.use(protect, adminOnly);

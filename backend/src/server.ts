@@ -24,9 +24,12 @@ import promoCodeRoutes from "./routes/promoCode.routes";
 import reviewRoutes from "./routes/review.routes";
 import statsRoutes from "./routes/stats.routes";
 import newsletterRoutes from "./routes/newsletter.routes";
+import { ensureWelcomePromoCode } from "./controllers/promoCode.controller";
 
 // ─── Connect to MongoDB Atlas ─────────────────────────────────────────────────
-connectDB();
+connectDB().then(() => {
+  ensureWelcomePromoCode().catch(() => {});
+});
 
 // ─── Express app setup ────────────────────────────────────────────────────────
 const app = express();

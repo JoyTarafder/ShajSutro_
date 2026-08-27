@@ -43,10 +43,18 @@ export default function CheckoutPage() {
     setPromoResult(null);
     setPromoLoading(true);
     try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
       const res = await fetch(`${API}/api/promo-codes/apply`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: promoInput.trim(), cartTotal: subtotal }),
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          code: promoInput.trim(),
+          cartTotal: subtotal,
+          email: shippingInfo.email?.trim(),
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message ?? "Invalid promo code");

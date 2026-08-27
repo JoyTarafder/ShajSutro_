@@ -41,6 +41,37 @@ export const protect = asyncHandler(
   }
 );
 
+// ─── optionalProtect: attach req.user if token is present, but do not error if not ────
+
+export const optionalProtect = asyncHandler(
+  async (req: AuthRequest, _res: Response, next: NextFunction) => {
+    let token: string | undefined;
+
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer ")
+    ) {
+      token = req.headers.authorization.split(" ")[1];
+    }
+
+    if (token) {
+      try {
+        const secret = process.env.JWT_SECRET;
+        if (secret) {
+          const decoded = jwt.verify(token, secret) as JwtPayload;
+          const user = await User.findById(decoded.id).select("-password");
+          if (user) {
+            req.user = user;
+          }
+        }
+      } catch {
+        // Token invalid/expired - continue as guest
+      }
+    }
+    next();
+  }
+);
+
 // ─── adminOnly: restrict access to admin or sub-admin roles ───────────────────
 
 export const adminOnly = (

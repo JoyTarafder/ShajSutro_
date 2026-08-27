@@ -210,13 +210,24 @@ export interface IOrderDocument extends IOrder, Document {
 
 // ─── Promo Code ───────────────────────────────────────────────────────────────
 
+export interface IPromoCodeUserUsage {
+  userId?: Types.ObjectId;
+  email?: string;
+  orderId?: Types.ObjectId;
+  usedAt: Date;
+}
+
 export interface IPromoCode {
   code: string;
   type: "percentage" | "fixed";
   value: number;
   minOrderAmount: number;
+  maxDiscountAmount?: number | null;
   maxUses: number | null;
+  usageLimitPerUser?: number | null;
+  isFirstOrderOnly?: boolean;
   usedCount: number;
+  usedByUsers?: IPromoCodeUserUsage[];
   isActive: boolean;
   expiresAt: Date | null;
   description: string;

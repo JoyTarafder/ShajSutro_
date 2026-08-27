@@ -108,6 +108,9 @@ export const placeOrder = asyncHandler(
     let calculatedDiscount = 0;
     let validatedPromoCode = "";
 
+    const userEmail = (shippingAddress.email || req.user?.email || "").trim().toLowerCase();
+    const userId = req.user?._id;
+
     if (promoCode && typeof promoCode === "string" && promoCode.trim()) {
       const codeUpper = promoCode.trim().toUpperCase();
       const promo = await PromoCode.findOne({ code: codeUpper, isActive: true });
@@ -117,10 +120,66 @@ export const placeOrder = asyncHandler(
         const hasUsesLeft = promo.maxUses === null || promo.maxUses === undefined || promo.usedCount < promo.maxUses;
         const meetsMinAmount = subtotal >= (promo.minOrderAmount || 0);
 
-        if (isNotExpired && hasUsesLeft && meetsMinAmount) {
+        let isEligible = isNotExpired && hasUsesLeft && meetsMinAmount;
+
+        // Check First Order Only limit
+        if (isEligible && promo.isFirstOrderOnly) {
+          const orderQueryConditions: any[] = [];
+          if (userId) orderQueryConditions.push({ user: userId });
+          if (userEmail) orderQueryConditions.push({ "shippingAddress.email": userEmail });
+
+          if (orderQueryConditions.length > 0) {
+            const previousOrders = await Order.countDocuments({
+              $or: orderQueryConditions,
+              status: { $nin: ["cancelled", "refunded"] },
+            });
+            if (previousOrders > 0) {
+              isEligible = false;
+            }
+          }
+        }
+
+        // Check Per User Usage Limit
+        const perUserLimit = promo.usageLimitPerUser !== undefined && promo.usageLimitPerUser !== null
+          ? promo.usageLimitPerUser
+          : (promo.isFirstOrderOnly ? 1 : null);
+
+        if (isEligible && perUserLimit !== null && perUserLimit > 0) {
+          let userUsedCount = 0;
+          if (promo.usedByUsers && promo.usedByUsers.length > 0) {
+            userUsedCount = promo.usedByUsers.filter((u) => {
+              const idMatch = userId && u.userId && u.userId.toString() === userId.toString();
+              const emailMatch = userEmail && u.email && u.email.toLowerCase() === userEmail;
+              return idMatch || emailMatch;
+            }).length;
+          }
+
+          const orderQueryConditions: any[] = [];
+          if (userId) orderQueryConditions.push({ user: userId });
+          if (userEmail) orderQueryConditions.push({ "shippingAddress.email": userEmail });
+
+          if (orderQueryConditions.length > 0) {
+            const ordersWithCode = await Order.countDocuments({
+              $or: orderQueryConditions,
+              promoCode: promo.code,
+              status: { $nin: ["cancelled", "refunded"] },
+            });
+            userUsedCount = Math.max(userUsedCount, ordersWithCode);
+          }
+
+          if (userUsedCount >= perUserLimit) {
+            isEligible = false;
+          }
+        }
+
+        if (isEligible) {
           validatedPromoCode = codeUpper;
           if (promo.type === "percentage") {
-            calculatedDiscount = parseFloat(((subtotal * promo.value) / 100).toFixed(2));
+            let disc = (subtotal * promo.value) / 100;
+            if (promo.maxDiscountAmount && promo.maxDiscountAmount > 0) {
+              disc = Math.min(disc, promo.maxDiscountAmount);
+            }
+            calculatedDiscount = parseFloat(disc.toFixed(2));
           } else {
             calculatedDiscount = parseFloat(Math.min(promo.value, subtotal).toFixed(2));
           }
@@ -159,11 +218,21 @@ export const placeOrder = asyncHandler(
     // Decrement stock and increment totalOrdered
     await Promise.all(stockOps);
 
-    // Increment promo code usage count if a valid promo code was applied
+    // Increment promo code usage count & record user usage if a valid promo code was applied
     if (validatedPromoCode) {
       await PromoCode.findOneAndUpdate(
         { code: validatedPromoCode },
-        { $inc: { usedCount: 1 } }
+        {
+          $inc: { usedCount: 1 },
+          $push: {
+            usedByUsers: {
+              userId: req.user?._id,
+              email: userEmail,
+              orderId: order._id,
+              usedAt: new Date(),
+            },
+          },
+        }
       ).catch((err) => {
         console.error("Failed to increment promo code usage count:", err);
       });
