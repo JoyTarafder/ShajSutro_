@@ -1,6 +1,32 @@
 import transporter from "../config/mailer";
+import path from "path";
+import fs from "fs";
 
 const YEAR = new Date().getFullYear();
+
+// ─── Inline Brand Logo Attachment Resolver ────────────────────────────────────
+
+function getLogoAttachment(): Array<{ filename: string; path: string; cid: string }> {
+  const possiblePaths = [
+    path.join(__dirname, "../assets/shajsutro-logo.png"),
+    path.join(process.cwd(), "src/assets/shajsutro-logo.png"),
+    path.join(process.cwd(), "dist/assets/shajsutro-logo.png"),
+    path.join(process.cwd(), "../public/images/shajsutro-logo.png"),
+  ];
+
+  for (const p of possiblePaths) {
+    if (fs.existsSync(p)) {
+      return [
+        {
+          filename: "shajsutro-logo.png",
+          path: p,
+          cid: "shajsutro_logo",
+        },
+      ];
+    }
+  }
+  return [];
+}
 
 // ─── Anti-Spam Plain Text Stripper ─────────────────────────────────────────────
 
@@ -21,13 +47,14 @@ function stripHtmlToText(html: string): string {
     .trim();
 }
 
-// ─── Central Anti-Spam Email Delivery Helper (No File Attachments) ─────────────
+// ─── Central Anti-Spam Email Delivery Helper ───────────────────────────────────
 
 async function sendMailWithAntiSpam(options: {
   to: string;
   subject: string;
   html: string;
   text?: string;
+  attachments?: any[];
   isBroadcast?: boolean;
 }): Promise<void> {
   const senderEmail = (process.env.EMAIL_USER || "shajsutro@gmail.com").trim();
@@ -47,6 +74,8 @@ async function sendMailWithAntiSpam(options: {
     headers["Precedence"] = "bulk";
   }
 
+  const attachments = options.attachments || getLogoAttachment();
+
   try {
     const info = await transporter.sendMail({
       from: fromHeader,
@@ -55,6 +84,7 @@ async function sendMailWithAntiSpam(options: {
       subject: options.subject,
       text: plainText,
       html: options.html,
+      attachments,
       headers,
     });
     console.log(
@@ -74,8 +104,8 @@ async function sendMailWithAntiSpam(options: {
 // ─── Shared Modern ShajSutro Email Shell ───────────────────────────────────────
 
 function emailShell(bodyContent: string, previewText = ""): string {
-  const frontendUrl = (process.env.FRONTEND_URL || "https://shajsutro.com").replace(/\/$/, "");
-  const hostedLogoUrl = `${frontendUrl}/images/shajsutro-logo.png`;
+  const frontendUrl = (process.env.FRONTEND_URL || "https://shajsutrov1.vercel.app").replace(/\/$/, "");
+  const instagramUrl = "https://www.instagram.com/shaj.sitro?igsi=YTJsMXF6YTQzajl6";
 
   return `
 <!DOCTYPE html>
@@ -107,16 +137,16 @@ function emailShell(bodyContent: string, previewText = ""): string {
             <td style="background:linear-gradient(90deg, #00B14F 0%, #10B981 40%, #FF6200 100%);height:6px;font-size:0;line-height:0;">&nbsp;</td>
           </tr>
 
-          <!-- ── PROMINENT CENTERED LOGO HEADER (NO ATTACHMENT) ── -->
+          <!-- ── PROMINENT CENTERED LOGO HEADER (EMBEDDED CID ATTACHMENT) ── -->
           <tr>
             <td style="background:#ffffff;padding:40px 32px 30px;text-align:center;border-bottom:1px solid #f1f5f9;">
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center">
                     <a href="${frontendUrl}" target="_blank" style="text-decoration:none;display:inline-block;">
-                      <!-- Hosted URL Logo without Email Attachment -->
+                      <!-- Embedded CID Logo ensuring 100% visibility without external URL dependencies -->
                       <img 
-                        src="${hostedLogoUrl}" 
+                        src="cid:shajsutro_logo" 
                         alt="ShajSutro — Happy Shopping" 
                         width="340" 
                         style="display:block;margin:0 auto;max-width:340px;width:100%;height:auto;border:0;outline:none;" 
@@ -185,20 +215,22 @@ function emailShell(bodyContent: string, previewText = ""): string {
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td style="text-align:center;padding-bottom:14px;">
-                    <a href="${frontendUrl}/shop" style="font-size:11px;color:#94a3b8;text-decoration:none;margin:0 10px;font-weight:700;">SHOP NOW</a>
+                    <a href="${frontendUrl}/shop" style="font-size:11px;color:#94a3b8;text-decoration:none;margin:0 8px;font-weight:700;">SHOP NOW</a>
                     <span style="color:#334155;font-size:11px;">•</span>
-                    <a href="${frontendUrl}/track" style="font-size:11px;color:#94a3b8;text-decoration:none;margin:0 10px;font-weight:700;">TRACK ORDER</a>
+                    <a href="${frontendUrl}/track" style="font-size:11px;color:#94a3b8;text-decoration:none;margin:0 8px;font-weight:700;">TRACK ORDER</a>
                     <span style="color:#334155;font-size:11px;">•</span>
-                    <a href="${frontendUrl}/privacy-policy" style="font-size:11px;color:#94a3b8;text-decoration:none;margin:0 10px;font-weight:700;">PRIVACY</a>
+                    <a href="${instagramUrl}" target="_blank" style="font-size:11px;color:#f43f5e;text-decoration:none;margin:0 8px;font-weight:700;">INSTAGRAM</a>
                     <span style="color:#334155;font-size:11px;">•</span>
-                    <a href="${frontendUrl}/terms-of-service" style="font-size:11px;color:#94a3b8;text-decoration:none;margin:0 10px;font-weight:700;">TERMS</a>
+                    <a href="${frontendUrl}/privacy-policy" style="font-size:11px;color:#94a3b8;text-decoration:none;margin:0 8px;font-weight:700;">PRIVACY</a>
+                    <span style="color:#334155;font-size:11px;">•</span>
+                    <a href="${frontendUrl}/terms-of-service" style="font-size:11px;color:#94a3b8;text-decoration:none;margin:0 8px;font-weight:700;">TERMS</a>
                   </td>
                 </tr>
                 <tr>
                   <td style="text-align:center;">
                     <p style="margin:0;font-size:11px;color:#64748b;line-height:1.6;">
                       &copy; ${YEAR} <strong style="color:#ffffff;">ShajSutro</strong> &bull; Happy Shopping.<br />
-                      Dhaka, Bangladesh &bull; <a href="${frontendUrl}" style="color:#00B14F;text-decoration:none;font-weight:700;">shajsutro.com</a>
+                      Dhaka, Bangladesh &bull; <a href="${frontendUrl}" style="color:#00B14F;text-decoration:none;font-weight:700;">shajsutrov1.vercel.app</a>
                     </p>
                   </td>
                 </tr>
@@ -441,7 +473,7 @@ export const sendOrderConfirmationEmail = async (
     )
     .join("");
 
-  const frontendUrl = (process.env.FRONTEND_URL || "https://shajsutro.com").replace(/\/$/, "");
+  const frontendUrl = (process.env.FRONTEND_URL || "https://shajsutrov1.vercel.app").replace(/\/$/, "");
 
   const body = `
     <!-- Top Celebration Badge & Headline -->
@@ -569,16 +601,16 @@ export const sendOrderConfirmationEmail = async (
 export const sendNewsletterWelcomeEmail = async (
   email: string,
 ): Promise<void> => {
-  const frontendUrl = (process.env.FRONTEND_URL || "https://shajsutro.com").replace(/\/$/, "");
+  const frontendUrl = (process.env.FRONTEND_URL || "https://shajsutrov1.vercel.app").replace(/\/$/, "");
 
   const body = `
     <div style="text-align:center;margin-bottom:24px;">
       <div style="display:inline-block;padding:6px 18px;background:linear-gradient(135deg, #FF6200 0%, #EA580C 100%);border-radius:100px;margin-bottom:12px;box-shadow:0 4px 12px rgba(255,98,0,0.25);">
-        <span style="font-size:11px;font-weight:900;color:#ffffff;text-transform:uppercase;letter-spacing:0.12em;">🎉 WELCOME VIP CLUB</span>
+        <span style="font-size:11px;font-weight:900;color:#ffffff;text-transform:uppercase;letter-spacing:0.12em;">🎉 WELCOME TO CLUB</span>
       </div>
       <h2 style="margin:4px 0 8px;font-size:26px;font-weight:900;color:#0f172a;">Welcome to ShajSutro!</h2>
       <p style="margin:0;font-size:14px;color:#64748b;line-height:1.6;max-width:440px;margin:0 auto;">
-        You're officially on our VIP list for exclusive drops, early flash sale alerts, and private discounts!
+        You're officially on our list for exclusive drops, early flash sale alerts, and private discounts!
       </p>
     </div>
 
@@ -641,7 +673,7 @@ export const sendBroadcastEmail = async (
     messageBody,
     bannerImageUrl,
     ctaButtonText = "SHOP THE SALE NOW",
-    ctaButtonUrl = "https://shajsutro.com/shop",
+    ctaButtonUrl = "https://shajsutrov1.vercel.app/shop",
   } = payload;
 
   const formattedMessage = messageBody

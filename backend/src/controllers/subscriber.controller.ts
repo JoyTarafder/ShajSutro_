@@ -24,9 +24,14 @@ export const subscribeNewsletter = asyncHandler(
 
     if (subscriber) {
       if (subscriber.isActive) {
+        // Send / resend VIP welcome email so the user receives the email in their inbox
+        sendNewsletterWelcomeEmail(cleanEmail).catch((err) => {
+          console.error("Newsletter welcome email error:", err);
+        });
+
         res.status(200).json({
           success: true,
-          message: "You are already subscribed to our newsletter!",
+          message: "You are already subscribed! We have sent your VIP welcome email.",
           data: subscriber,
         });
         return;

@@ -5,7 +5,7 @@ import { useAdminAuth } from "@/context/AdminAuthContext";
 import { getApiBase } from "@/lib/apiBase";
 import Logo from "@/components/layout/Logo";
 
-const API = `${getApiBase()}/api`;
+const API = getApiBase();
 
 interface Subscriber {
   _id: string;
@@ -35,7 +35,7 @@ export default function AdminSubscribersPage() {
   const [broadcastMessage, setBroadcastMessage] = useState("");
   const [broadcastBannerUrl, setBroadcastBannerUrl] = useState("");
   const [broadcastCtaText, setBroadcastCtaText] = useState("SHOP THE SALE NOW");
-  const [broadcastCtaUrl, setBroadcastCtaUrl] = useState("https://shajsutro.com/shop");
+  const [broadcastCtaUrl, setBroadcastCtaUrl] = useState("https://shajsutrov1.vercel.app/shop");
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
   const [sendingBroadcast, setSendingBroadcast] = useState(false);
   const [broadcastResult, setBroadcastResult] = useState<string | null>(null);
@@ -647,7 +647,7 @@ export default function AdminSubscribersPage() {
                           type="url"
                           value={broadcastCtaUrl}
                           onChange={(e) => setBroadcastCtaUrl(e.target.value)}
-                          placeholder="e.g., https://shajsutro.com/shop?badge=Sale"
+                          placeholder="e.g., https://shajsutrov1.vercel.app/shop?badge=Sale"
                           className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
                         />
                       </div>
@@ -730,7 +730,7 @@ export default function AdminSubscribersPage() {
                       {/* Footer */}
                       <div className="bg-[#0f172a] p-4 text-center text-[10px] text-slate-400 border-t border-slate-800">
                         <p className="font-bold text-slate-200 mb-1">ShajSutro • Happy Shopping</p>
-                        <p className="text-slate-500">Dhaka, Bangladesh • shajsutro.com</p>
+                        <p className="text-slate-500">Dhaka, Bangladesh • shajsutrov1.vercel.app</p>
                       </div>
                     </div>
                   </div>
