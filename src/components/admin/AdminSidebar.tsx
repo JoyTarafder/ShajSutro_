@@ -87,6 +87,32 @@ const NAV_ITEMS = [
     ),
   },
   {
+    key: "promoCodes",
+    label: "Promo Codes",
+    href: "/admin/promo-codes",
+    iconColor: "text-rose-400",
+    iconBg: "bg-rose-500/15 border-rose-500/20",
+    activeBg:
+      "bg-gradient-to-r from-rose-500/20 via-pink-500/10 to-transparent text-white font-bold",
+    barGradient:
+      "from-rose-400 to-pink-500 shadow-[0_0_12px_rgba(244,63,94,0.8)]",
+    icon: (
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0c1.1.128 1.907 1.077 1.907 2.185zM9.75 9h.008v.008H9.75V9zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 4.5h.008v.008h-.008V13.5zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+        />
+      </svg>
+    ),
+  },
+  {
     key: "orders",
     label: "Orders",
     href: "/admin/orders",
@@ -382,37 +408,6 @@ export default function AdminSidebar() {
                   </Link>
                 )}
 
-                {/* Products sub-section */}
-                {item.href === "/admin/products" && isProductsSection && (
-                  <Link
-                    href="/admin/promo-codes"
-                    onClick={closeMobileSidebar}
-                    aria-label="Promo Codes"
-                    className={`relative flex items-center gap-2.5 pl-11 pr-3 py-2 min-h-[40px] rounded-2xl text-sm font-semibold transition-all duration-200 ${
-                      pathname === "/admin/promo-codes" ||
-                      pathname.startsWith("/admin/promo-codes/")
-                        ? "bg-rose-500/20 text-rose-300 font-bold border-l-2 border-rose-400"
-                        : "text-slate-400 hover:text-white hover:bg-white/[0.04]"
-                    }`}
-                  >
-                    <div className="w-5 h-5 rounded-lg bg-rose-500/15 border border-rose-500/20 text-rose-400 flex items-center justify-center">
-                      <svg
-                        className="w-3 h-3"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0c1.1.128 1.907 1.077 1.907 2.185zM9.75 9h.008v.008H9.75V9zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 4.5h.008v.008h-.008V13.5zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                        />
-                      </svg>
-                    </div>
-                    Promo Codes
-                  </Link>
-                )}
               </div>
             );
           })}

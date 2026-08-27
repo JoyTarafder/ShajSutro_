@@ -81,7 +81,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           {/* Accessible 40x40px elevated favorite button */}
           <button
             type="button"
-            className={`absolute top-3 right-3 w-10 h-10 flex items-center justify-center bg-white/95 backdrop-blur-md rounded-full shadow-md border border-black/5 transition-all duration-300 ${
+            className={`absolute top-3.5 right-3.5 z-10 w-10 h-10 flex items-center justify-center bg-white/95 backdrop-blur-md rounded-full shadow-md border border-black/5 transition-all duration-300 ${
               isHovered ? "opacity-100 scale-100" : "opacity-90 sm:opacity-0 sm:group-hover:opacity-100 scale-95 sm:scale-90 sm:group-hover:scale-100"
             } ${favored ? "text-rose-600" : "text-emerald-950/70 hover:text-rose-600 hover:bg-white active:scale-90"}`}
             aria-label={favored ? `Remove ${product.name} from favorites` : `Add ${product.name} to favorites`}

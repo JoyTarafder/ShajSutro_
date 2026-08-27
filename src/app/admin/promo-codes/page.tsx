@@ -273,7 +273,7 @@ function PromoCodesContent() {
           <button
             type="button"
             onClick={openQuickWelcome10}
-            className="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-bold text-xs rounded-xl shadow-lg shadow-orange-500/20 transition-all flex items-center gap-2 flex-shrink-0"
+            className="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 flex-shrink-0"
             title="Create or configure the 1st Order WELCOME10 promo code"
           >
             <span>🎉</span>
@@ -284,7 +284,7 @@ function PromoCodesContent() {
           <button
             type="button"
             onClick={openCreate}
-            className="px-4 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-lg shadow-indigo-600/20 transition-all flex items-center gap-2 flex-shrink-0"
+            className="px-4 py-2.5 bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 flex-shrink-0"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4.5v15m7.5-7.5h-15" />
@@ -294,15 +294,15 @@ function PromoCodesContent() {
         </div>
       </div>
 
-      {/* Metric Cards */}
+      {/* Metric Cards (All text font sizes >= 12px for accessibility) */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 sm:p-5 backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-400">Total Codes</span>
             <span className="p-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">🏷️</span>
           </div>
-          <p className="text-2xl font-black text-slate-100 mt-2">{codes.length}</p>
-          <p className="text-[11px] text-slate-500 mt-1">Configured coupons</p>
+          <p className="text-2xl font-bold text-slate-100 mt-2">{codes.length}</p>
+          <p className="text-xs text-slate-400 mt-1">Configured coupons</p>
         </div>
 
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 sm:p-5 backdrop-blur-sm">
@@ -310,8 +310,8 @@ function PromoCodesContent() {
             <span className="text-xs font-semibold text-emerald-400">Active &amp; Live</span>
             <span className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-500/20 text-emerald-400 text-xs font-bold">✓</span>
           </div>
-          <p className="text-2xl font-black text-emerald-400 mt-2">{activeCount}</p>
-          <p className="text-[11px] text-slate-500 mt-1">Ready for checkout</p>
+          <p className="text-2xl font-bold text-emerald-400 mt-2">{activeCount}</p>
+          <p className="text-xs text-slate-400 mt-1">Ready for checkout</p>
         </div>
 
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 sm:p-5 backdrop-blur-sm">
@@ -319,8 +319,8 @@ function PromoCodesContent() {
             <span className="text-xs font-semibold text-amber-400">1st Order Only</span>
             <span className="p-2 rounded-xl bg-amber-950/40 border border-amber-500/20 text-amber-400 text-xs font-bold">🎉</span>
           </div>
-          <p className="text-2xl font-black text-amber-400 mt-2">{firstOrderCount}</p>
-          <p className="text-[11px] text-slate-500 mt-1">First-time buyers only</p>
+          <p className="text-2xl font-bold text-amber-400 mt-2">{firstOrderCount}</p>
+          <p className="text-xs text-slate-400 mt-1">First-time buyers only</p>
         </div>
 
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 sm:p-5 backdrop-blur-sm">
@@ -328,22 +328,22 @@ function PromoCodesContent() {
             <span className="text-xs font-semibold text-violet-400">Total Redeemed</span>
             <span className="p-2 rounded-xl bg-violet-950/40 border border-violet-500/20 text-violet-400 text-xs font-bold">🛒</span>
           </div>
-          <p className="text-2xl font-black text-violet-400 mt-2">{totalRedeemed}</p>
-          <p className="text-[11px] text-slate-500 mt-1">Total orders discounted</p>
+          <p className="text-2xl font-bold text-violet-400 mt-2">{totalRedeemed}</p>
+          <p className="text-xs text-slate-400 mt-1">Total orders discounted</p>
         </div>
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-900/40 border border-slate-800/80 rounded-2xl p-3 sm:p-4">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-900/40 border border-slate-800 rounded-2xl p-3 sm:p-4">
         <div className="relative w-full sm:w-80">
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by code or description..."
-            className="w-full bg-slate-950/80 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-colors"
+            className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:border-violet-500 transition-colors"
           />
-          <svg className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </div>
@@ -362,7 +362,7 @@ function PromoCodesContent() {
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
                 filterType === tab.id
                   ? "bg-violet-600 text-white shadow-sm"
-                  : "bg-slate-800/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200"
+                  : "bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200"
               }`}
             >
               {tab.label}
@@ -380,7 +380,7 @@ function PromoCodesContent() {
           </div>
         ) : filteredCodes.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3 text-center px-4">
-            <div className="w-12 h-12 rounded-2xl bg-slate-800/80 text-slate-400 flex items-center justify-center text-2xl">
+            <div className="w-12 h-12 rounded-2xl bg-slate-800 text-slate-400 flex items-center justify-center text-2xl">
               🎟️
             </div>
             <p className="text-slate-200 font-bold text-sm">No promo codes found</p>
@@ -393,7 +393,7 @@ function PromoCodesContent() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
-              <thead className="bg-slate-950/80 border-b border-slate-800 text-slate-400 uppercase font-bold tracking-wider text-[11px]">
+              <thead className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-bold tracking-wider text-xs">
                 <tr>
                   <th className="px-5 py-4">Code &amp; Details</th>
                   <th className="px-5 py-4">Discount</th>
@@ -404,31 +404,31 @@ function PromoCodesContent() {
                   <th className="px-5 py-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
+              <tbody className="divide-y divide-slate-800">
                 {filteredCodes.map((c) => {
                   const expired = isExpired(c.expiresAt);
                   return (
                     <tr
                       key={c._id}
-                      className={`hover:bg-slate-800/30 transition-colors ${
+                      className={`hover:bg-slate-800/40 transition-colors ${
                         expired || !c.isActive ? "opacity-75" : ""
                       }`}
                     >
                       {/* Code & Description */}
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono font-bold text-violet-300 bg-violet-950/60 border border-violet-500/40 px-3 py-1 rounded-xl text-xs inline-block tracking-wider">
+                          <span className="font-mono font-bold text-violet-400 bg-violet-950/60 border border-violet-500/40 px-3 py-1 rounded-xl text-xs inline-block tracking-wider">
                             {c.code}
                           </span>
 
                           {c.isFirstOrderOnly && (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 border border-amber-500/30 text-amber-300">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 border border-amber-500/30 text-amber-400">
                               <span>🎉</span> 1st Order Only
                             </span>
                           )}
 
                           {c.usageLimitPerUser && c.usageLimitPerUser > 0 && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/10 border border-indigo-500/30 text-indigo-300">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-violet-500/10 border border-violet-500/30 text-violet-400">
                               <span>👤</span> {c.usageLimitPerUser}x / User
                             </span>
                           )}
@@ -439,7 +439,7 @@ function PromoCodesContent() {
                             {c.description}
                           </p>
                         ) : (
-                          <p className="text-slate-600 text-xs mt-1 italic">No description</p>
+                          <p className="text-slate-500 text-xs mt-1 italic">No description</p>
                         )}
                       </td>
 
@@ -447,7 +447,7 @@ function PromoCodesContent() {
                       <td className="px-5 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
                           <span
-                            className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase border ${
+                            className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-bold uppercase border ${
                               c.type === "percentage"
                                 ? "bg-amber-950/40 text-amber-400 border-amber-500/30"
                                 : "bg-emerald-950/40 text-emerald-400 border-emerald-500/30"
@@ -455,13 +455,13 @@ function PromoCodesContent() {
                           >
                             {c.type === "percentage" ? "%" : "৳"}
                           </span>
-                          <span className="text-slate-100 font-extrabold text-xs">
+                          <span className="text-slate-100 font-bold text-xs">
                             {c.type === "percentage" ? `${c.value}% OFF` : `৳${c.value} OFF`}
                           </span>
                         </div>
                         {c.maxDiscountAmount && c.maxDiscountAmount > 0 && (
-                          <p className="text-[10px] text-slate-400 mt-1">
-                            Cap: <strong className="text-slate-300">৳{c.maxDiscountAmount}</strong>
+                          <p className="text-xs text-slate-400 mt-1">
+                            Cap: <strong className="text-slate-200">৳{c.maxDiscountAmount}</strong>
                           </p>
                         )}
                       </td>
@@ -471,13 +471,13 @@ function PromoCodesContent() {
                         <div className="space-y-0.5">
                           <p className="text-slate-300">
                             Min Order:{" "}
-                            <strong className="text-white">
+                            <strong className="text-slate-100">
                               {c.minOrderAmount > 0 ? `৳${c.minOrderAmount}` : "None"}
                             </strong>
                           </p>
-                          <p className="text-[11px] text-slate-400">
+                          <p className="text-xs text-slate-400">
                             Target:{" "}
-                            <span className={c.isFirstOrderOnly ? "text-amber-400 font-medium" : "text-slate-300"}>
+                            <span className={c.isFirstOrderOnly ? "text-amber-400 font-semibold" : "text-slate-300"}>
                               {c.isFirstOrderOnly ? "First-time Buyers" : "All Customers"}
                             </span>
                           </p>
@@ -496,7 +496,7 @@ function PromoCodesContent() {
                             <button
                               type="button"
                               onClick={() => setViewingUsageCode(c)}
-                              className="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 text-[10px] text-slate-300 rounded-md font-medium border border-slate-700 transition-colors"
+                              className="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 rounded-md font-medium border border-slate-700 transition-colors"
                               title="View redeemed customer list"
                             >
                               List ({c.usedByUsers.length})
@@ -523,7 +523,7 @@ function PromoCodesContent() {
                             {expired && " (Expired)"}
                           </span>
                         ) : (
-                          <span className="text-slate-500 text-xs">No Expiry</span>
+                          <span className="text-slate-400 text-xs">No Expiry</span>
                         )}
                       </td>
 
@@ -561,7 +561,7 @@ function PromoCodesContent() {
                           <button
                             type="button"
                             onClick={() => handleDelete(c._id, c.code)}
-                            className="px-3 py-1.5 font-semibold text-rose-400 bg-rose-950/30 hover:bg-rose-900/40 border border-rose-500/20 rounded-xl text-xs transition-all"
+                            className="px-3 py-1.5 font-semibold text-rose-400 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-500/30 rounded-xl text-xs transition-all"
                             title="Delete code"
                           >
                             Delete
@@ -587,9 +587,9 @@ function PromoCodesContent() {
 
           <div className="rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden my-6 relative z-10 animate-in zoom-in-95 duration-200 border border-slate-800 bg-slate-950">
             {/* Modal Header */}
-            <div className="px-6 py-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
               <div className="flex items-center gap-2.5">
-                <span className="p-2 rounded-xl bg-violet-500/20 border border-violet-500/30 text-violet-300 text-base">
+                <span className="p-2 rounded-xl bg-violet-500/20 border border-violet-500/30 text-violet-400 text-base">
                   🎟️
                 </span>
                 <div>
@@ -605,7 +605,7 @@ function PromoCodesContent() {
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="w-8 h-8 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-slate-400 hover:text-white flex items-center justify-center transition-colors"
+                className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors"
               >
                 ✕
               </button>
@@ -628,7 +628,7 @@ function PromoCodesContent() {
               {/* ── HIGHLIGHT: First Order Only Feature Box ── */}
               <div className={`p-4 rounded-2xl border transition-all ${
                 form.isFirstOrderOnly
-                  ? "bg-amber-500/10 border-amber-500/40 shadow-lg shadow-amber-500/5"
+                  ? "bg-amber-500/10 border-amber-500/40"
                   : "bg-slate-900/60 border-slate-800 hover:border-slate-700"
               }`}>
                 <label className="flex items-start gap-3 cursor-pointer">
@@ -640,16 +640,16 @@ function PromoCodesContent() {
                   />
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-white">
+                      <span className="text-xs font-bold text-slate-100">
                         🎉 First Order Only (1st Purchase per Registered Customer)
                       </span>
                       {form.isFirstOrderOnly && (
-                        <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black text-[9px] uppercase tracking-wider">
+                        <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-bold text-xs uppercase tracking-wider">
                           Active
                         </span>
                       )}
                     </div>
-                    <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+                    <p className="text-xs text-slate-400 mt-1 leading-relaxed">
                       When enabled, this coupon can <strong>only be applied on a customer&apos;s 1st order</strong>. If the user already has prior completed orders, the system will prevent usage. Perfect for <strong>&quot;WELCOME10&quot;</strong> welcome gifts.
                     </p>
                   </div>
@@ -727,7 +727,7 @@ function PromoCodesContent() {
                     placeholder="1 (Default: 1x per user)"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 text-slate-100 text-xs placeholder-slate-500 focus:outline-none focus:border-violet-500 bg-slate-950"
                   />
-                  <p className="text-[10px] text-slate-500 mt-1">Max times 1 user can use this code</p>
+                  <p className="text-xs text-slate-400 mt-1">Max times 1 user can use this code</p>
                 </div>
 
                 {/* Min Order */}
@@ -743,7 +743,7 @@ function PromoCodesContent() {
                     placeholder="0 = No minimum required"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 text-slate-100 text-xs placeholder-slate-500 focus:outline-none focus:border-violet-500 bg-slate-950"
                   />
-                  <p className="text-[10px] text-slate-500 mt-1">Minimum cart subtotal needed</p>
+                  <p className="text-xs text-slate-400 mt-1">Minimum cart subtotal needed</p>
                 </div>
 
                 {/* Max Discount Cap */}
@@ -759,7 +759,7 @@ function PromoCodesContent() {
                     placeholder="Optional (e.g. 500)"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 text-slate-100 text-xs placeholder-slate-500 focus:outline-none focus:border-violet-500 bg-slate-950"
                   />
-                  <p className="text-[10px] text-slate-500 mt-1">Cap percentage discount</p>
+                  <p className="text-xs text-slate-400 mt-1">Cap percentage discount</p>
                 </div>
 
                 {/* Total Max Uses */}
@@ -775,7 +775,7 @@ function PromoCodesContent() {
                     placeholder="Blank = Unlimited total"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 text-slate-100 text-xs placeholder-slate-500 focus:outline-none focus:border-violet-500 bg-slate-950"
                   />
-                  <p className="text-[10px] text-slate-500 mt-1">Global redemption ceiling</p>
+                  <p className="text-xs text-slate-400 mt-1">Global redemption ceiling</p>
                 </div>
 
                 {/* Expires At */}
@@ -789,7 +789,7 @@ function PromoCodesContent() {
                     onChange={(e) => setForm({ ...form, expiresAt: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 text-slate-100 text-xs focus:outline-none focus:border-violet-500 bg-slate-950"
                   />
-                  <p className="text-[10px] text-slate-500 mt-1">Leave empty for no expiry</p>
+                  <p className="text-xs text-slate-400 mt-1">Leave empty for no expiry</p>
                 </div>
 
                 {/* Active Status */}
@@ -805,7 +805,7 @@ function PromoCodesContent() {
                     <option value="active">Active (Usable on Checkout)</option>
                     <option value="inactive">Disabled / Paused</option>
                   </select>
-                  <p className="text-[10px] text-slate-500 mt-1">Turn on/off instantly</p>
+                  <p className="text-xs text-slate-400 mt-1">Turn on/off instantly</p>
                 </div>
               </div>
 
@@ -828,14 +828,14 @@ function PromoCodesContent() {
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold text-xs transition-colors"
+                  className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 disabled:opacity-60 text-white font-bold text-xs rounded-xl shadow-lg shadow-indigo-600/30 transition-all"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-violet-600 hover:bg-violet-500 disabled:opacity-60 text-white font-bold text-xs rounded-xl shadow-md transition-all"
                 >
                   {saving ? (
                     <>
@@ -863,7 +863,7 @@ function PromoCodesContent() {
           />
 
           <div className="rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden my-6 relative z-10 border border-slate-800 bg-slate-950">
-            <div className="px-6 py-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+            <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
               <div>
                 <h3 className="text-base font-bold text-slate-100">
                   Redemption History: {viewingUsageCode.code}
@@ -876,7 +876,7 @@ function PromoCodesContent() {
               <button
                 type="button"
                 onClick={() => setViewingUsageCode(null)}
-                className="w-8 h-8 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-slate-400 hover:text-white flex items-center justify-center transition-colors"
+                className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors"
               >
                 ✕
               </button>
@@ -891,15 +891,15 @@ function PromoCodesContent() {
                 viewingUsageCode.usedByUsers.map((u, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between p-3 rounded-xl bg-slate-900 border border-slate-800/80 text-xs"
+                    className="flex items-center justify-between p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs"
                   >
                     <div>
                       <p className="font-semibold text-slate-200">{u.email || "Registered User"}</p>
                       {u.orderId && (
-                        <p className="text-[10px] text-slate-500 font-mono">Order: #{u.orderId.toString().slice(-6)}</p>
+                        <p className="text-xs text-slate-400 font-mono">Order: #{u.orderId.toString().slice(-6)}</p>
                       )}
                     </div>
-                    <span className="text-[11px] text-slate-400">
+                    <span className="text-xs text-slate-400">
                       {new Date(u.usedAt).toLocaleDateString("en-GB", {
                         day: "2-digit",
                         month: "short",
@@ -913,7 +913,7 @@ function PromoCodesContent() {
               )}
             </div>
 
-            <div className="p-4 border-t border-slate-800 bg-slate-900/60 flex justify-end">
+            <div className="p-4 border-t border-slate-800 bg-slate-900 flex justify-end">
               <button
                 type="button"
                 onClick={() => setViewingUsageCode(null)}

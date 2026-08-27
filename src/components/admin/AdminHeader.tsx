@@ -212,33 +212,6 @@ export default function AdminHeader() {
 
       {/* Right controls */}
       <div className="flex items-center gap-3">
-        {/* Search */}
-        <div
-          className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm w-52 cursor-pointer transition-colors"
-          style={{
-            background: "rgba(255, 255, 255, 0.05)",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
-            color: "rgba(148, 163, 184, 0.6)",
-          }}
-        >
-          <svg
-            className="w-3.5 h-3.5 flex-shrink-0"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-            />
-          </svg>
-          <span className="text-[12px]">Quick search…</span>
-          <kbd className="ml-auto text-[10px] font-medium px-1.5 py-0.5 rounded" style={{ background: "rgba(255,255,255,0.08)", color: "rgba(148,163,184,0.7)" }}>
-            ⌘K
-          </kbd>
-        </div>
 
         {/* Notification Bell & Dropdown */}
         <div className="relative" ref={dropdownRef}>
