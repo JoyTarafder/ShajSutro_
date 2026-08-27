@@ -44,7 +44,7 @@ function LoginContent() {
       <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-amber-600/5 rounded-full blur-[140px] pointer-events-none" />
 
       {/* Main Luxury Frame */}
-      <div className="w-full max-w-6xl bg-white rounded-3xl lg:rounded-[40px] shadow-[0_30px_90px_rgba(10,35,24,0.06)] border border-stone-200/70 overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative z-10 min-h-[640px]">
+      <div className="w-full max-w-6xl bg-white rounded-3xl shadow-[0_30px_90px_rgba(10,35,24,0.06)] border border-stone-200/70 overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative z-10 min-h-[640px]">
         
         {/* ─── Left Editorial Visual Canvas (High Fashion & Heritage) ─── */}
         <div className="lg:col-span-5 relative hidden lg:flex flex-col justify-between p-12 overflow-hidden bg-stone-900 text-white select-none">
@@ -62,7 +62,7 @@ function LoginContent() {
 
           {/* Top Brand Monogram */}
           <div className="relative z-10">
-            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[11px] font-semibold tracking-[0.2em] uppercase text-emerald-200">
+            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold tracking-wider text-emerald-200">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
               Haute Elegance • Atelier
             </div>
@@ -70,11 +70,11 @@ function LoginContent() {
 
           {/* Centerpiece Editorial Quote */}
           <div className="relative z-10 my-auto py-8">
-            <span className="text-amber-300/80 text-4xl font-serif leading-none block mb-2">&ldquo;</span>
+            <span className="text-amber-300 text-4xl font-serif leading-none block mb-2">&ldquo;</span>
             <h2 className="text-2xl xl:text-3xl font-serif tracking-tight leading-snug text-stone-100 font-light italic">
               Where timeless Bengali craftsmanship meets modern sophistication.
             </h2>
-            <p className="mt-4 text-xs font-light text-stone-300/80 tracking-wide uppercase">
+            <p className="mt-4 text-xs font-light text-stone-300 tracking-normal">
               Curated Wardrobe • Verified Fabrics • Express Delivery
             </p>
           </div>
@@ -84,7 +84,7 @@ function LoginContent() {
             <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/15 space-y-2">
               <div className="flex items-center justify-between text-xs">
                 <div className="flex text-amber-300 text-xs tracking-widest">★★★★★</div>
-                <span className="text-[11px] text-emerald-200 font-medium tracking-wider uppercase">Verified Patron</span>
+                <span className="text-xs text-emerald-200 font-medium tracking-wide">Verified Patron</span>
               </div>
               <p className="text-xs text-stone-200 font-light italic leading-relaxed">
                 &ldquo;The fabric texture and fit are exceptional. It feels luxurious from the moment you wear it.&rdquo;
@@ -105,7 +105,7 @@ function LoginContent() {
                     SHAJSUTRO<span className="text-amber-600 font-sans text-sm ml-0.5">.</span>
                   </span>
                 </Link>
-                <p className="text-[11px] tracking-wider uppercase text-stone-400 font-medium mt-0.5">
+                <p className="text-xs tracking-wider uppercase text-stone-500 font-medium mt-0.5">
                   Exclusive Member Portal
                 </p>
               </div>
@@ -146,16 +146,16 @@ function LoginContent() {
                 </span>
                 <div>
                   <p className="text-xs font-bold text-emerald-950 tracking-tight">Checkout Access Required</p>
-                  <p className="text-[11px] text-stone-600 mt-0.5">
+                  <p className="text-xs text-stone-600 mt-0.5">
                     Sign in or create an account to proceed with your saved cart.
                   </p>
                 </div>
               </div>
             )}
 
-            {/* Dynamic View Header */}
+            {/* Dynamic View Header with Semantic H1 for accessibility */}
             <div className="mb-7">
-              <h3 className="text-2xl sm:text-3xl font-serif font-normal tracking-tight text-emerald-950">
+              <h1 className="text-2xl sm:text-3xl font-serif font-normal tracking-tight text-emerald-950">
                 {view === "forgot-password"
                   ? "Recover your account"
                   : view === "verify-email"
@@ -163,7 +163,7 @@ function LoginContent() {
                   : activeTab === "login"
                   ? "Welcome back"
                   : "Create your wardrobe account"}
-              </h3>
+              </h1>
               <p className="text-xs sm:text-sm text-stone-500 font-light mt-1.5">
                 {view === "forgot-password"
                   ? "Enter your email to receive an instant verification code."
@@ -221,7 +221,7 @@ function LoginContent() {
           </div>
 
           {/* Minimalist Bottom Footer */}
-          <div className="mt-10 pt-6 border-t border-stone-100 flex items-center justify-between text-xs text-stone-400 font-light">
+          <div className="mt-10 pt-6 border-t border-stone-100 flex items-center justify-between text-xs text-stone-500 font-light">
             <Link
               href="/"
               className="inline-flex items-center gap-1.5 font-medium text-stone-600 hover:text-emerald-950 transition-colors group"
@@ -232,7 +232,7 @@ function LoginContent() {
               Explore Collection
             </Link>
 
-            <span className="text-[11px] tracking-wide uppercase">
+            <span className="text-xs text-stone-500 font-medium tracking-normal">
               256-bit Encrypted
             </span>
           </div>
@@ -384,7 +384,7 @@ function Divider() {
   return (
     <div className="relative flex items-center gap-4 mb-6">
       <div className="flex-1 h-px bg-stone-200/70" />
-      <span className="text-[10px] text-stone-400 font-semibold tracking-widest uppercase">
+      <span className="text-xs text-stone-500 font-medium tracking-wide uppercase">
         or continue with email
       </span>
       <div className="flex-1 h-px bg-stone-200/70" />
@@ -452,7 +452,7 @@ function LoginForm({
       )}
 
       <div className="space-y-1.5">
-        <label className="block text-[11px] font-semibold tracking-wider uppercase text-stone-600">
+        <label className="block text-xs font-semibold tracking-wide uppercase text-stone-600">
           Email Address
         </label>
         <input
@@ -466,13 +466,13 @@ function LoginForm({
 
       <div className="space-y-1.5">
         <div className="flex justify-between items-center">
-          <label className="text-[11px] font-semibold tracking-wider uppercase text-stone-600">
+          <label className="text-xs font-semibold tracking-wide uppercase text-stone-600">
             Password
           </label>
           <button
             type="button"
             onClick={onForgotPassword}
-            className="text-[11px] font-medium text-emerald-950 hover:underline tracking-wide"
+            className="text-xs font-medium text-emerald-950 hover:underline tracking-wide"
           >
             Forgot?
           </button>
@@ -587,7 +587,7 @@ function RegisterForm({
 
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <label className="block text-[11px] font-semibold tracking-wider uppercase text-stone-600">
+          <label className="block text-xs font-semibold tracking-wide uppercase text-stone-600">
             First Name <span className="text-rose-500">*</span>
           </label>
           <input
@@ -599,7 +599,7 @@ function RegisterForm({
           />
         </div>
         <div className="space-y-1.5">
-          <label className="block text-[11px] font-semibold tracking-wider uppercase text-stone-600">
+          <label className="block text-xs font-semibold tracking-wide uppercase text-stone-600">
             Last Name
           </label>
           <input
@@ -613,7 +613,7 @@ function RegisterForm({
       </div>
 
       <div className="space-y-1.5">
-        <label className="block text-[11px] font-semibold tracking-wider uppercase text-stone-600">
+        <label className="block text-xs font-semibold tracking-wide uppercase text-stone-600">
           Email Address <span className="text-rose-500">*</span>
         </label>
         <input
@@ -626,7 +626,7 @@ function RegisterForm({
       </div>
 
       <div className="space-y-1.5">
-        <label className="block text-[11px] font-semibold tracking-wider uppercase text-stone-600">
+        <label className="block text-xs font-semibold tracking-wide uppercase text-stone-600">
           Password <span className="text-rose-500">*</span>
         </label>
         <div className="relative">
@@ -767,7 +767,7 @@ function FPStepEmail({
       )}
 
       <div className="space-y-1.5">
-        <label className="block text-[11px] font-semibold tracking-wider uppercase text-stone-600">
+        <label className="block text-xs font-semibold tracking-wide uppercase text-stone-600">
           Account Email Address
         </label>
         <input
@@ -1013,7 +1013,7 @@ function FPStepNewPassword({
       )}
 
       <div className="space-y-1.5">
-        <label className="block text-[11px] font-semibold tracking-wider uppercase text-stone-600">
+        <label className="block text-xs font-semibold tracking-wide uppercase text-stone-600">
           New Password
         </label>
         <div className="relative">
@@ -1035,7 +1035,7 @@ function FPStepNewPassword({
       </div>
 
       <div className="space-y-1.5">
-        <label className="block text-[11px] font-semibold tracking-wider uppercase text-stone-600">
+        <label className="block text-xs font-semibold tracking-wide uppercase text-stone-600">
           Confirm Password
         </label>
         <input
