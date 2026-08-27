@@ -4,12 +4,41 @@ import mongoose from "mongoose";
 import { AppError } from "../middleware/error.middleware";
 import Category from "../models/Category";
 import Product from "../models/Product";
+import CacheService from "../services/cache.service";
 import { ICategoryDocument } from "../types";
+
+// Helper to generate normalized deterministic cache key for query params
+const getProductsCacheKey = (query: Record<string, unknown>): string => {
+  const sortedKeys = Object.keys(query).sort();
+  const normalized: Record<string, unknown> = {};
+  for (const k of sortedKeys) {
+    if (query[k] !== undefined && query[k] !== "") {
+      normalized[k] = query[k];
+    }
+  }
+  return `products:list:${JSON.stringify(normalized)}`;
+};
 
 // ─── GET /api/products ────────────────────────────────────────────────────────
 
 export const getProducts = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
+    const cacheKey = getProductsCacheKey(req.query);
+    const cached = await CacheService.get<{
+      data: unknown[];
+      pagination: { page: number; limit: number; total: number; pages: number };
+    }>(cacheKey);
+
+    if (cached) {
+      res.status(200).json({
+        success: true,
+        data: cached.data,
+        pagination: cached.pagination,
+        fromCache: true,
+      });
+      return;
+    }
+
     const {
       ids,
       category,
@@ -108,8 +137,7 @@ export const getProducts = asyncHandler(
       Product.countDocuments(filter),
     ]);
 
-    res.status(200).json({
-      success: true,
+    const responsePayload = {
       data: products,
       pagination: {
         page: pageNum,
@@ -117,6 +145,14 @@ export const getProducts = asyncHandler(
         total,
         pages: Math.ceil(total / limitNum),
       },
+    };
+
+    // Cache product queries for 10 minutes (600 seconds)
+    await CacheService.set(cacheKey, responsePayload, 600);
+
+    res.status(200).json({
+      success: true,
+      ...responsePayload,
     });
   },
 );
@@ -125,12 +161,27 @@ export const getProducts = asyncHandler(
 
 export const getProduct = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
+    const cacheKey = `product:${req.params.id}`;
+    const cached = await CacheService.get(cacheKey);
+
+    if (cached) {
+      res.status(200).json({
+        success: true,
+        data: cached,
+        fromCache: true,
+      });
+      return;
+    }
+
     const product = await Product.findById(req.params.id).populate({
       path: "category",
       select: "name slug parent",
       populate: { path: "parent", select: "name slug" },
     });
     if (!product) throw new AppError("Product not found", 404);
+
+    // Cache single product details for 30 minutes (1800 seconds)
+    await CacheService.set(cacheKey, product, 1800);
 
     res.status(200).json({
       success: true,
@@ -228,6 +279,9 @@ export const createProduct = asyncHandler(
       populate: { path: "parent", select: "name slug" },
     });
 
+    // Invalidate product catalog cache
+    await CacheService.clearProductCache(product._id.toString());
+
     res.status(201).json({
       success: true,
       message: "Product created",
@@ -287,6 +341,9 @@ export const updateProduct = asyncHandler(
 
     if (!product) throw new AppError("Product not found", 404);
 
+    // Invalidate product catalog cache & single product key
+    await CacheService.clearProductCache(req.params.id);
+
     res.status(200).json({
       success: true,
       message: "Product updated",
@@ -303,6 +360,10 @@ export const deleteProduct = asyncHandler(
     if (!product) throw new AppError("Product not found", 404);
 
     await product.deleteOne();
+
+    // Invalidate product catalog cache & single product key
+    await CacheService.clearProductCache(req.params.id);
+
     res.status(200).json({
       success: true,
       message: "Product deleted",

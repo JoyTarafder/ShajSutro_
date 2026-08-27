@@ -25,11 +25,13 @@ import reviewRoutes from "./routes/review.routes";
 import statsRoutes from "./routes/stats.routes";
 import newsletterRoutes from "./routes/newsletter.routes";
 import { ensureWelcomePromoCode } from "./controllers/promoCode.controller";
+import { initRedis } from "./config/redis";
 
-// ─── Connect to MongoDB Atlas ─────────────────────────────────────────────────
+// ─── Connect to Persistence & Cache ───────────────────────────────────────────
 connectDB().then(() => {
   ensureWelcomePromoCode().catch(() => {});
 });
+initRedis();
 
 // ─── Express app setup ────────────────────────────────────────────────────────
 const app = express();

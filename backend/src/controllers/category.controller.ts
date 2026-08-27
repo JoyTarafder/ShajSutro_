@@ -3,12 +3,21 @@ import asyncHandler from "express-async-handler";
 import { AppError } from "../middleware/error.middleware";
 import Category from "../models/Category";
 import Product from "../models/Product";
+import CacheService from "../services/cache.service";
 
 // ─── GET /api/categories ──────────────────────────────────────────────────────
 // Returns only root (top-level) categories with their product count.
 
 export const getCategories = asyncHandler(
   async (_req: Request, res: Response): Promise<void> => {
+    const cacheKey = "categories:root:all";
+    const cachedData = await CacheService.get(cacheKey);
+
+    if (cachedData) {
+      res.status(200).json({ success: true, data: cachedData, fromCache: true });
+      return;
+    }
+
     const categories = await Category.find({ parent: null });
 
     // Custom sort: Mens first, then Womens, then Kids
@@ -50,6 +59,9 @@ export const getCategories = asyncHandler(
       })),
     }));
 
+    // Cache categories for 1 hour (3600 seconds)
+    await CacheService.set(cacheKey, data, 3600);
+
     res.status(200).json({ success: true, data });
   },
 );
@@ -58,6 +70,14 @@ export const getCategories = asyncHandler(
 
 export const getSubcategories = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
+    const cacheKey = `categories:sub:${req.params.id}`;
+    const cachedData = await CacheService.get(cacheKey);
+
+    if (cachedData) {
+      res.status(200).json({ success: true, data: cachedData, fromCache: true });
+      return;
+    }
+
     const parent = await Category.findById(req.params.id);
     if (!parent) throw new AppError("Category not found", 404);
 
@@ -75,6 +95,9 @@ export const getSubcategories = asyncHandler(
       productCount: countMap.get(String(cat._id)) ?? 0,
     }));
 
+    // Cache subcategories for 1 hour
+    await CacheService.set(cacheKey, data, 3600);
+
     res.status(200).json({ success: true, data });
   },
 );
@@ -83,6 +106,14 @@ export const getSubcategories = asyncHandler(
 
 export const getCategoryBySlug = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
+    const cacheKey = `category:${req.params.slug}`;
+    const cachedData = await CacheService.get(cacheKey);
+
+    if (cachedData) {
+      res.status(200).json({ success: true, data: cachedData, fromCache: true });
+      return;
+    }
+
     const category = await Category.findOne({ slug: req.params.slug });
     if (!category) throw new AppError("Category not found", 404);
 
@@ -91,9 +122,13 @@ export const getCategoryBySlug = asyncHandler(
       "name slug",
     );
 
+    const result = { category, products };
+    // Cache for 30 minutes (1800 seconds)
+    await CacheService.set(cacheKey, result, 1800);
+
     res.status(200).json({
       success: true,
-      data: { category, products },
+      data: result,
     });
   },
 );
@@ -126,6 +161,9 @@ export const createCategory = asyncHandler(
       image,
       parent: parent ?? null,
     });
+
+    // Invalidate category and product caches
+    await CacheService.clearCategoryCache();
 
     res.status(201).json({
       success: true,
@@ -166,6 +204,9 @@ export const updateCategory = asyncHandler(
       { new: true, runValidators: true },
     );
 
+    // Invalidate category and product caches
+    await CacheService.clearCategoryCache();
+
     res.status(200).json({
       success: true,
       message: "Category updated",
@@ -198,6 +239,10 @@ export const deleteCategory = asyncHandler(
     }
 
     await category.deleteOne();
+
+    // Invalidate category and product caches
+    await CacheService.clearCategoryCache();
+
     res.status(200).json({ success: true, message: "Category deleted" });
   },
 );

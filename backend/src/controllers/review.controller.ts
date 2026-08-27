@@ -5,6 +5,7 @@ import { AuthRequest } from "../types";
 import Order from "../models/Order";
 import Product from "../models/Product";
 import Review from "../models/Review";
+import CacheService from "../services/cache.service";
 
 // ─── POST /api/reviews ────────────────────────────────────────────────────────
 // Protected — submit a review for a product from a delivered order
@@ -59,6 +60,9 @@ export const createReview = asyncHandler(
       rating: Math.round(avg * 10) / 10,
       reviews: allReviews.length,
     });
+
+    // Invalidate product cache
+    await CacheService.clearProductCache(productId);
 
     res.status(201).json({ success: true, data: review });
   },
