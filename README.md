@@ -57,60 +57,72 @@ The platform delivers a frictionless customer shopping journey alongside an oper
 
 ```mermaid
 flowchart TB
-    subgraph ClientLayer ["Client Presentation Layer"]
-        Browser["🌐 Modern Web Browser / Mobile Web"]
-        Storefront["🛍️ Next.js 14 Storefront ((store))"]
+    subgraph ClientLayer ["Client Presentation Layer (Next.js 14 App Router)"]
+        Browser["🌐 Web Browser / Mobile Responsive PWA"]
+        Storefront["🛍️ Storefront Application ((store))"]
         AdminDashboard["🛡️ Admin Management Portal (/admin)"]
         Browser --> Storefront
         Browser --> AdminDashboard
     end
 
-    subgraph APILayer ["API & Security Gateway (Express 4.19)"]
-        RateLimiter["🛡️ Rate Limiter (General + Auth Tiers)"]
-        HelmetCORS["🔒 Helmet & Dynamic CORS Guard"]
-        JWTAuth["🔑 JWT & RBAC Auth Middleware"]
-        Router["⚡ Modular REST Router (/api/*)"]
+    subgraph GatewayLayer ["API Gateway & Security Layer (Express 4.19)"]
+        RateLimiter["🛡️ Tiered Rate Limiters (General & Auth Guards)"]
+        HelmetCORS["🔒 Helmet Security Headers & Dynamic CORS"]
+        JWTAuth["🔑 JWT Authentication & Role-Based RBAC Guards"]
+        Router["⚡ Modular API Router (/api/*)"]
         
-        Storefront -->|REST / JSON| RateLimiter
-        AdminDashboard -->|REST / JSON| RateLimiter
+        Storefront -->|REST / HTTPS| RateLimiter
+        AdminDashboard -->|REST / HTTPS| RateLimiter
         RateLimiter --> HelmetCORS
         HelmetCORS --> JWTAuth
         JWTAuth --> Router
     end
 
-    subgraph ServicesLayer ["Core Business Logic & Services"]
-        AuthService["Auth & OTP Engine"]
-        ProductService["Catalog & SKU Engine"]
-        OrderService["Order & Checkout Manager"]
-        PromoEngine["Promo & Coupon Validator"]
-        InvoiceEngine["PDFKit Invoice Generator"]
-        MailerService["Nodemailer SMTP Transporter"]
-        JobService["Careers & Resume Processor"]
+    subgraph ServiceLayer ["Core Business Logic & Services"]
+        AuthService["🔐 Auth & Verification Engine"]
+        ProductService["📦 Product & Inventory Engine"]
+        CategoryService["🗂️ Category & Navigation Manager"]
+        OrderService["🛒 Order & Checkout Workflow"]
+        PromoService["🏷️ Promotions & Coupon Validator"]
+        ReviewService["⭐ Review & Rating Processor"]
+        InvoiceService["📑 PDFKit Invoice Generator"]
+        MailService["✉️ Nodemailer SMTP Dispatcher"]
+        CareerService["💼 Job & Applicant Processor"]
+        CacheService["⚡ Redis Cache Manager (ioredis)"]
         
         Router --> AuthService
         Router --> ProductService
+        Router --> CategoryService
         Router --> OrderService
-        Router --> PromoEngine
-        Router --> JobService
+        Router --> PromoService
+        Router --> ReviewService
+        Router --> CareerService
         
-        OrderService --> InvoiceEngine
-        OrderService --> MailerService
-        AuthService --> MailerService
+        ProductService <--> CacheService
+        CategoryService <--> CacheService
+        OrderService --> InvoiceService
+        OrderService --> MailService
+        AuthService --> MailService
     end
 
-    subgraph DataLayer ["Persistence & External Services"]
+    subgraph PersistenceLayer ["Persistence & External Cloud Services"]
         MongoDB[("🍃 MongoDB Atlas Database")]
-        GoogleOAuth["🔐 Google OAuth 2.0 Identity"]
-        SMTPServer["✉️ SMTP Mail Relay (Gmail / SendGrid)"]
-        DiskStorage["📁 Uploads & Resume Storage"]
+        RedisCache[("⚡ Redis In-Memory Cache (Optional / Upstash)")]
+        GoogleOAuth["🔑 Google OAuth 2.0 Identity API"]
+        SMTPServer["✉️ SMTP Relay Server (Gmail / SendGrid)"]
+        LocalStorage["📁 File Storage (CV Resumes & Uploads)"]
         
-        AuthService -.-> GoogleOAuth
-        MailerService -.-> SMTPServer
-        JobService -.-> DiskStorage
+        CacheService <--> RedisCache
         ProductService --> MongoDB
+        CategoryService --> MongoDB
         OrderService --> MongoDB
         AuthService --> MongoDB
-        PromoEngine --> MongoDB
+        PromoService --> MongoDB
+        ReviewService --> MongoDB
+        CareerService --> MongoDB
+        CareerService --> LocalStorage
+        AuthService -.-> GoogleOAuth
+        MailService -.-> SMTPServer
     end
 ```
 
@@ -177,63 +189,127 @@ flowchart TB
 
 ```mermaid
 erDiagram
-    USER ||--o{ ORDER : places
-    USER ||--o{ REVIEW : writes
-    USER ||--o| CART : owns
-    CATEGORY ||--o{ PRODUCT : categorizes
-    PRODUCT ||--o{ REVIEW : receives
-    PRODUCT ||--o{ CART_ITEM : contained_in
-    ORDER ||--o{ ORDER_ITEM : contains
-    ORDER }o--o| PROMO_CODE : applies
-    JOB ||--o{ JOB_APPLICATION : receives
+    USER ||--o{ ORDER : "places"
+    USER ||--o{ REVIEW : "writes"
+    USER ||--o| CART : "owns"
+    CATEGORY ||--o{ PRODUCT : "categorizes"
+    CATEGORY ||--o{ CATEGORY : "parent_of"
+    PRODUCT ||--o{ REVIEW : "receives"
+    ORDER ||--|{ ORDER_ITEM : "contains"
+    JOB ||--o{ JOB_APPLICATION : "receives"
 
     USER {
         ObjectId _id PK
         string name
         string email UK
         string password
-        string role "user | admin | superadmin"
+        string role "user | admin | sub-admin"
         string phone
-        string address
-        boolean isVerified
+        array addresses
+        boolean isEmailVerified
+        string googleId
+        date createdAt
+    }
+
+    CATEGORY {
+        ObjectId _id PK
+        string name
+        string slug UK
+        string description
+        string image
+        ObjectId parent FK "Self-referencing parent category"
     }
 
     PRODUCT {
         ObjectId _id PK
-        string title
+        string name
         string slug UK
         string sku UK
         ObjectId category FK
+        string description
         number price
-        number salePrice
+        number originalPrice
+        array images
+        array sizes
+        array colors
+        string badge "New | Sale | Best Seller"
+        number rating
+        number reviews
         number stock
-        string[] images
-        string[] colors
-        string[] sizes
+        boolean inStock
+        boolean isFeatured
+        boolean isVisible
     }
 
     ORDER {
         ObjectId _id PK
-        string orderNumber UK
         ObjectId user FK
-        array items
-        number totalAmount
-        number shippingFee
-        number discountAmount
-        string status "Pending | Processing | Shipped | Delivered | Cancelled"
-        string paymentMethod "COD | Online"
-        object shippingAddress
+        array items "Embedded orderItemSchema"
+        object shippingAddress "Embedded shippingAddressSchema"
+        string paymentMethod "bkash | nagad | rocket | cod"
+        string paymentStatus "pending_verification | paid | refunded"
+        string txnId
+        number subtotal
+        number shippingCost
+        number discount
+        string promoCode
+        number total
+        string status "pending | confirmed | shipped | delivered | cancelled"
+        array statusHistory
+        date createdAt
+    }
+
+    REVIEW {
+        ObjectId _id PK
+        ObjectId product FK
+        ObjectId user FK
+        ObjectId order FK
+        number rating "1 to 5"
+        string comment
+        date createdAt
+    }
+
+    CART {
+        ObjectId _id PK
+        ObjectId user FK
+        array items "Product references & quantity"
+        date updatedAt
     }
 
     PROMO_CODE {
         ObjectId _id PK
         string code UK
         string discountType "percentage | fixed"
-        number discountValue
-        number minSpend
-        date validUntil
+        number discountAmount
+        number minOrderAmount
+        number maxDiscountAmount
+        date expiryDate
         number usageLimit
-        number usageCount
+        number usedCount
+        boolean isActive
+    }
+
+    JOB {
+        ObjectId _id PK
+        string title
+        string department
+        string location
+        string type "Full-time | Part-time | Remote"
+        string salary
+        boolean isActive
+        date deadline
+    }
+
+    JOB_APPLICATION {
+        ObjectId _id PK
+        ObjectId job FK
+        string applicantName
+        string applicantEmail
+        string applicantPhone
+        string resumeUrl
+        string coverLetter
+        string status "pending | reviewing | shortlisted | rejected | hired"
+        date createdAt
     }
 ```
 
