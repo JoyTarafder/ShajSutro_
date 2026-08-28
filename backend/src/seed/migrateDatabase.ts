@@ -1,3 +1,4 @@
+import "dotenv/config";
 import mongoose from "mongoose";
 import dns from "dns";
 
@@ -8,11 +9,16 @@ try {
   // Ignore
 }
 
-const OLD_URI = "mongodb+srv://shajsutro:shajsutro@cluster0.k2w7nnp.mongodb.net/?appName=Cluster0";
-const NEW_URI = "mongodb+srv://kaggle508_db_user:ivPIM0bsHjGnhP6N@shajsutrocluster.usled3u.mongodb.net/?appName=ShajSutroCluster";
-const DB_NAME = "shajsutro";
+const OLD_URI = process.env.MONGODB_SECONDARY_URI || process.env.OLD_MONGODB_URI || "";
+const NEW_URI = process.env.MONGODB_URI || "";
+const DB_NAME = process.env.MONGODB_DB_NAME || "shajsutro";
 
 async function migrate() {
+  if (!OLD_URI || !NEW_URI) {
+    console.error("❌ Error: Both MONGODB_URI and MONGODB_SECONDARY_URI must be defined in your .env file.");
+    process.exit(1);
+  }
+
   console.log("🚀 Starting database migration from OLD Cluster to NEW Cluster...\n");
 
   // 1. Connect to OLD MongoDB Connection
