@@ -49,7 +49,7 @@ The platform delivers a frictionless customer shopping journey alongside an oper
 * **🛡️ Zero-Trust Security Foundation**: Helmet security headers, dual-tier rate limiters, bcrypt hashing, and JWT token rotation.
 * **📊 Live Operations Analytics**: Real-time sales telemetry, order trend graphs, and inventory metrics via Recharts.
 * **📑 Automated PDF Invoicing**: High-fidelity dynamic PDF generation built with PDFKit for immediate customer receipts and warehouse dispatch.
-* **👗 Interactive Virtual Try-On *(Future Plan / POC in Progress)*:** Dedicated studio interface for interactive apparel preview and virtual fitting.
+* **👗 Interactive Virtual Try-On**: Dedicated studio interface for interactive apparel preview.
 
 ---
 
@@ -124,7 +124,7 @@ flowchart TB
 |---|---|---|
 | **Catalog & Navigation** | Next.js dynamic routing, query state sync | Multi-facet filtering by category, price range, color swatches, sizes, and instant client search. |
 | **Product Detail Experience** | Responsive gallery, dynamic stock check | High-res image carousel, color/size variant selectors, customer reviews, verified buyer badges, and related items. |
-| **Interactive Virtual Try-On** <br/>*(Future Plan / POC in Progress)* | Canvas / Web interactive studio (`/virtual-try-on`) | In-development interactive apparel preview and virtual fitting room module designed to enhance customer confidence and reduce return rates. |
+| **Interactive Virtual Try-On** | Canvas / Web interactive studio (`/virtual-try-on`) | Interactive apparel preview for enhanced customer engagement and lower return rates. |
 | **Cart & Wishlist** | React Context + LocalStorage persistence | Real-time stock reservation check, coupon validation drawer, and sync across page reloads. |
 | **Localized Checkout** | BD Administrative Location Dataset | Automated shipping fee differentiation (Inside Dhaka vs. Outside Dhaka / Inter-division rates), Cash on Delivery (COD) & Online payments. |
 | **Real-Time Order Tracking** | Public API lookup (`/api/orders/track`) | Order lookup by Tracking ID + Phone/Email with visual timeline (`Pending` ➔ `Processing` ➔ `Shipped` ➔ `Delivered`). |
@@ -451,14 +451,6 @@ npm run dev
 
 ---
 
-## 🤝 Contributing Guidelines
-
-1. **Fork the Repository** & create a feature branch (`git checkout -b feature/amazing-feature`).
-2. **Commit Changes** following [Conventional Commits](https://www.conventionalcommits.org/) (`feat: add multi-currency support`).
-3. **Push to Branch** (`git push origin feature/amazing-feature`).
-4. **Open a Pull Request** against the `main` branch.
-
----
 
 ## 📄 License
 
