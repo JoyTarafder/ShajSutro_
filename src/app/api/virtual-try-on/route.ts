@@ -94,8 +94,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: data.message || "LightX API rejected the request",
-          details: data,
+          error: data.message || "AI Virtual Try-On service rejected the request",
+          raw: data,
         },
         { status: lightXRes.status || 500 }
       );

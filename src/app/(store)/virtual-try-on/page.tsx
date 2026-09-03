@@ -169,7 +169,7 @@ export default function VirtualTryOnPage() {
   // Stage View tab: "result" | "user_photo" | "garment"
   const [activeView, setActiveView] = useState<"result" | "user_photo" | "garment">("user_photo");
 
-  // LightX AI states
+  // AI states
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);
   const [aiResultUrl, setAiResultUrl] = useState<string | null>(null);
@@ -369,7 +369,7 @@ export default function VirtualTryOnPage() {
     notifyInfo("Try-On request cancelled.");
   };
 
-  // Main Action: TRY ON WITH LIGHTX AI
+  // Main Action: TRY ON
   const handleGenerateTryOn = async () => {
     if (!uploadedPhotoBase64) {
       notifyInfo("Please upload your photo first!");
@@ -403,7 +403,7 @@ export default function VirtualTryOnPage() {
       const data = await res.json();
 
       if (!res.ok || !data.success || !data.orderId) {
-        throw new Error(data.error || "LightX AI rejected the request");
+        throw new Error(data.error || "AI Try-On service rejected the request");
       }
 
       if (data.uploadedPersonUrl && !uploadedPublicUrl) {
@@ -428,14 +428,14 @@ export default function VirtualTryOnPage() {
 
           const statusData = await statusRes.json();
 
-          // When LightX finishes and outputs the image
+          // When AI finishes and outputs the image
           if (statusData.outputUrl) {
             if (pollTimerRef.current) clearInterval(pollTimerRef.current);
             if (elapsedTimerRef.current) clearInterval(elapsedTimerRef.current);
             setAiResultUrl(statusData.outputUrl);
             setIsGenerating(false);
             setActiveView("result");
-            notifySuccess("Dress fitted onto your photo with LightX AI! ✨");
+            notifySuccess("Dress fitted onto your photo! ✨");
 
             // Save to recent looks history
             setRecentLooks((prev) => [
@@ -457,7 +457,7 @@ export default function VirtualTryOnPage() {
             if (pollTimerRef.current) clearInterval(pollTimerRef.current);
             if (elapsedTimerRef.current) clearInterval(elapsedTimerRef.current);
             setIsGenerating(false);
-            const failMsg = statusData.raw?.message || statusData.error || "LightX AI could not process this photo. Please try a clearer front portrait.";
+            const failMsg = statusData.raw?.message || statusData.error || "AI could not process this photo. Please try a clearer front portrait.";
             setErrorMessage(failMsg);
             notifyInfo("Could not complete try-on. Please try again.");
             return;
@@ -479,8 +479,8 @@ export default function VirtualTryOnPage() {
       if (pollTimerRef.current) clearInterval(pollTimerRef.current);
       if (elapsedTimerRef.current) clearInterval(elapsedTimerRef.current);
       setIsGenerating(false);
-      setErrorMessage(err instanceof Error ? err.message : "Error connecting to LightX AI");
-      notifyInfo("Could not initiate LightX try-on.");
+      setErrorMessage(err instanceof Error ? err.message : "Error connecting to AI Try-On service");
+      notifyInfo("Could not initiate AI try-on.");
     }
   };
 
@@ -499,7 +499,7 @@ export default function VirtualTryOnPage() {
       rating: 5.0,
       reviews: 32,
       inStock: true,
-      tags: ["virtual-try-on", "lightx-ai", selectedGarment.category],
+      tags: ["virtual-try-on", "ai-try-on", selectedGarment.category],
     };
 
     addItem(
@@ -545,7 +545,7 @@ export default function VirtualTryOnPage() {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-bold uppercase tracking-wider mb-1.5">
               <Sparkles className="w-3.5 h-3.5 text-amber-600 animate-spin" style={{ animationDuration: "6s" }} />
-              <span>LightX AI Virtual Try-On Studio</span>
+              <span>AI Virtual Try-On Studio</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 tracking-tight">
               AI Virtual Try-On
@@ -656,7 +656,7 @@ export default function VirtualTryOnPage() {
                     </div>
 
                     <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-1">
-                      LightX AI is Dressing Your Photo...
+                      AI is Dressing Your Photo...
                     </h3>
                     <p className="text-xs text-emerald-700 font-semibold mb-1">
                       {progressStage.text}
@@ -1061,7 +1061,7 @@ export default function VirtualTryOnPage() {
               </div>
             </div>
 
-            {/* ─── PRIMARY TRIGGER: TRY ON WITH LIGHTX AI ─── */}
+            {/* ─── PRIMARY TRIGGER: TRY ON ─── */}
             <div className="bg-white rounded-3xl border border-slate-200/90 p-5 shadow-sm">
               <button
                 type="button"
