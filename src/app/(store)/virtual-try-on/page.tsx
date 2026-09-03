@@ -438,7 +438,7 @@ export default function VirtualTryOnPage() {
           const statusRes = await fetch("/api/virtual-try-on/status", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ orderId }),
+            body: JSON.stringify({ orderId, keyIndex: data.keyIndex }),
           });
 
           const statusData = await statusRes.json();
