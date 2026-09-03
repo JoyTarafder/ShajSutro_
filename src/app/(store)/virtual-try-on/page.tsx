@@ -1,159 +1,1090 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
+import {
+  Sparkles,
+  UploadCloud,
+  Camera,
+  Shirt,
+  User,
+  ShoppingCart,
+  Heart,
+  Download,
+  Eye,
+  RotateCcw,
+  Trash2,
+  Check,
+  CheckCircle2,
+  Clock,
+  ArrowRight,
+  Loader2,
+  AlertCircle,
+  Search,
+} from "lucide-react";
+import { useCart } from "@/context/CartContext";
+import { useFavorites } from "@/context/FavoritesContext";
+import { notifyInfo, notifySuccess } from "@/lib/notify";
+import { getApiBase } from "@/lib/apiBase";
+import { products as fallbackProducts } from "@/data/products";
+import { Product } from "@/types";
+
+// ─── Garment Option ───────────────────────────────────────────────────────────
+
+interface GarmentOption {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  originalPrice?: number;
+  imageUrl: string;
+  fabric: string;
+  colors: string[];
+  sizes: string[];
+}
+
+interface TryOnHistoryItem {
+  id: string;
+  garmentId: string;
+  garmentName: string;
+  garmentPrice: number;
+  garmentImg: string;
+  resultUrl: string;
+  timestamp: number;
+}
+
+// Initial fallback garment list while fetching from database
+const INITIAL_GARMENTS: GarmentOption[] = [
+  {
+    id: "garment-1",
+    name: "Pure Muslin Jamdani Saree",
+    category: "Saree",
+    price: 24000,
+    originalPrice: 28000,
+    imageUrl: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800",
+    fabric: "100% Fine Dhakai Muslin",
+    colors: ["Midnight Black & Gold", "Classic White & Red"],
+    sizes: ["Regular (5.5m)"],
+  },
+  {
+    id: "garment-2",
+    name: "Varanasi Silk Salwar Suite",
+    category: "Womens",
+    price: 6800,
+    originalPrice: 8500,
+    imageUrl: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800",
+    fabric: "Pure Banarasi Silk & Organza",
+    colors: ["Crimson Gold", "Royal Emerald"],
+    sizes: ["S", "M", "L", "XL"],
+  },
+  {
+    id: "garment-3",
+    name: "Elixir Georgette Anarkali Gown",
+    category: "Womens",
+    price: 9200,
+    originalPrice: 11000,
+    imageUrl: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=800",
+    fabric: "French Georgette with Pearls",
+    colors: ["Pastel Lavender", "Peach Rose"],
+    sizes: ["M", "L", "XL"],
+  },
+  {
+    id: "garment-4",
+    name: "Imperial Raw Silk Panjabi",
+    category: "Panjabi",
+    price: 5400,
+    originalPrice: 6500,
+    imageUrl: "https://images.unsplash.com/photo-1597983073493-88cd35cf93b0?q=80&w=800",
+    fabric: "Pure Tussar Raw Silk",
+    colors: ["Royal Ivory", "Antique Gold"],
+    sizes: ["38", "40", "42", "44"],
+  },
+  {
+    id: "garment-5",
+    name: "Handloom Traditional Katan Saree",
+    category: "Saree",
+    price: 16500,
+    originalPrice: 19500,
+    imageUrl: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800",
+    fabric: "Pure Mulberry Katan Silk",
+    colors: ["Ruby Red", "Peacock Blue"],
+    sizes: ["Regular (5.5m)"],
+  },
+];
+
+// Helper to compress image in browser for fast upload & AI processing
+function compressImage(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new window.Image();
+      img.onload = () => {
+        const maxDim = 1100;
+        let width = img.width;
+        let height = img.height;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", 0.85));
+      };
+      img.onerror = reject;
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 export default function VirtualTryOnPage() {
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
+  const { addItem, openCart } = useCart();
+  const { isFavorite, toggleFavorite } = useFavorites();
 
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email.trim()) {
-      setSubscribed(true);
-      setEmail("");
+  // All Website Products state
+  const [garments, setGarments] = useState<GarmentOption[]>(INITIAL_GARMENTS);
+  const [isLoadingProducts, setIsLoadingProducts] = useState<boolean>(true);
+  const [activeCategory, setActiveCategory] = useState<string>("All");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  // User uploaded photo
+  const [uploadedPhotoBase64, setUploadedPhotoBase64] = useState<string | null>(null);
+  const [uploadedPublicUrl, setUploadedPublicUrl] = useState<string | null>(null);
+  const [uploadedFileName, setUploadedFileName] = useState<string>("");
+  const [isPreUploading, setIsPreUploading] = useState<boolean>(false);
+
+  // Selected Garment
+  const [selectedGarment, setSelectedGarment] = useState<GarmentOption>(INITIAL_GARMENTS[0]);
+
+  // Stage View tab: "result" | "user_photo" | "garment"
+  const [activeView, setActiveView] = useState<"result" | "user_photo" | "garment">("user_photo");
+
+  // LightX AI states
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);
+  const [aiResultUrl, setAiResultUrl] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Quick Compare (Hold to view original photo)
+  const [showOriginalComparison, setShowOriginalComparison] = useState<boolean>(false);
+
+  // Recent Looks History in this session
+  const [recentLooks, setRecentLooks] = useState<TryOnHistoryItem[]>([]);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const pollTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const elapsedTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // ─── Fetch All Products from the Website Database ───────────────────────────
+  useEffect(() => {
+    setIsLoadingProducts(true);
+    fetch(`${getApiBase()}/api/products?limit=100`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          const prods: GarmentOption[] = data.data
+            .filter((p: { images?: string[]; inStock?: boolean }) => Array.isArray(p.images) && p.images.length > 0)
+            .map((p: {
+              _id?: string;
+              id?: string;
+              name: string;
+              price: number;
+              originalPrice?: number;
+              category?: { name?: string; slug?: string } | string;
+              images: string[];
+              description?: string;
+              colors?: string[];
+              sizes?: string[];
+            }) => {
+              const catRaw = typeof p.category === "object" && p.category
+                ? p.category.name || p.category.slug
+                : p.category;
+              const catClean = (catRaw && typeof catRaw === "string" ? catRaw : "Couture")
+                .replace(/^./, (c) => c.toUpperCase());
+
+              return {
+                id: p._id || p.id || `prod-${Math.random()}`,
+                name: p.name,
+                price: p.price,
+                originalPrice: p.originalPrice,
+                category: catClean,
+                imageUrl: p.images[0],
+                fabric: p.description ? p.description.slice(0, 40) + "..." : "Authentic ShajSutro Collection",
+                colors: p.colors?.length ? p.colors : ["Original"],
+                sizes: p.sizes?.length ? p.sizes : ["Regular"],
+              };
+            });
+
+          if (prods.length > 0) {
+            setGarments(prods);
+            setSelectedGarment(prods[0]);
+          }
+        } else if (fallbackProducts.length > 0) {
+          const prods: GarmentOption[] = fallbackProducts.map((p) => ({
+            id: p.id,
+            name: p.name,
+            price: p.price,
+            originalPrice: p.originalPrice,
+            category: (p.category || "General").replace(/^./, (c) => c.toUpperCase()),
+            imageUrl: p.images?.[0] || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800",
+            fabric: p.description?.slice(0, 40) || "Fine Bangladeshi Handloom",
+            colors: p.colors || ["Original"],
+            sizes: p.sizes || ["Regular"],
+          }));
+          setGarments(prods);
+          setSelectedGarment(prods[0]);
+        }
+      })
+      .catch((err) => {
+        console.warn("Failed to fetch products from backend, using fallback:", err);
+      })
+      .finally(() => setIsLoadingProducts(false));
+  }, []);
+
+  // Reset results when selected garment changes
+  useEffect(() => {
+    setAiResultUrl(null);
+    setErrorMessage(null);
+    if (uploadedPhotoBase64) {
+      setActiveView("user_photo");
+    }
+  }, [selectedGarment, uploadedPhotoBase64]);
+
+  // Clean timers on unmount
+  useEffect(() => {
+    return () => {
+      if (pollTimerRef.current) clearInterval(pollTimerRef.current);
+      if (elapsedTimerRef.current) clearInterval(elapsedTimerRef.current);
+    };
+  }, []);
+
+  // Dynamically derive categories from all website products
+  const categories = useMemo(() => {
+    const cats = new Set<string>();
+    garments.forEach((g) => {
+      if (g.category) cats.add(g.category);
+    });
+    return ["All", ...Array.from(cats)];
+  }, [garments]);
+
+  // Filter garments by category and search
+  const filteredGarments = useMemo(() => {
+    let list = garments;
+    if (activeCategory !== "All") {
+      list = list.filter(
+        (g) => g.category.toLowerCase() === activeCategory.toLowerCase()
+      );
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      list = list.filter(
+        (g) =>
+          g.name.toLowerCase().includes(q) ||
+          g.category.toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }, [garments, activeCategory, searchQuery]);
+
+  // Progress message calculation
+  const progressStage = useMemo(() => {
+    if (elapsedSeconds < 7) {
+      return { step: "1/3", text: "Analyzing body silhouette & posture...", pct: 25 };
+    }
+    if (elapsedSeconds < 18) {
+      return { step: "2/3", text: `Draping ${selectedGarment.name} with AI neural lighting...`, pct: 60 };
+    }
+    return { step: "3/3", text: "Refining fabric textures, pleats & shadows...", pct: 88 };
+  }, [elapsedSeconds, selectedGarment.name]);
+
+  // Handle user photo upload with instant compression & background pre-upload
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        notifyInfo("Please select an image file (JPG, PNG, or WEBP).");
+        return;
+      }
+      setUploadedFileName(file.name);
+      try {
+        const compressedBase64 = await compressImage(file);
+        setUploadedPhotoBase64(compressedBase64);
+        setUploadedPublicUrl(null);
+        setAiResultUrl(null);
+        setErrorMessage(null);
+        setActiveView("user_photo");
+        notifySuccess("Photo loaded! Pre-optimizing for instant try-on... ✨");
+
+        // Background Pre-Upload: convert to public URL while user selects outfit
+        setIsPreUploading(true);
+        fetch("/api/virtual-try-on", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "uploadOnly",
+            personImageUrl: compressedBase64,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success && data.publicUrl) {
+              setUploadedPublicUrl(data.publicUrl);
+              console.log("Background pre-upload completed:", data.publicUrl);
+            }
+          })
+          .catch((err) => console.warn("Background pre-upload error:", err))
+          .finally(() => setIsPreUploading(false));
+      } catch {
+        notifyInfo("Failed to process image. Please try another photo.");
+      }
     }
   };
 
+  // Remove photo
+  const handleRemovePhoto = () => {
+    setUploadedPhotoBase64(null);
+    setUploadedPublicUrl(null);
+    setUploadedFileName("");
+    setAiResultUrl(null);
+    setActiveView("user_photo");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  // Cancel generation
+  const handleCancelGeneration = () => {
+    if (pollTimerRef.current) clearInterval(pollTimerRef.current);
+    if (elapsedTimerRef.current) clearInterval(elapsedTimerRef.current);
+    setIsGenerating(false);
+    setElapsedSeconds(0);
+    notifyInfo("Try-On request cancelled.");
+  };
+
+  // Main Action: TRY ON WITH LIGHTX AI
+  const handleGenerateTryOn = async () => {
+    if (!uploadedPhotoBase64) {
+      notifyInfo("Please upload your photo first!");
+      fileInputRef.current?.click();
+      return;
+    }
+
+    if (isGenerating) return;
+
+    setErrorMessage(null);
+    setIsGenerating(true);
+    setElapsedSeconds(0);
+
+    elapsedTimerRef.current = setInterval(() => {
+      setElapsedSeconds((s) => s + 1);
+    }, 1000);
+
+    try {
+      // Use already pre-uploaded public URL if ready, otherwise base64
+      const personPayload = uploadedPublicUrl || uploadedPhotoBase64;
+
+      const res = await fetch("/api/virtual-try-on", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          personImageUrl: personPayload,
+          garmentImageUrl: selectedGarment.imageUrl,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success || !data.orderId) {
+        throw new Error(data.error || "LightX AI rejected the request");
+      }
+
+      if (data.uploadedPersonUrl && !uploadedPublicUrl) {
+        setUploadedPublicUrl(data.uploadedPersonUrl);
+      }
+
+      const orderId = data.orderId;
+
+      // Smart polling every 2.5s for fast response
+      let attempts = 0;
+      const maxAttempts = 45; // ~110s
+
+      pollTimerRef.current = setInterval(async () => {
+        attempts += 1;
+
+        try {
+          const statusRes = await fetch("/api/virtual-try-on/status", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orderId }),
+          });
+
+          const statusData = await statusRes.json();
+
+          // When LightX finishes and outputs the image
+          if (statusData.outputUrl) {
+            if (pollTimerRef.current) clearInterval(pollTimerRef.current);
+            if (elapsedTimerRef.current) clearInterval(elapsedTimerRef.current);
+            setAiResultUrl(statusData.outputUrl);
+            setIsGenerating(false);
+            setActiveView("result");
+            notifySuccess("Dress fitted onto your photo with LightX AI! ✨");
+
+            // Save to recent looks history
+            setRecentLooks((prev) => [
+              {
+                id: `look-${Date.now()}`,
+                garmentId: selectedGarment.id,
+                garmentName: selectedGarment.name,
+                garmentPrice: selectedGarment.price,
+                garmentImg: selectedGarment.imageUrl,
+                resultUrl: statusData.outputUrl,
+                timestamp: Date.now(),
+              },
+              ...prev.filter((item) => item.garmentId !== selectedGarment.id),
+            ]);
+            return;
+          }
+
+          if (statusData.status === "FAIL") {
+            if (pollTimerRef.current) clearInterval(pollTimerRef.current);
+            if (elapsedTimerRef.current) clearInterval(elapsedTimerRef.current);
+            setIsGenerating(false);
+            const failMsg = statusData.raw?.message || statusData.error || "LightX AI could not process this photo. Please try a clearer front portrait.";
+            setErrorMessage(failMsg);
+            notifyInfo("Could not complete try-on. Please try again.");
+            return;
+          }
+
+          if (attempts >= maxAttempts) {
+            if (pollTimerRef.current) clearInterval(pollTimerRef.current);
+            if (elapsedTimerRef.current) clearInterval(elapsedTimerRef.current);
+            setIsGenerating(false);
+            setErrorMessage("Request timed out. Please try again.");
+            notifyInfo("Request timed out.");
+          }
+        } catch (pollErr) {
+          console.warn("Polling error:", pollErr);
+        }
+      }, 2500);
+    } catch (err: unknown) {
+      console.error("Try-on initiation error:", err);
+      if (pollTimerRef.current) clearInterval(pollTimerRef.current);
+      if (elapsedTimerRef.current) clearInterval(elapsedTimerRef.current);
+      setIsGenerating(false);
+      setErrorMessage(err instanceof Error ? err.message : "Error connecting to LightX AI");
+      notifyInfo("Could not initiate LightX try-on.");
+    }
+  };
+
+  // Add to cart
+  const handleAddToCart = () => {
+    const productPayload: Product = {
+      id: selectedGarment.id,
+      name: selectedGarment.name,
+      price: selectedGarment.price,
+      originalPrice: selectedGarment.originalPrice,
+      category: selectedGarment.category,
+      images: [selectedGarment.imageUrl],
+      sizes: selectedGarment.sizes,
+      colors: selectedGarment.colors,
+      description: `${selectedGarment.fabric}. Verified in Virtual Try-On Studio.`,
+      rating: 5.0,
+      reviews: 32,
+      inStock: true,
+      tags: ["virtual-try-on", "lightx-ai", selectedGarment.category],
+    };
+
+    addItem(
+      productPayload,
+      selectedGarment.sizes[0] || "Regular",
+      selectedGarment.colors[0] || "Default",
+      1
+    );
+    notifySuccess(`Added ${selectedGarment.name} to your cart! 🛒`);
+    openCart();
+  };
+
+  // Download AI Result Image
+  const handleDownloadResult = () => {
+    if (!aiResultUrl) return;
+    const a = document.createElement("a");
+    a.href = aiResultUrl;
+    a.download = `shajsutro-tryon-${selectedGarment.name.toLowerCase().replace(/\s+/g, "-")}.png`;
+    a.target = "_blank";
+    a.click();
+  };
+
+  // Image to display in Preview Stage
+  const stageImageSrc = useMemo(() => {
+    if (showOriginalComparison && uploadedPhotoBase64) {
+      return uploadedPhotoBase64;
+    }
+    if (activeView === "user_photo") {
+      return uploadedPhotoBase64 || null;
+    }
+    if (activeView === "garment") {
+      return selectedGarment.imageUrl;
+    }
+    // "result"
+    return aiResultUrl || null;
+  }, [activeView, aiResultUrl, uploadedPhotoBase64, selectedGarment, showOriginalComparison]);
+
   return (
-    <div className="min-h-screen bg-[#071912] text-white relative overflow-hidden flex flex-col justify-between selection:bg-amber-400 selection:text-emerald-950">
-      {/* ─── Ambient Glows & Tech Background ─── */}
-      <div className="absolute -top-40 -left-40 w-[550px] h-[550px] bg-emerald-500/15 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute top-1/3 -right-40 w-[600px] h-[600px] bg-amber-400/10 rounded-full blur-[160px] pointer-events-none" />
-      <div className="absolute -bottom-40 left-1/3 w-[500px] h-[500px] bg-teal-500/15 rounded-full blur-[140px] pointer-events-none" />
-
-      {/* Decorative Subtle Grid Pattern */}
-      <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage:
-            "linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
-      />
-
-      <div className="relative z-10 max-w-5xl mx-auto px-6 sm:px-8 py-20 sm:py-28 text-center flex flex-col items-center justify-center flex-1">
-        {/* Floating Glowing Badge */}
-        <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full border border-amber-400/30 bg-emerald-900/40 backdrop-blur-xl shadow-2xl mb-8">
-          {/* <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" /> */}
-          <span className="text-xs font-bold tracking-[0.25em] text-amber-300 uppercase">
-            Under Active Construction
-          </span>
-        </div>
-
-        {/* Main Headline */}
-        <h1 className="text-4xl sm:text-6xl md:text-7xl font-serif font-medium text-white tracking-tight leading-[1.1] mb-6">
-          AI Virtual Fitting Studio{" "}
-          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-emerald-200 to-amber-300 italic font-normal mt-2">
-            Coming Very Soon
-          </span>
-        </h1>
-
-        {/* Bengali Subtitle & Description */}
-        <p className="text-base sm:text-xl text-emerald-200/90 max-w-2xl font-light leading-relaxed mb-4">
-          সাজসূত্র এআই ভার্চুয়াল ট্রাই-অন — আপনার জন্য নিয়ে আসছে এক যুগান্তকারী অভিজ্ঞতা।
-        </p>
-
-        <p className="text-xs sm:text-sm text-emerald-300/70 max-w-xl font-light leading-relaxed mb-12">
-          We are currently developing our next-generation neural fitting room with 3D garment simulation, precise drape rendering, and personalized body sizing.
-        </p>
-
-        {/* ─── 3 Feature Highlights (Under Development) ─── */}
-        <div className="grid sm:grid-cols-3 gap-5 max-w-4xl w-full text-left mb-14">
-          <div className="bg-emerald-900/20 backdrop-blur-md rounded-3xl p-6 border border-emerald-800/50 hover:border-amber-400/30 transition-all group">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-950/80 border border-emerald-700/50 flex items-center justify-center text-lg mb-4 group-hover:scale-110 transition-transform">
-              🪄
+    <div className="min-h-screen bg-[#fafbfc] text-slate-900 selection:bg-amber-100 selection:text-amber-900 pb-28">
+      {/* ─── Header ─── */}
+      <div className="border-b border-slate-200/80 bg-white/90 backdrop-blur-md sticky top-0 z-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-bold uppercase tracking-wider mb-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-amber-600 animate-spin" style={{ animationDuration: "6s" }} />
+              <span>LightX AI Virtual Try-On Studio</span>
             </div>
-            <h3 className="text-sm font-serif font-semibold text-white mb-1">
-              3D Neural Drape
-            </h3>
-            <p className="text-xs text-emerald-200/70 font-light leading-relaxed">
-              Photorealistic physics simulation showing how silk, cotton, and muslin fall on your silhouette.
+            <h1 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 tracking-tight">
+              AI Virtual Try-On
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+              Upload your photo, select any outfit from the collection, and try it on instantly!
             </p>
           </div>
 
-          <div className="bg-emerald-900/20 backdrop-blur-md rounded-3xl p-6 border border-emerald-800/50 hover:border-amber-400/30 transition-all group">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-950/80 border border-emerald-700/50 flex items-center justify-center text-lg mb-4 group-hover:scale-110 transition-transform">
-              📐
-            </div>
-            <h3 className="text-sm font-serif font-semibold text-white mb-1">
-              Exact Size Match
-            </h3>
-            <p className="text-xs text-emerald-200/70 font-light leading-relaxed">
-              Tailored measurement recommendations based on shoulder, chest, and length analysis.
-            </p>
-          </div>
-
-          <div className="bg-emerald-900/20 backdrop-blur-md rounded-3xl p-6 border border-emerald-800/50 hover:border-amber-400/30 transition-all group">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-950/80 border border-emerald-700/50 flex items-center justify-center text-lg mb-4 group-hover:scale-110 transition-transform">
-              📸
-            </div>
-            <h3 className="text-sm font-serif font-semibold text-white mb-1">
-              Live Mirror Try-On
-            </h3>
-            <p className="text-xs text-emerald-200/70 font-light leading-relaxed">
-              Upload your photo or use camera preview to instantly see yourself in any ShajSutro attire.
-            </p>
-          </div>
-        </div>
-
-        {/* ─── Early Access Notification Form ─── */}
-        <div className="w-full max-w-md bg-emerald-950/70 backdrop-blur-xl p-6 rounded-3xl border border-emerald-800/60 shadow-2xl mb-10">
-          {subscribed ? (
-            <div className="py-2 text-center space-y-2">
-              <span className="text-2xl">✨</span>
-              <p className="text-sm font-serif font-medium text-amber-200">
-                You&apos;re on the VIP Early Access list!
-              </p>
-              <p className="text-xs text-emerald-300/70 font-light">
-                We will notify you the moment the Virtual Try-On studio goes live.
-              </p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubscribe} className="space-y-3">
-              <label className="block text-xs font-bold uppercase tracking-wider text-amber-300/90 text-left">
-                Get Notified on Launch
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email address..."
-                  className="flex-1 px-4 py-3 rounded-2xl bg-emerald-900/50 border border-emerald-700/60 text-xs text-white placeholder-emerald-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all"
-                />
-                <button
-                  type="submit"
-                  className="px-5 py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-emerald-950 font-bold text-xs uppercase tracking-wider transition-all shadow-md active:scale-95 whitespace-nowrap"
-                >
-                  Notify Me
-                </button>
-              </div>
-            </form>
-          )}
-        </div>
-
-        {/* ─── Navigation Buttons ─── */}
-        <div className="flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/shop"
-            className="px-8 py-3.5 rounded-full bg-emerald-800/60 hover:bg-emerald-700/80 border border-emerald-600/50 text-white font-semibold text-xs uppercase tracking-widest transition-all duration-300 shadow-md backdrop-blur-sm"
+            className="self-start sm:self-auto inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-semibold transition-colors"
           >
-            Explore Ready Collection &rarr;
-          </Link>
-          <Link
-            href="/"
-            className="px-8 py-3.5 rounded-full border border-white/20 hover:bg-white/10 text-emerald-200 font-semibold text-xs uppercase tracking-widest transition-all duration-300"
-          >
-            Back to Home
+            <span>Browse Shop</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
       </div>
 
-      {/* ─── Footer note ─── */}
-      <div className="relative z-10 py-6 border-t border-emerald-900/40 text-center text-xs text-emerald-400/50 font-light">
-        © 2026 ShajSutro Atelier. Crafted with intention for modern fashion.
+      {/* ─── Main Content ─── */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* ══════════════════════════════════════════════════════════════
+              LEFT: PREVIEW STAGE (col-span-6)
+              ══════════════════════════════════════════════════════════════ */}
+          <div className="lg:col-span-6 space-y-4">
+            <div className="relative bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-sm">
+              {/* Top View Toggle Tabs */}
+              <div className="flex items-center justify-between px-4 py-3 bg-slate-50/80 border-b border-slate-200">
+                <div className="flex items-center gap-1 p-1 rounded-xl bg-white border border-slate-200 text-xs shadow-2xs">
+                  {/* AI Result Tab */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (aiResultUrl) {
+                        setActiveView("result");
+                      } else if (!uploadedPhotoBase64) {
+                        notifyInfo("Please upload your photo first!");
+                        fileInputRef.current?.click();
+                      } else {
+                        notifyInfo("Click 'TRY ON' button to generate result!");
+                      }
+                    }}
+                    className={`px-3 py-1.5 rounded-lg transition-all font-medium cursor-pointer flex items-center gap-1.5 ${
+                      activeView === "result"
+                        ? "bg-slate-900 text-white font-semibold shadow-xs"
+                        : aiResultUrl
+                        ? "text-emerald-700 hover:text-slate-900"
+                        : "text-slate-400 hover:text-slate-600"
+                    }`}
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Try-On Result</span>
+                    {aiResultUrl && (
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    )}
+                  </button>
+
+                  {/* Your Photo Tab */}
+                  <button
+                    type="button"
+                    onClick={() => setActiveView("user_photo")}
+                    className={`px-3 py-1.5 rounded-lg transition-all font-medium cursor-pointer flex items-center gap-1.5 ${
+                      activeView === "user_photo"
+                        ? "bg-slate-900 text-white font-semibold shadow-xs"
+                        : "text-slate-600 hover:text-slate-900"
+                    }`}
+                  >
+                    <User className="w-3.5 h-3.5" />
+                    <span>Your Photo</span>
+                  </button>
+
+                  {/* Garment Tab */}
+                  <button
+                    type="button"
+                    onClick={() => setActiveView("garment")}
+                    className={`px-3 py-1.5 rounded-lg transition-all font-medium cursor-pointer flex items-center gap-1.5 ${
+                      activeView === "garment"
+                        ? "bg-slate-900 text-white font-semibold shadow-xs"
+                        : "text-slate-600 hover:text-slate-900"
+                    }`}
+                  >
+                    <Shirt className="w-3.5 h-3.5" />
+                    <span>Selected Dress</span>
+                  </button>
+                </div>
+
+                <span className="text-[11px] font-mono text-slate-500 hidden sm:inline-block">
+                  {aiResultUrl
+                    ? "✓ AI Result Ready"
+                    : uploadedPhotoBase64
+                    ? (isPreUploading ? "Optimizing photo..." : "Photo Ready")
+                    : "Upload Photo First"}
+                </span>
+              </div>
+
+              {/* Viewport Area */}
+              <div className="relative aspect-[3/4] w-full bg-slate-100 flex items-center justify-center overflow-hidden">
+                {/* Generation Loading Overlay */}
+                {isGenerating && (
+                  <div className="absolute inset-0 z-30 bg-white/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center select-none">
+                    <div className="relative w-20 h-20 mb-5">
+                      <div className="absolute inset-0 rounded-full border-4 border-slate-200" />
+                      <div className="absolute inset-0 rounded-full border-4 border-emerald-600 border-t-transparent animate-spin" />
+                      <div className="absolute inset-2 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-700">
+                        <Sparkles className="w-6 h-6 animate-pulse" />
+                      </div>
+                    </div>
+
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-1">
+                      LightX AI is Dressing Your Photo...
+                    </h3>
+                    <p className="text-xs text-emerald-700 font-semibold mb-1">
+                      {progressStage.text}
+                    </p>
+                    <p className="text-[11px] text-slate-500 font-light mb-4">
+                      Fitting &ldquo;{selectedGarment.name}&rdquo; • {elapsedSeconds}s elapsed
+                    </p>
+
+                    {/* Progress Bar */}
+                    <div className="w-56 h-1.5 bg-slate-200 rounded-full overflow-hidden mb-5">
+                      <div
+                        className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-700 rounded-full"
+                        style={{ width: `${progressStage.pct}%` }}
+                      />
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleCancelGeneration}
+                      className="px-4 py-1.5 rounded-xl border border-slate-300 text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
+
+                {/* Case 1: Active view is "result" but AI hasn't been generated yet */}
+                {activeView === "result" && !aiResultUrl ? (
+                  <div className="flex flex-col items-center justify-center p-8 text-center">
+                    <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 mb-4 shadow-2xs">
+                      <Sparkles className="w-8 h-8" />
+                    </div>
+                    <h4 className="text-sm font-semibold text-slate-900 mb-1">
+                      No Try-On Generated Yet
+                    </h4>
+                    <p className="text-xs text-slate-500 max-w-xs font-light mb-5">
+                      {uploadedPhotoBase64
+                        ? "Click the button below to dress your photo with this outfit!"
+                        : "Upload your photo first in Step 1 to generate your try-on look."}
+                    </p>
+
+                    <button
+                      type="button"
+                      disabled={isGenerating}
+                      onClick={handleGenerateTryOn}
+                      className="px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md active:scale-95 cursor-pointer flex items-center gap-2"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      <span>TRY ON</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : !stageImageSrc ? (
+                  /* Case 2: No photo uploaded yet */
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex flex-col items-center justify-center p-8 text-center cursor-pointer group"
+                  >
+                    <div className="w-20 h-20 rounded-2xl bg-white border-2 border-dashed border-slate-300 group-hover:border-emerald-500 group-hover:bg-emerald-50/40 flex items-center justify-center text-slate-400 group-hover:text-emerald-600 mb-4 transition-all shadow-2xs">
+                      <UploadCloud className="w-8 h-8" />
+                    </div>
+                    <h4 className="text-sm font-semibold text-slate-900 mb-1">
+                      No Photo Uploaded Yet
+                    </h4>
+                    <p className="text-xs text-slate-500 max-w-xs font-light mb-4">
+                      Upload your portrait or full-body picture to see the try-on.
+                    </p>
+                    <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold uppercase tracking-wider group-hover:bg-emerald-600 group-hover:text-white transition-all">
+                      <Camera className="w-3.5 h-3.5" />
+                      <span>Upload Photo</span>
+                    </span>
+                  </div>
+                ) : (
+                  /* Case 3: Display the image (AI Result, User Photo, or Garment) */
+                  <Image
+                    src={stageImageSrc}
+                    alt={selectedGarment.name}
+                    fill
+                    unoptimized={true}
+                    priority
+                    className="object-cover object-top transition-all duration-300"
+                  />
+                )}
+
+                {/* Floating Bottom Info Badge */}
+                <div className="absolute bottom-4 left-4 z-10 px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur-md border border-slate-200 shadow-md max-w-[55%]">
+                  <p className="text-xs font-bold text-slate-900 truncate">
+                    {showOriginalComparison
+                      ? "Original Photo (Hold/Toggle)"
+                      : activeView === "result" && aiResultUrl
+                      ? "AI Fitted Look"
+                      : activeView === "user_photo"
+                      ? (uploadedPhotoBase64 ? "Your Uploaded Photo" : "Upload Required")
+                      : selectedGarment.name}
+                  </p>
+                  <p className="text-[10px] text-slate-500 font-light truncate">
+                    {activeView === "result" && aiResultUrl
+                      ? `${selectedGarment.name} • ৳${selectedGarment.price.toLocaleString()}`
+                      : activeView === "user_photo"
+                      ? (uploadedFileName || "Front Portrait")
+                      : selectedGarment.fabric}
+                  </p>
+                </div>
+
+                {/* Download Button on Bottom-Right */}
+                {aiResultUrl && activeView === "result" && (
+                  <button
+                    type="button"
+                    onClick={handleDownloadResult}
+                    className="absolute bottom-4 right-4 z-10 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-95"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download</span>
+                  </button>
+                )}
+
+                {/* Compare Button on Top-Right when AI Result exists */}
+                {aiResultUrl && activeView === "result" && (
+                  <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onMouseDown={() => setShowOriginalComparison(true)}
+                      onMouseUp={() => setShowOriginalComparison(false)}
+                      onTouchStart={() => setShowOriginalComparison(true)}
+                      onTouchEnd={() => setShowOriginalComparison(false)}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white/90 hover:bg-white border border-slate-200 text-slate-700 text-xs font-semibold shadow-sm transition-all cursor-pointer select-none"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>{showOriginalComparison ? "Showing Original" : "Hold: Compare"}</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Quick Actions (Add to Cart & Favorite) */}
+            <div className="bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between gap-3 shadow-xs">
+              <div>
+                <span className="text-xs text-slate-500 block">Selected Outfit:</span>
+                <span className="text-xl sm:text-2xl font-bold font-serif text-slate-900">
+                  ৳{selectedGarment.price.toLocaleString()}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    toggleFavorite(selectedGarment.id);
+                    notifyInfo(
+                      isFavorite(selectedGarment.id)
+                        ? "Removed from favorites"
+                        : "Saved to your favorites! ❤️"
+                    );
+                  }}
+                  className={`p-3 rounded-xl border transition-all cursor-pointer ${
+                    isFavorite(selectedGarment.id)
+                      ? "bg-rose-50 border-rose-200 text-rose-600"
+                      : "bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                  }`}
+                  aria-label="Favorite outfit"
+                >
+                  <Heart
+                    className="w-5 h-5"
+                    fill={isFavorite(selectedGarment.id) ? "currentColor" : "none"}
+                  />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleAddToCart}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs sm:text-sm uppercase tracking-wider transition-all shadow-md active:scale-95 cursor-pointer"
+                >
+                  <ShoppingCart className="w-4 h-4" />
+                  <span>ADD TO CART</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Recent Generated Looks History (if any) */}
+            {recentLooks.length > 0 && (
+              <div className="bg-white rounded-2xl border border-slate-200 p-3.5 shadow-xs space-y-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Your Generated Looks ({recentLooks.length})</span>
+                </span>
+                <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+                  {recentLooks.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => {
+                        setAiResultUrl(item.resultUrl);
+                        setActiveView("result");
+                        const matched = garments.find((g) => g.id === item.garmentId);
+                        if (matched) setSelectedGarment(matched);
+                      }}
+                      className={`relative w-14 h-18 rounded-xl overflow-hidden flex-shrink-0 border-2 transition-all cursor-pointer ${
+                        aiResultUrl === item.resultUrl
+                          ? "border-emerald-600 ring-2 ring-emerald-600/30 scale-105 shadow-sm"
+                          : "border-slate-200 opacity-80 hover:opacity-100"
+                      }`}
+                      title={item.garmentName}
+                    >
+                      <Image
+                        src={item.resultUrl}
+                        alt={item.garmentName}
+                        fill
+                        unoptimized={true}
+                        className="object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {errorMessage && (
+              <div className="bg-rose-50 border border-rose-200 rounded-xl p-3 text-center flex items-center justify-center gap-2">
+                <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
+                <p className="text-xs text-rose-700 font-medium">{errorMessage}</p>
+              </div>
+            )}
+          </div>
+
+          {/* ══════════════════════════════════════════════════════════════
+              RIGHT: 2-STEP SELECTION PANEL (col-span-6)
+              ══════════════════════════════════════════════════════════════ */}
+          <div className="lg:col-span-6 space-y-6">
+            {/* ─── STEP 1: UPLOAD YOUR PHOTO ─── */}
+            <div className="bg-white rounded-3xl border border-slate-200/90 p-5 shadow-sm space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                  <Camera className="w-4 h-4 text-emerald-600" />
+                  <span>Step 1: Upload Your Photo</span>
+                </h2>
+                {uploadedPhotoBase64 && (
+                  <button
+                    type="button"
+                    onClick={handleRemovePhoto}
+                    className="text-xs text-rose-600 hover:text-rose-700 font-medium flex items-center gap-1 cursor-pointer"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Remove</span>
+                  </button>
+                )}
+              </div>
+
+              {uploadedPhotoBase64 ? (
+                /* Photo Uploaded Preview Card */
+                <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-200">
+                  <div className="w-16 h-16 rounded-xl overflow-hidden relative border border-slate-200 flex-shrink-0 shadow-2xs">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={uploadedPhotoBase64}
+                      alt="Your uploaded photo"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold text-slate-900 truncate">
+                      {uploadedFileName || "Your Uploaded Photo"}
+                    </p>
+                    <p className="text-[11px] text-emerald-700 font-medium mt-0.5 flex items-center gap-1">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>{isPreUploading ? "Pre-optimizing cloud link..." : "Ready for AI Try-On"}</span>
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 border border-slate-200 transition-colors shadow-2xs cursor-pointer"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>Change</span>
+                  </button>
+                </div>
+              ) : (
+                /* Empty Upload Dropzone */
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  className="p-6 rounded-2xl border-2 border-dashed border-slate-300 hover:border-emerald-500 bg-slate-50/50 hover:bg-emerald-50/20 text-center cursor-pointer transition-all group"
+                >
+                  <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 group-hover:border-emerald-500 flex items-center justify-center text-slate-400 group-hover:text-emerald-600 mx-auto mb-2 transition-all shadow-2xs">
+                    <UploadCloud className="w-6 h-6" />
+                  </div>
+                  <p className="text-xs font-bold text-slate-800 group-hover:text-emerald-700 transition-colors">
+                    Click to Upload Your Photo
+                  </p>
+                  <p className="text-[11px] text-slate-500 mt-1 font-light">
+                    Upload a clear front-facing portrait or full-body picture (JPG, PNG)
+                  </p>
+                </div>
+              )}
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoUpload}
+                className="hidden"
+              />
+            </div>
+
+            {/* ─── STEP 2: CHOOSE OUTFIT (ALL WEBSITE PRODUCTS) ─── */}
+            <div className="bg-white rounded-3xl border border-slate-200/90 p-5 shadow-sm space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                  <Shirt className="w-4 h-4 text-emerald-600" />
+                  <span>Step 2: Choose Outfit</span>
+                  <span className="text-[11px] font-normal text-slate-400 lowercase">
+                    ({filteredGarments.length} items)
+                  </span>
+                </h2>
+
+                {/* Quick Search */}
+                <div className="relative w-full sm:w-44">
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    placeholder="Search outfit..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-8 pr-3 py-1 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* Dynamic Category Tabs */}
+              <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-thin">
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setActiveCategory(cat)}
+                    className={`px-3 py-1 rounded-lg text-[11px] transition-all cursor-pointer font-medium whitespace-nowrap ${
+                      activeCategory.toLowerCase() === cat.toLowerCase()
+                        ? "bg-slate-900 text-white shadow-2xs"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+
+              {/* Garments Grid with Website Products */}
+              <div className="grid grid-cols-3 gap-2.5 max-h-[360px] overflow-y-auto pr-1 scrollbar-thin">
+                {isLoadingProducts ? (
+                  <div className="col-span-3 py-12 flex flex-col items-center justify-center text-center">
+                    <Loader2 className="w-6 h-6 animate-spin text-emerald-600 mb-2" />
+                    <p className="text-xs text-slate-500">Loading website products...</p>
+                  </div>
+                ) : filteredGarments.length === 0 ? (
+                  <div className="col-span-3 py-8 text-center text-xs text-slate-500">
+                    No outfits found matching &ldquo;{searchQuery || activeCategory}&rdquo;.
+                  </div>
+                ) : (
+                  filteredGarments.map((garment) => {
+                    const isSel = selectedGarment.id === garment.id;
+                    return (
+                      <div
+                        key={garment.id}
+                        onClick={() => {
+                          setSelectedGarment(garment);
+                          if (uploadedPhotoBase64) {
+                            setActiveView("user_photo");
+                          } else {
+                            setActiveView("garment");
+                          }
+                        }}
+                        className={`group rounded-xl border p-2 cursor-pointer transition-all text-left ${
+                          isSel
+                            ? "bg-emerald-50/60 border-emerald-600 ring-2 ring-emerald-600/30 shadow-xs"
+                            : "bg-white border-slate-200 hover:border-slate-300 hover:shadow-2xs"
+                        }`}
+                      >
+                        <div className="relative aspect-[3/4] rounded-lg overflow-hidden mb-1.5 bg-slate-100">
+                          <Image
+                            src={garment.imageUrl}
+                            alt={garment.name}
+                            fill
+                            unoptimized={true}
+                            className="object-cover group-hover:scale-105 transition-transform"
+                          />
+                          {isSel && (
+                            <div className="absolute top-1 right-1 w-4 h-4 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-xs">
+                              <Check className="w-2.5 h-2.5 stroke-[3]" />
+                            </div>
+                          )}
+                        </div>
+                        <h4 className="text-[11px] font-semibold text-slate-900 line-clamp-1" title={garment.name}>
+                          {garment.name}
+                        </h4>
+                        <p className="text-[10px] text-emerald-700 font-bold font-serif">
+                          ৳{garment.price.toLocaleString()}
+                        </p>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+
+            {/* ─── PRIMARY TRIGGER: TRY ON WITH LIGHTX AI ─── */}
+            <div className="bg-white rounded-3xl border border-slate-200/90 p-5 shadow-sm">
+              <button
+                type="button"
+                disabled={isGenerating}
+                onClick={handleGenerateTryOn}
+                className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-sm sm:text-base uppercase tracking-wider transition-all shadow-md shadow-emerald-600/20 active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>TRYING ON ({elapsedSeconds}s)...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-5 h-5 text-amber-300" />
+                    <span>TRY ON</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

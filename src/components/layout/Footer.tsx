@@ -6,6 +6,7 @@ const footerLinks = {
   Shop: [
     { label: "Men", href: "/shop?category=men" },
     { label: "Women", href: "/shop?category=women" },
+    { label: "Virtual Try-On (AI)", href: "/virtual-try-on" },
     { label: "Shoes", href: "/shop?category=shoes" },
     { label: "Accessories", href: "/shop?category=accessories" },
     { label: "New Arrivals", href: "/shop?badge=New" },

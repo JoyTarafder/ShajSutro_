@@ -69,6 +69,7 @@ const BEFORE_CATS = [
   { label: "Shop", href: "/shop" },
 ];
 const AFTER_CATS = [
+  { label: "Virtual Try-On", href: "/virtual-try-on", badge: "AI" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
@@ -356,18 +357,23 @@ export default function Navbar() {
                 </div>
               ))}
 
-              {/* After cats (About, Contact) */}
+              {/* After cats (Virtual Try-On, About, Contact) */}
               {AFTER_CATS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`relative text-sm font-medium tracking-[0.04em] text-charcoal-400 hover:text-charcoal-950 transition-colors pb-1 ${
+                  className={`relative inline-flex items-center gap-1.5 text-sm font-medium tracking-[0.04em] text-charcoal-400 hover:text-charcoal-950 transition-colors pb-1 ${
                     isStaticActive(link.href)
                       ? "text-charcoal-950 after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:w-6 after:bg-charcoal-950"
                       : ""
                   }`}
                 >
-                  {link.label}
+                  <span>{link.label}</span>
+                  {link.badge && (
+                    <span className="px-1.5 py-0.5 text-[9px] font-bold rounded-md bg-gradient-to-r from-amber-400 to-amber-500 text-emerald-950 uppercase tracking-wider shadow-2xs">
+                      {link.badge}
+                    </span>
+                  )}
                 </Link>
               ))}
             </div>
@@ -831,14 +837,19 @@ export default function Navbar() {
             </div>
           ))}
 
-          {/* About, Contact */}
+          {/* About, Contact, Virtual Try-On */}
           {AFTER_CATS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className={`block px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-300 ${isStaticActive(link.href) ? "bg-charcoal-50 text-charcoal-950" : "text-charcoal-600 hover:bg-charcoal-50 hover:text-charcoal-950"}`}
+              className={`flex items-center justify-between px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-300 ${isStaticActive(link.href) ? "bg-charcoal-50 text-charcoal-950" : "text-charcoal-600 hover:bg-charcoal-50 hover:text-charcoal-950"}`}
             >
-              {link.label}
+              <span>{link.label}</span>
+              {link.badge && (
+                <span className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-amber-400 text-emerald-950 uppercase tracking-wider">
+                  {link.badge}
+                </span>
+              )}
             </Link>
           ))}
 
