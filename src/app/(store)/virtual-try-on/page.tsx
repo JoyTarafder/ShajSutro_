@@ -296,15 +296,30 @@ export default function VirtualTryOnPage() {
     return list;
   }, [garments, activeCategory, searchQuery]);
 
-  // Progress message calculation
+  // Progress message & dynamic percentage calculation (5% -> 98%)
   const progressStage = useMemo(() => {
-    if (elapsedSeconds < 7) {
-      return { step: "1/3", text: "Analyzing body silhouette & posture...", pct: 25 };
+    let pct = 5;
+    if (elapsedSeconds <= 3) {
+      pct = 5 + elapsedSeconds * 5; // 5% -> 20%
+    } else if (elapsedSeconds <= 10) {
+      pct = 20 + Math.round(((elapsedSeconds - 3) / 7) * 35); // 20% -> 55%
+    } else if (elapsedSeconds <= 20) {
+      pct = 55 + Math.round(((elapsedSeconds - 10) / 10) * 35); // 55% -> 90%
+    } else {
+      pct = Math.min(98, 90 + Math.round((elapsedSeconds - 20) * 0.8)); // 90% -> 98%
     }
-    if (elapsedSeconds < 18) {
-      return { step: "2/3", text: `Draping ${selectedGarment.name} with AI neural lighting...`, pct: 60 };
+
+    let text = "Analyzing body silhouette & posture...";
+    let step = "1/3";
+    if (pct >= 40 && pct < 75) {
+      step = "2/3";
+      text = `Draping ${selectedGarment.name} with AI neural lighting...`;
+    } else if (pct >= 75) {
+      step = "3/3";
+      text = "Refining fabric textures, pleats & shadows...";
     }
-    return { step: "3/3", text: "Refining fabric textures, pleats & shadows...", pct: 88 };
+
+    return { step, text, pct };
   }, [elapsedSeconds, selectedGarment.name]);
 
   // Handle user photo upload with instant compression & background pre-upload
@@ -665,12 +680,20 @@ export default function VirtualTryOnPage() {
                       Fitting &ldquo;{selectedGarment.name}&rdquo; • {elapsedSeconds}s elapsed
                     </p>
 
-                    {/* Progress Bar */}
-                    <div className="w-56 h-1.5 bg-slate-200 rounded-full overflow-hidden mb-5">
-                      <div
-                        className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-700 rounded-full"
-                        style={{ width: `${progressStage.pct}%` }}
-                      />
+                    {/* Progress Bar & Live Percentage */}
+                    <div className="w-64 space-y-1.5 mb-5">
+                      <div className="flex items-center justify-between text-[11px] font-semibold text-slate-600 px-0.5">
+                        <span className="text-emerald-700 font-bold">Step {progressStage.step}</span>
+                        <span className="font-mono text-emerald-800 font-bold text-xs bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 shadow-2xs">
+                          {progressStage.pct}%
+                        </span>
+                      </div>
+                      <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden p-0.5 border border-slate-200">
+                        <div
+                          className="h-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 transition-all duration-500 rounded-full"
+                          style={{ width: `${progressStage.pct}%` }}
+                        />
+                      </div>
                     </div>
 
                     <button
