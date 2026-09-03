@@ -110,20 +110,37 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  try {
-    const lightXRes = await fetch(
-      "https://api.lightxeditor.com/external/api/v1/order-status",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": LIGHTX_API_KEY,
-        },
-        body: JSON.stringify({ orderId }),
-      }
+  const apiKeys = getLightXApiKeys();
+  if (apiKeys.length === 0) {
+    return NextResponse.json(
+      { success: false, error: "LIGHTX_API_KEY is not configured" },
+      { status: 500 }
     );
+  }
 
-    const data = await lightXRes.json();
+  try {
+    let data: any = null;
+
+    for (const key of apiKeys) {
+      const lightXRes = await fetch(
+        "https://api.lightxeditor.com/external/api/v1/order-status",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": key,
+          },
+          body: JSON.stringify({ orderId }),
+        }
+      );
+
+      const resJson = await lightXRes.json();
+      if (lightXRes.ok && (!resJson.statusCode || resJson.statusCode === 2000)) {
+        data = resJson;
+        break;
+      }
+      data = resJson;
+    }
     const rawStatus = data.body?.status || data.status || "active";
     const outputUrl =
       data.body?.output ||
