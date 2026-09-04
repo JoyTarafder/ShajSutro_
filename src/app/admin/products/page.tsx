@@ -397,11 +397,11 @@ function ProductModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 backdrop-blur-md transition-all animate-fade-in"
-      style={{ background: "rgba(3, 7, 18, 0.82)" }}
+      className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 lg:p-6 backdrop-blur-md transition-all animate-fade-in"
+      style={{ background: "rgba(3, 7, 18, 0.85)" }}
     >
       <div
-        className="rounded-3xl shadow-2xl w-full max-w-5xl flex flex-col max-h-[94vh] overflow-hidden border border-white/10"
+        className="rounded-3xl shadow-2xl w-full max-w-5xl xl:max-w-6xl flex flex-col max-h-[95vh] overflow-hidden border border-white/10"
         style={{
           background: "linear-gradient(145deg, rgba(15, 23, 42, 0.98) 0%, rgba(3, 7, 18, 0.99) 100%)",
         }}
@@ -472,10 +472,10 @@ function ProductModal({
         </div>
 
         {/* Modal Form Body — 2 Column Split Grid */}
-        <form id="product-form" onSubmit={submit} className="flex-1 overflow-y-auto p-6 sm:p-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Left Column: Form Fields (7 cols) */}
-            <div className="lg:col-span-7 space-y-6">
+        <form id="product-form" onSubmit={submit} className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-7">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 xl:gap-7">
+            {/* Left Column: Form Fields (7 cols on lg, 8 on xl) */}
+            <div className="lg:col-span-7 xl:col-span-8 space-y-5">
               {/* Basic Info Group */}
               <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-4">
                 <div className="flex items-center justify-between pb-2 border-b border-white/5">
@@ -844,8 +844,8 @@ function ProductModal({
               </div>
             </div>
 
-            {/* Right Column: Live Storefront Card Preview & Image Thumbnails (5 cols) */}
-            <div className="lg:col-span-5 flex flex-col gap-6">
+            {/* Right Column: Live Storefront Card Preview & Image Thumbnails */}
+            <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-5">
               {/* Live Preview Header Card */}
               <div className="p-5 rounded-2xl bg-gradient-to-b from-white/[0.03] to-white/[0.01] border border-white/8 space-y-4">
                 <div className="flex items-center justify-between">
@@ -1598,7 +1598,7 @@ function ProductsContent() {
 
       {deleteId && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm  p-4"
+          className="fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-sm p-4"
           style={{ background: "rgba(0,0,0,0.7)" }}
         >
           <div

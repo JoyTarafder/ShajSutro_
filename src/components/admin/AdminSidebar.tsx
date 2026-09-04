@@ -177,13 +177,13 @@ export default function AdminSidebar() {
       {/* Mobile Drawer Backdrop */}
       {isMobileSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 md:hidden transition-opacity"
+          className="fixed inset-0 bg-black/80 backdrop-blur-md z-40 md:hidden transition-opacity"
           onClick={closeMobileSidebar}
         />
       )}
 
       <aside
-        className={`fixed md:static top-0 bottom-0 left-0 z-50 w-72 md:w-64 h-screen flex flex-col flex-shrink-0 border-r border-slate-800/80 shadow-2xl transition-transform duration-300 ease-in-out ${
+        className={`fixed md:static top-0 bottom-0 left-0 z-40 md:z-20 w-72 md:w-64 h-screen flex flex-col flex-shrink-0 border-r border-slate-800/80 shadow-2xl transition-transform duration-300 ease-in-out ${
           isMobileSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
         style={{ background: "#09090b" }}
