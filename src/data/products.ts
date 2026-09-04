@@ -1,499 +1,716 @@
-import { Product } from "@/types";
+import { Category, Product } from "@/types";
 
 export const products: Product[] = [
   {
-    id: "1",
-    name: "Classic Linen Shirt",
-    price: 89,
-    originalPrice: 120,
-    category: "men",
-    images: [
-      "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=600&q=80",
-      "https://images.unsplash.com/photo-1594938298603-c8148f4851c1?w=600&q=80",
+    "id": "6a8ed1dec4d54471f79d5203",
+    "name": "Relaxed Fit Printed One-Piece Ethnic Kurta",
+    "price": 2650,
+    "category": "womens-kurti",
+    "images": [
+      "https://www.yellowclothing.net/cdn/shop/files/DSC3239_f8c1c2ad-7187-4b94-963f-a4dbe1024778.jpg?v=1784610644",
+      "https://www.yellowclothing.net/cdn/shop/files/DSC3275.jpg?v=1784610643",
+      "https://www.yellowclothing.net/cdn/shop/files/DSC3263_4fcf7026-a415-4fbc-8eef-705153192a0e.jpg?v=1784610643"
     ],
-    sizes: ["XS", "S", "M", "L", "XL"],
-    colors: ["White", "Beige", "Light Blue"],
-    badge: "Sale",
-    description:
-      "A timeless linen shirt crafted from 100% premium linen. Breathable, lightweight, and perfect for warm days. Features a relaxed fit with a subtle texture that only gets better with wear.",
-    rating: 4.5,
-    reviews: 128,
-    inStock: true,
-    stock: 14,
-    totalOrdered: 312,
-    tags: ["shirt", "linen", "casual"],
+    "sizes": [
+      "M",
+      "L",
+      "XL"
+    ],
+    "colors": [],
+    "badge": "New",
+    "description": "A relaxed fit, long length single-piece kurta. Its straight silhouette makes it easy to wear & suitable for everyday use, office wear, or casual outings.\n\n100% cotton fabric\nRound neck with beads\nDigital printed fabric\n3/4 sleeves, detailed with white beads.",
+    "rating": 0,
+    "reviews": 0,
+    "inStock": true,
+    "stock": 5,
+    "totalOrdered": 0,
+    "tags": [
+      "womens",
+      "cotton",
+      "traditional",
+      "kurti"
+    ],
+    "sku": "OY-U3HG-TFQU-1456"
   },
   {
-    id: "2",
-    name: "Tailored Wool Blazer",
-    price: 245,
-    category: "men",
-    images: [
-      "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&q=80",
-      "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=600&q=80",
+    "id": "6a8daaa0f2e2d4c6624775e8",
+    "name": "Premium Cuban Shirt - Maroon",
+    "price": 1350,
+    "category": "mens",
+    "images": [
+      "https://www.fabrilife.com/products/66c498a2de72d-square.jpg?v=20"
     ],
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["Charcoal", "Navy", "Camel"],
-    badge: "New",
-    description:
-      "A sharp, well-structured wool blazer that transitions effortlessly from office to evening. Made from a premium wool blend with a slim, modern silhouette.",
-    rating: 4.8,
-    reviews: 64,
-    inStock: true,
-    stock: 22,
-    totalOrdered: 145,
-    tags: ["blazer", "formal", "wool"],
+    "sizes": [
+      "M",
+      "L",
+      "XL"
+    ],
+    "colors": [],
+    "badge": "New",
+    "description": "Made of premium graded performance fabric. Stitched with intensive care. Slim-fit shirt in woven fabric with an easy-iron finish.\n\n1. Y Fit/Slim fit collar shirt\n2. Turn-down collar, classic button placket.\n3. Gently rounded hem",
+    "rating": 0,
+    "reviews": 0,
+    "inStock": true,
+    "stock": 7,
+    "totalOrdered": 3,
+    "tags": [],
+    "sku": "OY-58UP-MBV4-9813"
   },
   {
-    id: "3",
-    name: "Slim Chino Trousers",
-    price: 98,
-    category: "men",
-    images: [
-      "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=600&q=80",
-      "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&q=80",
+    "id": "6a1321d4ea3007923baedd9d",
+    "name": "BOYS CLASSIC PANJABI",
+    "price": 1890,
+    "originalPrice": 2200,
+    "category": "kids",
+    "images": [
+      "https://objectstorage.ap-singapore-1.oraclecloud.com/n/aximxvolvk6d/b/sailorbucket/o/uploads/all/I34FxaoYYvUQmZmdd8iIVq2QIrZVJpx7Y1RlGraU.jpg"
     ],
-    sizes: ["28", "30", "32", "34", "36"],
-    colors: ["Khaki", "Olive", "Navy", "Stone"],
-    description:
-      "Versatile slim-fit chinos with a clean, modern cut. Made from a comfortable cotton blend with a touch of stretch for ease of movement.",
-    rating: 4.3,
-    reviews: 210,
-    inStock: true,
-    stock: 8,
-    totalOrdered: 487,
-    tags: ["trousers", "chino", "casual"],
+    "sizes": [
+      "6-8 Yrs"
+    ],
+    "colors": [
+      "Black",
+      "Red",
+      "Navy Blue"
+    ],
+    "badge": "Sale",
+    "description": "Comfortable organic cotton frock embellished with beautiful hand-embroidered floral motifs around the collar.",
+    "rating": 4.6,
+    "reviews": 15,
+    "inStock": true,
+    "stock": 20,
+    "totalOrdered": 0,
+    "tags": [
+      "kids",
+      "frock",
+      "girls",
+      "cotton"
+    ],
+    "sku": "OY-25AA-LWUW-5064"
   },
   {
-    id: "4",
-    name: "Merino Crew Sweater",
-    price: 135,
-    originalPrice: 165,
-    category: "men",
-    images: [
-      "https://images.unsplash.com/photo-1614975059251-992f11792b9f?w=600&q=80",
-      "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&q=80",
+    "id": "6a1321d4ea3007923baedd9b",
+    "name": "Fusion Panjabi Black",
+    "price": 5599,
+    "originalPrice": 6000,
+    "category": "kids",
+    "images": [
+      "https://objectstorage.ap-singapore-1.oraclecloud.com/n/aximxvolvk6d/b/sailorbucket/o/uploads/all/DIydtKhVOnz3Ka2clezs22VwM4yGRQISrIawZFFP.jpg",
+      "https://objectstorage.ap-singapore-1.oraclecloud.com/n/aximxvolvk6d/b/sailorbucket/o/uploads/all/yzq2BrB362589bhsfPxD5u4NV5YG9U51vpgiUP4G.jpg",
+      "https://objectstorage.ap-singapore-1.oraclecloud.com/n/aximxvolvk6d/b/sailorbucket/o/uploads/all/HZru1njQwRAQqFbQ9jSOPDcUrL8TUItsmP9KkRtS.jpg"
     ],
-    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
-    colors: ["Oatmeal", "Charcoal", "Forest Green"],
-    badge: "Sale",
-    description:
-      "Luxuriously soft merino wool crew neck sweater. Lightweight yet warm, with a fine knit and a classic fit. An essential layer for the cooler months.",
-    rating: 4.7,
-    reviews: 89,
-    inStock: true,
-    stock: 5,
-    totalOrdered: 203,
-    tags: ["sweater", "merino", "knitwear"],
+    "sizes": [
+      "8-10 Yrs"
+    ],
+    "colors": [
+      "Black"
+    ],
+    "description": "Miniature royal velvet sherwani with handcrafted gold buttons and dhoti trousers for special family celebrations.",
+    "rating": 5,
+    "reviews": 5,
+    "inStock": true,
+    "stock": 6,
+    "totalOrdered": 0,
+    "tags": [
+      "kids",
+      "traditional",
+      "festive",
+      "panjabi"
+    ],
+    "sku": "OY-M4YT-RS4C-2568"
   },
   {
-    id: "5",
-    name: "Floral Wrap Dress",
-    price: 118,
-    category: "women",
-    images: [
-      "https://images.unsplash.com/photo-1572804013427-4d7ca7268217?w=600&q=80",
-      "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=600&q=80",
+    "id": "6a1321d4ea3007923baedd99",
+    "name": "WOVEN READY SAREE",
+    "price": 2990,
+    "originalPrice": 3500,
+    "category": "kids-girls",
+    "images": [
+      "https://objectstorage.ap-singapore-1.oraclecloud.com/n/aximxvolvk6d/b/sailorbucket/o/uploads/all/74YlkjiyS8fs2FN1iAcXbkr6xo7iD4Ca0xbakHsz.jpg"
     ],
-    sizes: ["XS", "S", "M", "L"],
-    colors: ["Floral Blue", "Floral Rose"],
-    badge: "New",
-    description:
-      "A feminine wrap dress in a beautiful floral print. Crafted from flowing viscose that drapes elegantly. Features a V-neckline, adjustable tie waist, and midi length.",
-    rating: 4.6,
-    reviews: 156,
-    inStock: true,
-    stock: 18,
-    totalOrdered: 356,
-    tags: ["dress", "floral", "wrap"],
+    "sizes": [
+      "6-8 Yrs",
+      "8-10 Yrs"
+    ],
+    "colors": [
+      "Sky Blue",
+      "Pastel Orange",
+      "Lemon Yellow"
+    ],
+    "description": "A graceful saree style for girls, perfect for festive occasions and traditional celebrations.",
+    "rating": 4.7,
+    "reviews": 8,
+    "inStock": true,
+    "stock": 30,
+    "totalOrdered": 0,
+    "tags": [
+      "kids",
+      "linen",
+      "kurta",
+      "casual",
+      "girls",
+      "festive",
+      "saree"
+    ],
+    "sku": "OY-845S-884P-3273"
   },
   {
-    id: "6",
-    name: "High-Rise Straight Jeans",
-    price: 128,
-    category: "women",
-    images: [
-      "https://images.unsplash.com/photo-1582418702059-97ebafb35d09?w=600&q=80",
-      "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=600&q=80",
+    "id": "6a1321d4ea3007923baedd97",
+    "name": "Fusion Panjabi",
+    "price": 3890,
+    "originalPrice": 4500,
+    "category": "kids-boys",
+    "images": [
+      "https://objectstorage.ap-singapore-1.oraclecloud.com/n/aximxvolvk6d/b/sailorbucket/o/uploads/all/MuoOsDzAseTJdzLYxJBE902LMdfDd001JH8HSZfK.jpg",
+      "https://objectstorage.ap-singapore-1.oraclecloud.com/n/aximxvolvk6d/b/sailorbucket/o/uploads/all/vKNHUsTC7w3X8DwRAoSyV8kRx3WZUBFTPFObgarv.jpg"
     ],
-    sizes: ["24", "25", "26", "27", "28", "29", "30"],
-    colors: ["Light Wash", "Dark Wash", "Black"],
-    badge: "Best Seller",
-    description:
-      "Our best-selling high-rise straight leg jeans. A flattering silhouette that sits at the natural waist with a straight, cropped leg. Made from premium selvedge denim.",
-    rating: 4.9,
-    reviews: 342,
-    inStock: true,
-    stock: 3,
-    totalOrdered: 891,
-    tags: ["jeans", "denim", "high-rise"],
+    "sizes": [
+      "4-6 Yrs",
+      "6-8 Yrs",
+      "8-10 Yrs"
+    ],
+    "colors": [
+      "Baby Pink",
+      "Sunny Yellow",
+      "Minty Green"
+    ],
+    "badge": "New",
+    "description": "A Panjabi for boys, designed for festive occasions with comfortable traditional styling.",
+    "rating": 4.8,
+    "reviews": 12,
+    "inStock": true,
+    "stock": 8,
+    "totalOrdered": 2,
+    "tags": [
+      "kids",
+      "lehenga",
+      "girls",
+      "traditional"
+    ],
+    "sku": "OY-9KC4-ACGM-2812"
   },
   {
-    id: "7",
-    name: "Cashmere Turtleneck",
-    price: 195,
-    category: "women",
-    images: [
-      "https://images.unsplash.com/photo-1578932750294-f5075e85f44a?w=600&q=80",
-      "https://images.unsplash.com/photo-1571945153237-4929e783af4a?w=600&q=80",
+    "id": "6a1321d4ea3007923baedd95",
+    "name": "Fusion Panjabi",
+    "price": 3200,
+    "originalPrice": 3800,
+    "category": "kids-boys",
+    "images": [
+      "https://objectstorage.ap-singapore-1.oraclecloud.com/n/aximxvolvk6d/b/sailorbucket/o/uploads/all/4ssziwdfAN39f9lCjoGX5qmYEgtnqaxc2Eil9weX.jpg",
+      "https://objectstorage.ap-singapore-1.oraclecloud.com/n/aximxvolvk6d/b/sailorbucket/o/uploads/all/0g6UP2DTMdwKWK3eTFaPXXfpht8XCnktJNJTyNAP.jpg"
     ],
-    sizes: ["XS", "S", "M", "L"],
-    colors: ["Ivory", "Camel", "Black", "Dusty Rose"],
-    description:
-      "Pure cashmere turtleneck in a relaxed, cozy fit. Irresistibly soft and warm, with ribbed cuffs and hem. A true wardrobe investment piece.",
-    rating: 4.8,
-    reviews: 78,
-    inStock: true,
-    stock: 25,
-    totalOrdered: 178,
-    tags: ["sweater", "cashmere", "turtleneck"],
+    "sizes": [
+      "6-8 Yrs"
+    ],
+    "colors": [
+      "Green"
+    ],
+    "badge": "Best Seller",
+    "description": "A Panjabi for boys, designed for festive occasions with comfortable traditional styling.",
+    "rating": 4.9,
+    "reviews": 19,
+    "inStock": true,
+    "stock": 25,
+    "totalOrdered": 0,
+    "tags": [
+      "kids",
+      "kurta set",
+      "boys",
+      "festive",
+      "cotton"
+    ],
+    "sku": "OY-B254-8WGC-8350"
   },
   {
-    id: "8",
-    name: "Silk Slip Skirt",
-    price: 145,
-    originalPrice: 185,
-    category: "women",
-    images: [
-      "https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=600&q=80",
-      "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=600&q=80",
+    "id": "6a1321d4ea3007923baedd93",
+    "name": "Embroidered Ethnic Kurti",
+    "price": 2900,
+    "originalPrice": 3500,
+    "category": "womens",
+    "images": [
+      "https://www.yellowclothing.net/cdn/shop/files/DSC2432_7861927d-370d-49e7-876d-f2dd48624e8c.jpg?v=1783185416",
+      "https://www.yellowclothing.net/cdn/shop/files/DSC2383_941f2146-0fad-43df-9de1-545082564a56.jpg?v=1783185377"
     ],
-    sizes: ["XS", "S", "M", "L"],
-    colors: ["Champagne", "Midnight Blue", "Blush"],
-    badge: "Sale",
-    description:
-      "Luxurious slip skirt in smooth silk charmeuse. The fluid fabric skims the body beautifully with a bias cut and adjustable waist. Easily dressed up or down.",
-    rating: 4.5,
-    reviews: 112,
-    inStock: true,
-    stock: 7,
-    totalOrdered: 267,
-    tags: ["skirt", "silk", "elegant"],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "colors": [],
+    "badge": "Sale",
+    "description": "A smart fit, short length single-piece kurti. Its straight silhouette makes it easy to wear &amp; suitable for everyday use, office wear, or casual outings.",
+    "rating": 4.6,
+    "reviews": 14,
+    "inStock": true,
+    "stock": 18,
+    "totalOrdered": 0,
+    "tags": [
+      "kurta",
+      "linen",
+      "casual",
+      "womens"
+    ],
+    "sku": "OY-H7Q7-YSMM-6002"
   },
   {
-    id: "9",
-    name: "Leather Derby Shoes",
-    price: 285,
-    category: "shoes",
-    images: [
-      "https://images.unsplash.com/photo-1614252369475-531eba835eb1?w=600&q=80",
-      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
+    "id": "6a1321d4ea3007923baedd91",
+    "name": "Royal Banarasi Silk Sherwani",
+    "price": 18500,
+    "originalPrice": 22000,
+    "category": "mens",
+    "images": [
+      "https://images.cbazaar.com/images/cream-benarasi-silk-embroidered-angrakha-sherwani-shmsc1103-u.jpg"
     ],
-    sizes: ["40", "41", "42", "43", "44", "45"],
-    colors: ["Tan", "Black", "Burgundy"],
-    badge: "New",
-    description:
-      "Handcrafted leather derby shoes with a classic open lacing system. Full-grain calfskin upper, leather-lined interior, and a durable rubber sole. A versatile footwear staple.",
-    rating: 4.7,
-    reviews: 58,
-    inStock: true,
-    stock: 30,
-    totalOrdered: 134,
-    tags: ["shoes", "leather", "formal"],
+    "sizes": [
+      "40",
+      "42",
+      "44"
+    ],
+    "colors": [
+      "Imperial Black & Gold",
+      "Noble Ivory & Copper"
+    ],
+    "badge": "New",
+    "description": "Exquisite wedding wear Sherwani in royal black Banarasi silk, embroidered with intricate copper-gold threads and matching churidar.",
+    "rating": 5,
+    "reviews": 8,
+    "inStock": true,
+    "stock": 4,
+    "totalOrdered": 0,
+    "tags": [
+      "sherwani",
+      "banarasi",
+      "wedding",
+      "mens"
+    ],
+    "sku": "OY-BEHJ-VWS2-4969"
   },
   {
-    id: "10",
-    name: "White Canvas Sneakers",
-    price: 120,
-    category: "shoes",
-    images: [
-      "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=600&q=80",
-      "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=600&q=80",
+    "id": "6a1321d4ea3007923baedd8f",
+    "name": "Regular Fit Embroidered Semi-Formal Panjabi",
+    "price": 3200,
+    "originalPrice": 4000,
+    "category": "mens-panjabi",
+    "images": [
+      "https://www.yellowclothing.net/cdn/shop/files/DSC0444_e85cb471-33c6-4031-8894-9335a63583b2.jpg?v=1782716101",
+      "https://www.yellowclothing.net/cdn/shop/files/DSC0615.jpg?v=1782903444"
     ],
-    sizes: ["36", "37", "38", "39", "40", "41", "42", "43"],
-    colors: ["White", "Off-White", "Light Gray"],
-    badge: "Best Seller",
-    description:
-      "Minimalist canvas sneakers with a clean, low-profile silhouette. Features a vulcanized rubber sole, cushioned insole, and durable cotton canvas upper. The perfect everyday shoe.",
-    rating: 4.6,
-    reviews: 298,
-    inStock: true,
-    stock: 12,
-    totalOrdered: 743,
-    tags: ["sneakers", "casual", "canvas"],
+    "sizes": [
+      "38",
+      "40",
+      "42",
+      "44"
+    ],
+    "colors": [],
+    "badge": "Sale",
+    "description": "A regular fit panjabi crafted from premium breathable dobby fabric with classical embroidery on placket offers a stylish yet comfortable semi formal look. This design combines comfort and subtle elegance and stylish appearance.",
+    "rating": 4.7,
+    "reviews": 21,
+    "inStock": true,
+    "stock": 21,
+    "totalOrdered": 1,
+    "tags": [
+      "linen",
+      "casual",
+      "mens",
+      "summer",
+      "panjabi"
+    ],
+    "sku": "OY-M59E-MCM8-3374"
   },
   {
-    id: "11",
-    name: "Chelsea Ankle Boots",
-    price: 225,
-    originalPrice: 275,
-    category: "shoes",
-    images: [
-      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=600&q=80",
-      "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=600&q=80",
+    "id": "6a1321d3ea3007923baedd8d",
+    "name": "Regular Fit Embroidered Formal Ethnic Kurta Set",
+    "price": 5949.91,
+    "originalPrice": 3800,
+    "category": "mens-panjabi",
+    "images": [
+      "https://www.yellowclothing.net/cdn/shop/files/DSC06781_b586a60e-2c03-4717-8b33-c9555e5b0c03.jpg?v=1779819695"
     ],
-    sizes: ["36", "37", "38", "39", "40", "41"],
-    colors: ["Black", "Tan", "Dark Brown"],
-    badge: "Sale",
-    description:
-      "Classic Chelsea boots in smooth leather with elastic side gussets. A pull tab at the back for easy on/off. Stacked block heel and a pointed-toe silhouette for a modern edge.",
-    rating: 4.8,
-    reviews: 145,
-    inStock: true,
-    stock: 6,
-    totalOrdered: 389,
-    tags: ["boots", "leather", "ankle"],
+    "sizes": [
+      "38",
+      "40",
+      "42",
+      "44",
+      "46"
+    ],
+    "colors": [],
+    "badge": "New",
+    "description": "Tailored from imported high-thread-count Egyptian cotton. Extremely soft texture, styled with minimalist metallic buttons.",
+    "rating": 4.8,
+    "reviews": 17,
+    "inStock": true,
+    "stock": 42,
+    "totalOrdered": 3,
+    "tags": [
+      "panjabi",
+      "egyptian cotton",
+      "minimalist",
+      "mens",
+      "Kurta"
+    ],
+    "sku": "OY-Z9BT-R4SL-4628"
   },
   {
-    id: "12",
-    name: "Suede Loafers",
-    price: 198,
-    category: "shoes",
-    images: [
-      "https://images.unsplash.com/photo-1536329583941-14287ec6fc4e?w=600&q=80",
-      "https://images.unsplash.com/photo-1533867617858-e7b97e060509?w=600&q=80",
+    "id": "6a1321d3ea3007923baedd8b",
+    "name": "Imperial Embroidered Silk Panjabi",
+    "price": 5200,
+    "originalPrice": 6500,
+    "category": "mens-panjabi",
+    "images": [
+      "https://www.yellowclothing.net/cdn/shop/files/DSC00057_e0ba04cb-32ff-41ea-89c3-824940828c51.jpg?v=1784003802"
     ],
-    sizes: ["38", "39", "40", "41", "42", "43"],
-    colors: ["Taupe", "Navy", "Forest Green"],
-    description:
-      "Sophisticated suede penny loafers with a soft, supple upper and a cushioned footbed. The classic slip-on silhouette is perennially chic and effortlessly polished.",
-    rating: 4.4,
-    reviews: 82,
-    inStock: true,
-    stock: 20,
-    totalOrdered: 198,
-    tags: ["loafers", "suede", "casual"],
+    "sizes": [
+      "38",
+      "40",
+      "42",
+      "44"
+    ],
+    "colors": [
+      "Pearl White",
+      "Royal Navy",
+      "Imperial Emerald"
+    ],
+    "badge": "Best Seller",
+    "description": "Premium pure Adi silk Panjabi showcasing delicate hand-guided neck embroidery and branded metal buttons.",
+    "rating": 4.9,
+    "reviews": 42,
+    "inStock": true,
+    "stock": 29,
+    "totalOrdered": 1,
+    "tags": [
+      "panjabi",
+      "silk",
+      "embroidery",
+      "mens"
+    ],
+    "sku": "OY-H6KJ-NZDJ-7665"
   },
   {
-    id: "13",
-    name: "Leather Belt",
-    price: 65,
-    category: "accessories",
-    images: [
-      "https://images.unsplash.com/photo-1624623278313-a930126a11c3?w=600&q=80",
-      "https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=600&q=80",
+    "id": "6a1321d3ea3007923baedd89",
+    "name": "Premium Satin Silk Anarkali",
+    "price": 1800,
+    "originalPrice": 2200,
+    "category": "womens",
+    "images": [
+      "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?q=80&w=800"
     ],
-    sizes: ["S/M", "M/L", "L/XL"],
-    colors: ["Black", "Tan", "Brown"],
-    description:
-      "Full-grain leather belt with a brushed silver pin buckle. Clean, minimal design that works with both formal and casual outfits. The leather softens and develops a beautiful patina over time.",
-    rating: 4.5,
-    reviews: 174,
-    inStock: true,
-    stock: 45,
-    totalOrdered: 412,
-    tags: ["belt", "leather", "accessories"],
+    "sizes": [
+      "One Size"
+    ],
+    "colors": [
+      "Champagne Gold",
+      "Blush Pink",
+      "Soft Taupe",
+      "Pearl Ivory"
+    ],
+    "badge": "Best Seller",
+    "description": "Extremely luxurious and smooth satin silk hijab with a delicate matte backing to keep it perfectly styled all day.",
+    "rating": 4.9,
+    "reviews": 45,
+    "inStock": true,
+    "stock": 39,
+    "totalOrdered": 1,
+    "tags": [
+      "hijab",
+      "satin",
+      "silk",
+      "womens"
+    ],
+    "sku": "OY-DVMD-JJ2V-4013"
   },
   {
-    id: "14",
-    name: "Wool Scarf",
-    price: 78,
-    originalPrice: 95,
-    category: "accessories",
-    images: [
-      "https://images.unsplash.com/photo-1520903920243-00d872a2d1c9?w=600&q=80",
-      "https://images.unsplash.com/photo-1578587018452-892bacefd3f2?w=600&q=80",
+    "id": "6a1321d3ea3007923baedd87",
+    "name": "Royal Princess Golden White Woven Kanjivaram Saree",
+    "price": 4900,
+    "originalPrice": 4900,
+    "category": "womens",
+    "images": [
+      "https://zaribanaras.com/cdn/shop/products/4_2.jpg?v=1756359497"
     ],
-    sizes: ["One Size"],
-    colors: ["Camel", "Grey", "Burgundy", "Forest Green"],
-    badge: "Sale",
-    description:
-      "Oversized wool scarf in a classic herringbone pattern. Extra-long and wide for maximum warmth and versatility. Fringed ends add a relaxed, artisanal touch.",
-    rating: 4.7,
-    reviews: 93,
-    inStock: true,
-    stock: 11,
-    totalOrdered: 234,
-    tags: ["scarf", "wool", "winter"],
+    "sizes": [],
+    "colors": [],
+    "badge": "New",
+    "description": "Sophisticated silk-blend evening tunic, featuring neat neck pleats and hand-stitched real river pearls along the cuffs.",
+    "rating": 4.8,
+    "reviews": 11,
+    "inStock": true,
+    "stock": 7,
+    "totalOrdered": 2,
+    "tags": [
+      "tunic",
+      "evening wear",
+      "pearls",
+      "womens",
+      "saree"
+    ],
+    "sku": "OY-PHXV-QMNR-3639"
   },
   {
-    id: "15",
-    name: "Canvas Tote Bag",
-    price: 58,
-    category: "accessories",
-    images: [
-      "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&q=80",
-      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80",
+    "id": "6a1321d3ea3007923baedd85",
+    "name": "Bohemian Chiffon Resort Kaftan",
+    "price": 5800,
+    "originalPrice": 7200,
+    "category": "womens-saree",
+    "images": [
+      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800"
     ],
-    sizes: ["One Size"],
-    colors: ["Natural", "Black", "Olive"],
-    badge: "New",
-    description:
-      "Heavy-duty cotton canvas tote with reinforced stitching and long shoulder straps. A generous main compartment and an interior zip pocket. The ultimate everyday carry-all.",
-    rating: 4.3,
-    reviews: 221,
-    inStock: true,
-    stock: 32,
-    totalOrdered: 531,
-    tags: ["bag", "tote", "canvas"],
+    "sizes": [
+      "Free Size (M-XXL)"
+    ],
+    "colors": [
+      "Azure Sky",
+      "Sunset Coral",
+      "Jade Garden"
+    ],
+    "badge": "New",
+    "description": "Flowing georgette-chiffon kaftan featuring exclusive hand-drawn floral block prints and metallic golden fringe outlines.",
+    "rating": 4.9,
+    "reviews": 14,
+    "inStock": true,
+    "stock": 12,
+    "totalOrdered": 0,
+    "tags": [
+      "kaftan",
+      "resort",
+      "womens",
+      "chiffon"
+    ],
+    "sku": "OY-XPDU-UFL2-6228"
   },
   {
-    id: "16",
-    name: "Minimalist Watch",
-    price: 320,
-    category: "accessories",
-    images: [
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80",
-      "https://images.unsplash.com/photo-1548171915-e79a380a2a4b?w=600&q=80",
+    "id": "6a1321d3ea3007923baedd83",
+    "name": "Classic Crimson Chiffon Saree",
+    "price": 7800,
+    "originalPrice": 9500,
+    "category": "womens-saree",
+    "images": [
+      "https://zaribanaras.com/cdn/shop/files/8643B0C6-A330-43EE-8E3E-C44EF2FD3418.png?v=1777286500"
     ],
-    sizes: ["One Size"],
-    colors: ["Silver/White", "Gold/Beige", "Black/Black"],
-    badge: "Best Seller",
-    description:
-      "A clean, minimalist watch with a slim stainless steel case and a genuine leather strap. Japanese quartz movement, sapphire crystal glass, and water resistance to 5ATM.",
-    rating: 4.9,
-    reviews: 189,
-    inStock: true,
-    stock: 9,
-    totalOrdered: 478,
-    tags: ["watch", "minimalist", "accessories"],
+    "sizes": [
+      "Regular (5.5m)"
+    ],
+    "colors": [
+      "Crimson Red",
+      "Jet Black",
+      "Hot Pink"
+    ],
+    "badge": "Sale",
+    "description": "Pure Italian georgette-chiffon saree, featuring delicate hand-stitched borders and a complimentary matching silk blouse piece.",
+    "rating": 4.6,
+    "reviews": 19,
+    "inStock": true,
+    "stock": 14,
+    "totalOrdered": 0,
+    "tags": [
+      "saree",
+      "chiffon",
+      "georgette",
+      "womens"
+    ],
+    "sku": "OY-9PT2-HKJZ-9177"
   },
   {
-    id: "17",
-    name: "Oversized Linen Blazer",
-    price: 168,
-    category: "women",
-    images: [
-      "https://images.unsplash.com/photo-1594938298603-c8148f4851c1?w=600&q=80",
-      "https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=600&q=80",
+    "id": "6a1321d3ea3007923baedd81",
+    "name": "Gilded Katan Silk Saree",
+    "price": 15500,
+    "originalPrice": 18000,
+    "category": "womens-saree",
+    "images": [
+      "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=800"
     ],
-    sizes: ["XS", "S", "M", "L"],
-    colors: ["Ecru", "Black", "Dusty Pink"],
-    badge: "New",
-    description:
-      "A relaxed oversized blazer in breathable linen. Unstructured and lightweight with notched lapels, patch pockets, and a single button closure. The perfect throw-on layer.",
-    rating: 4.6,
-    reviews: 67,
-    inStock: true,
-    stock: 19,
-    totalOrdered: 152,
-    tags: ["blazer", "linen", "oversized"],
+    "sizes": [
+      "Regular (5.5m)"
+    ],
+    "colors": [
+      "Magenta Gold",
+      "Scarlet Zari",
+      "Emerald Teal"
+    ],
+    "badge": "New",
+    "description": "Royal Katan silk saree woven in Mirpur. Complete with heavy golden zari works and solid border blocks.",
+    "rating": 4.8,
+    "reviews": 11,
+    "inStock": true,
+    "stock": 7,
+    "totalOrdered": 0,
+    "tags": [
+      "saree",
+      "katan",
+      "silk",
+      "womens"
+    ],
+    "sku": "OY-BJEV-2S93-4161"
   },
   {
-    id: "18",
-    name: "Essential White Tee",
-    price: 45,
-    category: "men",
-    images: [
-      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80",
-      "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?w=600&q=80",
+    "id": "6a1321d3ea3007923baedd7f",
+    "name": "Minimalist Ivory Linen Suite",
+    "price": 4500,
+    "originalPrice": 4500,
+    "category": "womens",
+    "images": [
+      "https://images.unsplash.com/photo-1605763240000-7e93b172d754?q=80&w=800"
     ],
-    sizes: ["XS", "S", "M", "L", "XL", "XXL"],
-    colors: ["White", "Off-White", "Light Gray", "Black"],
-    badge: "Best Seller",
-    description:
-      "The perfect white t-shirt. Made from 180gsm Pima cotton for a weighty, premium feel. A classic crew neck with a slightly longer body for a flattering fit. Machine washable.",
-    rating: 4.8,
-    reviews: 512,
-    inStock: true,
-    stock: 2,
-    totalOrdered: 1248,
-    tags: ["t-shirt", "essential", "cotton"],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "colors": [
+      "Classic Ivory",
+      "Earth Sage",
+      "Desert Oat"
+    ],
+    "description": "Breathable pure organic linen three-piece suite with fine lace borders. Clean, simple luxury for daytime elegance.",
+    "rating": 4,
+    "reviews": 1,
+    "inStock": true,
+    "stock": 19,
+    "totalOrdered": 1,
+    "tags": [
+      "linen",
+      "minimalist",
+      "ivory",
+      "womens"
+    ],
+    "sku": "OY-SEY6-DMC9-3578"
   },
   {
-    id: "19",
-    name: "Pleated Midi Skirt",
-    price: 112,
-    originalPrice: 140,
-    category: "women",
-    images: [
-      "https://images.unsplash.com/photo-1594938298603-c8148f4851c1?w=600&q=80",
-      "https://images.unsplash.com/photo-1551803091-e20673f15770?w=600&q=80",
+    "id": "6a1321d3ea3007923baedd7d",
+    "name": "Exclusive Pure Muslin Jamdani",
+    "price": 24000,
+    "originalPrice": 28000,
+    "category": "womens-saree",
+    "images": [
+      "https://zaribanaras.com/cdn/shop/products/BF-183E.jpg?v=1756359508"
     ],
-    sizes: ["XS", "S", "M", "L"],
-    colors: ["Blush", "Sage", "Cream", "Black"],
-    badge: "Sale",
-    description:
-      "A graceful pleated midi skirt in a flowing crepe fabric. The accordion pleats create beautiful movement with every step. Elasticated waistband for a comfortable, easy fit.",
-    rating: 4.5,
-    reviews: 103,
-    inStock: true,
-    stock: 13,
-    totalOrdered: 276,
-    tags: ["skirt", "midi", "pleated"],
+    "sizes": [
+      "Regular (5.5m)"
+    ],
+    "colors": [
+      "Midnight Black & Gold",
+      "Classic White & Red"
+    ],
+    "badge": "Best Seller",
+    "description": "Authentic hand-loom Dhakai Jamdani saree, crafted in 100% fine cotton muslin thread count for a lightweight, floating wear.",
+    "rating": 5,
+    "reviews": 31,
+    "inStock": true,
+    "stock": 2,
+    "totalOrdered": 1,
+    "tags": [
+      "saree",
+      "jamdani",
+      "muslin",
+      "womens"
+    ],
+    "sku": "OY-GMRJ-952T-2587"
   },
   {
-    id: "20",
-    name: "Leather Card Holder",
-    price: 48,
-    category: "accessories",
-    images: [
-      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80",
-      "https://images.unsplash.com/photo-1612817288484-6f916006741a?w=600&q=80",
+    "id": "6a1321d3ea3007923baedd7b",
+    "name": "Woven Art Silk Saree in Peach",
+    "price": 9890,
+    "originalPrice": 11000,
+    "category": "womens-saree",
+    "images": [
+      "https://medias.utsavfashion.com/media/catalog/product/cache/1/image/1000x/040ec09b1e35df139433887a97daa66f/w/o/woven-art-silk-saree-in-peach-v1-sej3089.jpg",
+      "https://medias.utsavfashion.com/media/catalog/product/cache/1/image/1000x/040ec09b1e35df139433887a97daa66f/w/o/woven-art-silk-saree-in-peach-v1-sej3089_2.jpg",
+      "https://medias.utsavfashion.com/media/catalog/product/cache/1/image/1000x/040ec09b1e35df139433887a97daa66f/w/o/woven-art-silk-saree-in-peach-v1-sej3089_1.jpg"
     ],
-    sizes: ["One Size"],
-    colors: ["Black", "Tan", "Brown"],
-    description:
-      "Slim and minimal leather card holder with four card slots and a central cash pocket. Full-grain leather that develops a rich patina over time. A refined everyday essential.",
-    rating: 4.6,
-    reviews: 248,
-    inStock: true,
-    stock: 38,
-    totalOrdered: 593,
-    tags: ["wallet", "leather", "accessories"],
+    "sizes": [],
+    "colors": [],
+    "badge": "New",
+    "description": "Art Silk Saree in Peach\nThis Drape is Elegantly Woven with Zari in Floral Motifs\nAvailable with an Unstitched Art Silk Blouse in Peach\nDo note: 1.)Accessories shown in image is for presentation purpose only. 2.)Slight variation in actual color vs. image is possible. 3.)Irregularities in weaving and contrast color is natural due to hand-done dying process.",
+    "rating": 4.8,
+    "reviews": 16,
+    "inStock": true,
+    "stock": 10,
+    "totalOrdered": 0,
+    "tags": [
+      "anarkali",
+      "gown",
+      "pearls",
+      "womens",
+      "saree",
+      "wedding"
+    ],
+    "sku": "OY-R2GY-UBL6-2078"
   },
   {
-    id: "21",
-    name: "Relaxed Linen Trousers",
-    price: 108,
-    category: "women",
-    images: [
-      "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80",
-      "https://images.unsplash.com/photo-1594938298603-c8148f4851c1?w=600&q=80",
+    "id": "6a1321d3ea3007923baedd79",
+    "name": "Varanasi Silk Salwar Suite",
+    "price": 6800,
+    "originalPrice": 8500,
+    "category": "womens",
+    "images": [
+      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800"
     ],
-    sizes: ["XS", "S", "M", "L"],
-    colors: ["Sand", "White", "Sage"],
-    badge: "New",
-    description:
-      "Wide-leg linen trousers with a high-rise waistband and elasticated back. The relaxed silhouette is effortlessly chic and keeps cool in warm weather.",
-    rating: 4.4,
-    reviews: 76,
-    inStock: true,
-    stock: 24,
-    totalOrdered: 167,
-    tags: ["trousers", "linen", "relaxed"],
-  },
-  {
-    id: "22",
-    name: "Oxford Button-Down",
-    price: 95,
-    category: "men",
-    images: [
-      "https://images.unsplash.com/photo-1588359348347-9bc6cbbb689e?w=600&q=80",
-      "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=600&q=80",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    colors: ["White", "Blue", "Pink", "Lavender"],
-    description:
-      "A classic Oxford cloth button-down shirt with a semi-spread collar. Soft, durable fabric that looks polished but feels casual. A true wardrobe cornerstone.",
-    rating: 4.7,
-    reviews: 167,
-    inStock: true,
-    stock: 16,
-    totalOrdered: 398,
-    tags: ["shirt", "oxford", "classic"],
-  },
+    "colors": [
+      "Crimson Gold",
+      "Royal Emerald",
+      "Midnight Violet"
+    ],
+    "badge": "Best Seller",
+    "description": "Handcrafted pure Banarasi silk three-piece suite, woven with gold zari embroidery and a premium organza dupatta.",
+    "rating": 4.9,
+    "reviews": 24,
+    "inStock": true,
+    "stock": 15,
+    "totalOrdered": 0,
+    "tags": [
+      "silk",
+      "salwar kameez",
+      "embroidered",
+      "womens"
+    ],
+    "sku": "OY-VWSY-5BR5-7770"
+  }
 ];
 
-export const categories = [
+export const categories: Category[] = [
   {
-    id: "men",
-    name: "Men",
-    slug: "men",
-    image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&q=80",
-    count: products.filter((p) => p.category === "men").length,
+    "id": "womens",
+    "name": "Womens",
+    "slug": "womens",
+    "image": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600&q=80",
+    "count": 11
   },
   {
-    id: "women",
-    name: "Women",
-    slug: "women",
-    image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&q=80",
-    count: products.filter((p) => p.category === "women").length,
+    "id": "mens",
+    "name": "Mens",
+    "slug": "mens",
+    "image": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&q=80",
+    "count": 16
   },
   {
-    id: "shoes",
-    name: "Shoes",
-    slug: "shoes",
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
-    count: products.filter((p) => p.category === "shoes").length,
+    "id": "saree",
+    "name": "Saree",
+    "slug": "womens-saree",
+    "image": "https://medias.utsavfashion.com/media/catalog/product/cache/1/image/1000x/040ec09b1e35df139433887a97daa66f/e/m/embellished-georgette-scalloped-saree-in-white-v1-sej3132.jpg",
+    "count": 7
   },
   {
-    id: "accessories",
-    name: "Accessories",
-    slug: "accessories",
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80",
-    count: products.filter((p) => p.category === "accessories").length,
+    "id": "panjabi",
+    "name": "Panjabi",
+    "slug": "mens-panjabi",
+    "image": "https://www.yellowclothing.net/cdn/shop/files/DSC00057_e0ba04cb-32ff-41ea-89c3-824940828c51.jpg?v=1784003802",
+    "count": 4
   },
+  {
+    "id": "kids",
+    "name": "Kids",
+    "slug": "kids",
+    "image": "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=600&q=80",
+    "count": 5
+  }
 ];
 
 export const getProductById = (id: string): Product | undefined =>

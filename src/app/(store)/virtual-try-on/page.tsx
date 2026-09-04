@@ -54,64 +54,32 @@ interface TryOnHistoryItem {
   timestamp: number;
 }
 
-// Initial fallback garment list while fetching from database
-const INITIAL_GARMENTS: GarmentOption[] = [
-  {
-    id: "garment-1",
-    name: "Pure Muslin Jamdani Saree",
-    category: "Saree",
-    price: 24000,
-    originalPrice: 28000,
-    imageUrl: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800",
-    fabric: "100% Fine Dhakai Muslin",
-    colors: ["Midnight Black & Gold", "Classic White & Red"],
-    sizes: ["Regular (5.5m)"],
-  },
-  {
-    id: "garment-2",
-    name: "Varanasi Silk Salwar Suite",
-    category: "Womens",
-    price: 6800,
-    originalPrice: 8500,
-    imageUrl: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800",
-    fabric: "Pure Banarasi Silk & Organza",
-    colors: ["Crimson Gold", "Royal Emerald"],
-    sizes: ["S", "M", "L", "XL"],
-  },
-  {
-    id: "garment-3",
-    name: "Elixir Georgette Anarkali Gown",
-    category: "Womens",
-    price: 9200,
-    originalPrice: 11000,
-    imageUrl: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=800",
-    fabric: "French Georgette with Pearls",
-    colors: ["Pastel Lavender", "Peach Rose"],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: "garment-4",
-    name: "Imperial Raw Silk Panjabi",
-    category: "Panjabi",
-    price: 5400,
-    originalPrice: 6500,
-    imageUrl: "https://images.unsplash.com/photo-1597983073493-88cd35cf93b0?q=80&w=800",
-    fabric: "Pure Tussar Raw Silk",
-    colors: ["Royal Ivory", "Antique Gold"],
-    sizes: ["38", "40", "42", "44"],
-  },
-  {
-    id: "garment-5",
-    name: "Handloom Traditional Katan Saree",
-    category: "Saree",
-    price: 16500,
-    originalPrice: 19500,
-    imageUrl: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800",
-    fabric: "Pure Mulberry Katan Silk",
-    colors: ["Ruby Red", "Peacock Blue"],
-    sizes: ["Regular (5.5m)"],
-  },
-];
+// Helper to clean category name for Virtual Try-On filter tabs
+function formatGarmentCategory(rawCat?: string): string {
+  if (!rawCat) return "Womens";
+  const lower = rawCat.toLowerCase();
+  if (lower.includes("saree")) return "Saree";
+  if (lower.includes("panjabi")) return "Panjabi";
+  if (lower.includes("kurti")) return "Kurti";
+  if (lower.includes("kid") || lower.includes("boy") || lower.includes("girl")) return "Kids";
+  if (lower.includes("men")) return "Mens";
+  if (lower.includes("women")) return "Womens";
+  return rawCat.replace(/^./, (c) => c.toUpperCase());
+}
+
+// Initial garment list using real ShajSutro products
+const INITIAL_GARMENTS: GarmentOption[] = fallbackProducts.map((p) => ({
+  id: p.id,
+  name: p.name,
+  category: formatGarmentCategory(p.category),
+  price: p.price,
+  originalPrice: p.originalPrice,
+  imageUrl: p.images?.[0] || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800",
+  fabric: p.description ? p.description.slice(0, 45).replace(/\n/g, " ") + "..." : "Authentic ShajSutro Collection",
+  colors: p.colors?.length ? p.colors : ["Original"],
+  sizes: p.sizes?.length ? p.sizes : ["Regular"],
+}));
+
 
 // Helper to compress image in browser for fast upload & AI processing
 function compressImage(file: File): Promise<string> {
@@ -188,8 +156,11 @@ export default function VirtualTryOnPage() {
   // ─── Fetch All Products from the Website Database ───────────────────────────
   useEffect(() => {
     setIsLoadingProducts(true);
-    fetch(`${getApiBase()}/api/products?limit=100`)
-      .then((res) => res.json())
+    fetch("/api/products?limit=100")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
       .then((data) => {
         if (data.success && Array.isArray(data.data) && data.data.length > 0) {
           const prods: GarmentOption[] = data.data
@@ -209,8 +180,7 @@ export default function VirtualTryOnPage() {
               const catRaw = typeof p.category === "object" && p.category
                 ? p.category.name || p.category.slug
                 : p.category;
-              const catClean = (catRaw && typeof catRaw === "string" ? catRaw : "Couture")
-                .replace(/^./, (c) => c.toUpperCase());
+              const catClean = formatGarmentCategory(catRaw);
 
               return {
                 id: p._id || p.id || `prod-${Math.random()}`,
@@ -219,7 +189,7 @@ export default function VirtualTryOnPage() {
                 originalPrice: p.originalPrice,
                 category: catClean,
                 imageUrl: p.images[0],
-                fabric: p.description ? p.description.slice(0, 40) + "..." : "Authentic ShajSutro Collection",
+                fabric: p.description ? p.description.slice(0, 45).replace(/\n/g, " ") + "..." : "Authentic ShajSutro Collection",
                 colors: p.colors?.length ? p.colors : ["Original"],
                 sizes: p.sizes?.length ? p.sizes : ["Regular"],
               };
@@ -229,24 +199,10 @@ export default function VirtualTryOnPage() {
             setGarments(prods);
             setSelectedGarment(prods[0]);
           }
-        } else if (fallbackProducts.length > 0) {
-          const prods: GarmentOption[] = fallbackProducts.map((p) => ({
-            id: p.id,
-            name: p.name,
-            price: p.price,
-            originalPrice: p.originalPrice,
-            category: (p.category || "General").replace(/^./, (c) => c.toUpperCase()),
-            imageUrl: p.images?.[0] || "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800",
-            fabric: p.description?.slice(0, 40) || "Fine Bangladeshi Handloom",
-            colors: p.colors || ["Original"],
-            sizes: p.sizes || ["Regular"],
-          }));
-          setGarments(prods);
-          setSelectedGarment(prods[0]);
         }
       })
       .catch((err) => {
-        console.warn("Failed to fetch products from backend, using fallback:", err);
+        console.warn("API product fetch notice (using real pre-loaded catalog):", err);
       })
       .finally(() => setIsLoadingProducts(false));
   }, []);
