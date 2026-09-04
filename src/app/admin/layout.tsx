@@ -12,8 +12,11 @@ export default function AdminLayout({
   return (
     <AdminAuthProvider>
       <div
-        className="flex h-screen w-screen overflow-hidden relative"
-        style={{ background: "linear-gradient(135deg, #0a0a0f 0%, #0d0d1a 40%, #0a0f1a 70%, #060810 100%)" }}
+        className="flex h-screen w-screen overflow-hidden relative dark"
+        style={{
+          background: "linear-gradient(135deg, #0a0a0f 0%, #0d0d1a 40%, #0a0f1a 70%, #060810 100%)",
+          colorScheme: "dark",
+        }}
       >
         {/* Ambient background orbs */}
         <div

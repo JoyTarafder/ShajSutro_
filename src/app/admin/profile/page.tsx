@@ -3,20 +3,98 @@
 import AdminAuthGuard from "@/components/admin/AdminAuthGuard";
 import { useAdminAuth } from "@/context/AdminAuthContext";
 import React, { useEffect, useState } from "react";
-import { Trash2, Check, Upload, RefreshCw, Loader2 } from "lucide-react";
+import {
+  Trash2,
+  Check,
+  Upload,
+  RefreshCw,
+  Loader2,
+  LayoutGrid,
+  ShoppingBag,
+  ClipboardList,
+  Users,
+  FolderTree,
+  Ticket,
+  Bell,
+  Briefcase,
+  MessageSquare,
+} from "lucide-react";
 
 type Tab = "profile" | "preferences" | "security" | "team";
 
 const PERM_MODULES = [
-  { key: "dashboard", label: "Dashboard", desc: "Analytics & store stats", icon: "📊" },
-  { key: "products", label: "Products", desc: "Catalog & stock control", icon: "🏷️" },
-  { key: "orders", label: "Orders", desc: "Order fulfillment & statuses", icon: "🛍️" },
-  { key: "users", label: "Users", desc: "Customer account management", icon: "👤" },
-  { key: "categories", label: "Categories", desc: "Category structure & tags", icon: "📁" },
-  { key: "promoCodes", label: "Promo Codes", desc: "Checkout discount codes", icon: "🎟️" },
-  { key: "notifications", label: "Notifications", desc: "Store popups & alerts", icon: "🔔" },
-  { key: "jobs", label: "Jobs & Careers", desc: "Postings & candidate CVs", icon: "💼" },
-  { key: "messages", label: "Messages", desc: "Customer contact inquiries", icon: "💬" },
+  {
+    key: "dashboard",
+    label: "Dashboard",
+    desc: "Analytics & store stats",
+    icon: LayoutGrid,
+    color: "text-indigo-400",
+    bg: "bg-indigo-500/15 border-indigo-500/20",
+  },
+  {
+    key: "products",
+    label: "Products",
+    desc: "Catalog & stock control",
+    icon: ShoppingBag,
+    color: "text-emerald-400",
+    bg: "bg-emerald-500/15 border-emerald-500/20",
+  },
+  {
+    key: "orders",
+    label: "Orders",
+    desc: "Order fulfillment & statuses",
+    icon: ClipboardList,
+    color: "text-amber-400",
+    bg: "bg-amber-500/15 border-amber-500/20",
+  },
+  {
+    key: "users",
+    label: "Users",
+    desc: "Customer account management",
+    icon: Users,
+    color: "text-cyan-400",
+    bg: "bg-cyan-500/15 border-cyan-500/20",
+  },
+  {
+    key: "categories",
+    label: "Categories",
+    desc: "Category structure & tags",
+    icon: FolderTree,
+    color: "text-yellow-400",
+    bg: "bg-yellow-500/15 border-yellow-500/20",
+  },
+  {
+    key: "promoCodes",
+    label: "Promo Codes",
+    desc: "Checkout discount codes",
+    icon: Ticket,
+    color: "text-rose-400",
+    bg: "bg-rose-500/15 border-rose-500/20",
+  },
+  {
+    key: "notifications",
+    label: "Notifications",
+    desc: "Store popups & alerts",
+    icon: Bell,
+    color: "text-amber-400",
+    bg: "bg-amber-500/15 border-amber-500/20",
+  },
+  {
+    key: "jobs",
+    label: "Jobs & Careers",
+    desc: "Postings & candidate CVs",
+    icon: Briefcase,
+    color: "text-teal-400",
+    bg: "bg-teal-500/15 border-teal-500/20",
+  },
+  {
+    key: "messages",
+    label: "Messages",
+    desc: "Customer contact inquiries",
+    icon: MessageSquare,
+    color: "text-purple-400",
+    bg: "bg-purple-500/15 border-purple-500/20",
+  },
 ] as const;
 
 interface AdminTeamMember {
@@ -374,27 +452,6 @@ export default function AdminProfilePage() {
                   </span>
                 </div>
                 <p className="text-sm mt-1.5" style={{ color: "rgba(148,163,184,0.6)" }}>{admin.email}</p>
-                <div className="flex items-center justify-center sm:justify-start gap-4 mt-3 text-xs font-semibold" style={{ color: "rgba(148,163,184,0.5)" }}>
-                  <div className="flex items-center gap-1.5 text-emerald-400">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    Verified Account
-                  </div>
-                  <div className="w-px h-3" style={{ background: "rgba(255,255,255,0.1)" }} />
-                  <div>Security Tier: Level 3</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Metrics */}
-            <div className="flex gap-4 pt-6 md:pt-0 w-full md:w-auto justify-around" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-              <div className="text-center px-4">
-                <p className="text-2xl font-black text-slate-100">100%</p>
-                <p className="text-[10px] font-bold uppercase tracking-wide mt-0.5" style={{ color: "rgba(148,163,184,0.5)" }}>Uptime</p>
-              </div>
-              <div className="w-px h-8 self-center" style={{ background: "rgba(255,255,255,0.08)" }} />
-              <div className="text-center px-4">
-                <p className="text-2xl font-black text-emerald-400">Active</p>
-                <p className="text-[10px] font-bold uppercase tracking-wide mt-0.5" style={{ color: "rgba(148,163,184,0.5)" }}>Status</p>
               </div>
             </div>
           </div>
@@ -469,8 +526,9 @@ export default function AdminProfilePage() {
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           placeholder="e.g. Administrator"
-                          className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-violet-500/60"
-                          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
+                          autoComplete="name"
+                          className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-violet-500/60 admin-dark-input"
+                          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9", colorScheme: "dark" }}
                         />
                       </div>
 
@@ -483,8 +541,9 @@ export default function AdminProfilePage() {
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="e.g. admin@shajsutro.com"
-                          className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-violet-500/60"
-                          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
+                          autoComplete="off"
+                          className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-violet-500/60 admin-dark-input"
+                          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9", colorScheme: "dark" }}
                         />
                       </div>
                     </div>
@@ -836,8 +895,9 @@ export default function AdminProfilePage() {
                         value={currentPassword}
                         onChange={(e) => setCurrentPassword(e.target.value)}
                         placeholder="••••••••"
-                        className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-violet-500/60"
-                        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
+                        autoComplete="current-password"
+                        className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-violet-500/60 admin-dark-input"
+                        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9", colorScheme: "dark" }}
                       />
                     </div>
 
@@ -851,8 +911,9 @@ export default function AdminProfilePage() {
                           value={newPassword}
                           onChange={(e) => setNewPassword(e.target.value)}
                           placeholder="••••••••"
-                          className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-violet-500/60"
-                          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
+                          autoComplete="new-password"
+                          className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-violet-500/60 admin-dark-input"
+                          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9", colorScheme: "dark" }}
                         />
                       </div>
 
@@ -865,8 +926,9 @@ export default function AdminProfilePage() {
                           value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
                           placeholder="••••••••"
-                          className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-violet-500/60"
-                          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9" }}
+                          autoComplete="new-password"
+                          className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-violet-500/60 admin-dark-input"
+                          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f1f5f9", colorScheme: "dark" }}
                         />
                       </div>
                     </div>
@@ -974,14 +1036,17 @@ export default function AdminProfilePage() {
                     <Loader2 className="w-8 h-8 animate-spin text-violet-400 mx-auto mb-3" />
                     <p className="text-xs font-bold text-slate-400">Loading team members &amp; permissions...</p>
                   </div>
-                ) : teamMembers.length === 0 ? (
+                ) : teamMembers.filter((m) => m.adminRole === "sub_admin" || (m.adminRole && m.adminRole !== "root_admin")).length === 0 ? (
                   <div className="py-12 text-center rounded-2xl border border-dashed border-white/8" style={{ background: "rgba(255,255,255,0.01)" }}>
-                    <p className="text-sm font-bold text-slate-300">No admin team members found</p>
+                    <p className="text-sm font-bold text-slate-300">No sub-admin team members found</p>
+                    <p className="text-xs text-slate-500 mt-1">Sub-admins can be managed and added from the Users management section.</p>
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    {teamMembers.map((member) => {
-                      const isMemberRoot = (!member.adminRole || member.adminRole === "root_admin");
+                    {teamMembers
+                      .filter((member) => member.adminRole === "sub_admin" || (member.adminRole && member.adminRole !== "root_admin"))
+                      .map((member) => {
+                      const isMemberRoot = false;
                       const memberPerms = member.permissions || {
                         dashboard: true,
                         products: true,
@@ -1073,6 +1138,7 @@ export default function AdminProfilePage() {
                               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                                 {PERM_MODULES.map((mod) => {
                                   const isAllowed = memberPerms[mod.key] !== false;
+                                  const IconComponent = mod.icon;
                                   return (
                                     <div
                                       key={mod.key}
@@ -1086,14 +1152,16 @@ export default function AdminProfilePage() {
                                         type="checkbox"
                                         checked={isAllowed}
                                         onChange={() => {}}
-                                        className="mt-0.5 w-4 h-4 text-violet-500 rounded focus:ring-violet-500 cursor-pointer"
+                                        className="mt-1 w-4 h-4 text-violet-500 rounded focus:ring-violet-500 cursor-pointer"
                                       />
-                                      <div>
-                                        <div className="flex items-center gap-1.5">
-                                          <span className="text-base">{mod.icon}</span>
-                                          <p className="text-xs font-bold text-slate-100">{mod.label}</p>
+                                      <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2">
+                                          <div className={`w-6 h-6 rounded-lg border flex items-center justify-center shrink-0 ${mod.bg} ${mod.color}`}>
+                                            <IconComponent className="w-3.5 h-3.5" />
+                                          </div>
+                                          <p className="text-xs font-bold text-slate-100 truncate">{mod.label}</p>
                                         </div>
-                                        <p className="text-[10px] font-medium mt-0.5 leading-snug" style={{ color: "rgba(148,163,184,0.5)" }}>
+                                        <p className="text-[10px] font-medium mt-1 leading-snug" style={{ color: "rgba(148,163,184,0.5)" }}>
                                           {mod.desc}
                                         </p>
                                       </div>
