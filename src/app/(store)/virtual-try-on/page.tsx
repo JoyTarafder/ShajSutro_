@@ -538,11 +538,11 @@ export default function VirtualTryOnPage() {
 
       {/* ─── Main Content ─── */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           {/* ══════════════════════════════════════════════════════════════
               LEFT: PREVIEW STAGE (col-span-6)
               ══════════════════════════════════════════════════════════════ */}
-          <div className="lg:col-span-6 space-y-4">
+          <div className="lg:col-span-6 flex flex-col gap-4 h-full min-h-full">
             <div className="relative bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-sm">
               {/* Top View Toggle Tabs */}
               <div className="flex items-center justify-between px-4 py-3 bg-slate-50/80 border-b border-slate-200">
@@ -772,7 +772,7 @@ export default function VirtualTryOnPage() {
             </div>
 
             {/* Quick Actions (Add to Cart & Favorite) */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between gap-3 shadow-xs">
+            <div className="bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between gap-3 shadow-xs !mt-auto h-[76px]">
               <div>
                 <span className="text-xs text-slate-500 block">Selected Outfit:</span>
                 <span className="text-xl sm:text-2xl font-bold font-serif text-slate-900">
@@ -864,7 +864,7 @@ export default function VirtualTryOnPage() {
           {/* ══════════════════════════════════════════════════════════════
               RIGHT: 2-STEP SELECTION PANEL (col-span-6)
               ══════════════════════════════════════════════════════════════ */}
-          <div className="lg:col-span-6 space-y-6">
+          <div className="lg:col-span-6 flex flex-col gap-4 h-full min-h-full">
             {/* ─── STEP 1: UPLOAD YOUR PHOTO ─── */}
             <div className="bg-white rounded-3xl border border-slate-200/90 p-5 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
@@ -941,7 +941,7 @@ export default function VirtualTryOnPage() {
             </div>
 
             {/* ─── STEP 2: CHOOSE OUTFIT (ALL WEBSITE PRODUCTS) ─── */}
-            <div className="bg-white rounded-3xl border border-slate-200/90 p-5 shadow-sm space-y-3">
+            <div className="bg-white rounded-3xl border border-slate-200/90 p-5 shadow-sm space-y-3 flex-1 flex flex-col">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
                   <Shirt className="w-4 h-4 text-emerald-600" />
@@ -983,12 +983,18 @@ export default function VirtualTryOnPage() {
               </div>
 
               {/* Garments Grid with Website Products */}
-              <div className="grid grid-cols-3 gap-2.5 max-h-[360px] overflow-y-auto pr-1 scrollbar-thin">
+              <div className="grid grid-cols-3 gap-2.5 max-h-[420px] lg:max-h-[430px] flex-1 overflow-y-auto pr-1 scrollbar-thin">
                 {isLoadingProducts ? (
-                  <div className="col-span-3 py-12 flex flex-col items-center justify-center text-center">
-                    <Loader2 className="w-6 h-6 animate-spin text-emerald-600 mb-2" />
-                    <p className="text-xs text-slate-500">Loading website products...</p>
-                  </div>
+                  Array.from({ length: 9 }).map((_, idx) => (
+                    <div
+                      key={idx}
+                      className="rounded-xl border border-slate-200 p-2 bg-white animate-pulse"
+                    >
+                      <div className="aspect-[3/4] rounded-lg bg-slate-100 mb-1.5" />
+                      <div className="h-3 bg-slate-200 rounded w-4/5 mb-1.5" />
+                      <div className="h-2.5 bg-slate-200 rounded w-1/2" />
+                    </div>
+                  ))
                 ) : filteredGarments.length === 0 ? (
                   <div className="col-span-3 py-8 text-center text-xs text-slate-500">
                     No outfits found matching &ldquo;{searchQuery || activeCategory}&rdquo;.
@@ -1041,12 +1047,12 @@ export default function VirtualTryOnPage() {
             </div>
 
             {/* ─── PRIMARY TRIGGER: TRY ON ─── */}
-            <div className="bg-white rounded-3xl border border-slate-200/90 p-5 shadow-sm">
+            <div className="bg-white rounded-2xl border border-slate-200 p-4 flex items-center shadow-xs !mt-auto h-[76px]">
               <button
                 type="button"
                 disabled={isGenerating}
                 onClick={handleGenerateTryOn}
-                className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-sm sm:text-base uppercase tracking-wider transition-all shadow-md shadow-emerald-600/20 active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full h-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs sm:text-sm uppercase tracking-wider transition-all shadow-md shadow-emerald-600/20 active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {isGenerating ? (
                   <>
