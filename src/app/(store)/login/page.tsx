@@ -34,6 +34,7 @@ function LoginContent() {
   const [pendingEmail, setPendingEmail] = useState<string | null>(null);
 
   const isCheckoutRedirect = redirectUrl.includes("checkout");
+  const isTryOnRedirect = redirectUrl.includes("virtual-try-on");
 
   return (
     <div className="min-h-screen bg-[#faf8f5] relative overflow-x-clip flex items-center justify-center p-3 sm:p-6 lg:p-10 font-sans selection:bg-emerald-900 selection:text-white">
@@ -148,6 +149,21 @@ function LoginContent() {
                   <p className="text-xs font-bold text-emerald-950 tracking-tight">Checkout Access Required</p>
                   <p className="text-xs text-stone-600 mt-0.5">
                     Sign in or create an account to proceed with your saved cart.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Special Virtual Try-On Notice Ribbon */}
+            {isTryOnRedirect && (
+              <div className="mb-6 p-4 rounded-2xl bg-emerald-50/80 border border-emerald-200/80 flex items-center gap-3.5 text-stone-900 shadow-xs">
+                <span className="w-9 h-9 rounded-xl bg-emerald-950 text-amber-300 flex items-center justify-center flex-shrink-0 text-sm shadow-xs">
+                  ✨
+                </span>
+                <div>
+                  <p className="text-xs font-bold text-emerald-950 tracking-tight">AI Virtual Try-On Access</p>
+                  <p className="text-xs text-stone-600 mt-0.5">
+                    Please sign in or create an account to experience the AI Virtual Try-On studio.
                   </p>
                 </div>
               </div>

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Sparkles,
   UploadCloud,
@@ -116,8 +117,24 @@ function compressImage(file: File): Promise<string> {
 }
 
 export default function VirtualTryOnPage() {
+  const router = useRouter();
   const { addItem, openCart } = useCart();
   const { isFavorite, toggleFavorite } = useFavorites();
+
+  // Authentication Guard: Disallow unauthenticated visitors
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState<boolean>(true);
+
+  useEffect(() => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    if (!token) {
+      notifyInfo("Please log in to access AI Virtual Try-On.");
+      router.replace("/login?redirect=/virtual-try-on");
+    } else {
+      setIsAuthenticated(true);
+      setIsCheckingAuth(false);
+    }
+  }, [router]);
 
   // All Website Products state
   const [garments, setGarments] = useState<GarmentOption[]>(INITIAL_GARMENTS);
@@ -507,6 +524,24 @@ export default function VirtualTryOnPage() {
     // "result"
     return aiResultUrl || null;
   }, [activeView, aiResultUrl, uploadedPhotoBase64, selectedGarment, showOriginalComparison]);
+
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-[75vh] flex flex-col items-center justify-center gap-4 px-4">
+        <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center shadow-xs">
+          <Sparkles className="w-7 h-7 text-emerald-600 animate-spin" style={{ animationDuration: "3s" }} />
+        </div>
+        <div className="text-center space-y-1">
+          <p className="text-base font-semibold text-emerald-950 font-serif">Verifying Access</p>
+          <p className="text-xs text-charcoal-400">Please wait while we verify your login credentials...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-[#fafbfc] text-slate-900 selection:bg-amber-100 selection:text-amber-900 pb-28">
