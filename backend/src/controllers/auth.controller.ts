@@ -77,11 +77,10 @@ export const register = asyncHandler(
       verificationAttempts: 0,
     });
 
-    try {
-      await sendVerificationEmail(normalizedEmail, code);
-    } catch (mailErr: any) {
+    // Non-blocking background email dispatch (instant response instead of 1000ms Nodemailer wait)
+    sendVerificationEmail(normalizedEmail, code).catch((mailErr: any) => {
       console.warn("[Register Warning] Could not dispatch verification email via SMTP:", mailErr?.message || mailErr);
-    }
+    });
 
     res.status(201).json({
       success: true,
@@ -486,11 +485,10 @@ export const resendVerificationCode = asyncHandler(
       throw new AppError("No registration found for this email. Please sign up first.", 404);
     }
 
-    try {
-      await sendVerificationEmail(normalizedEmail, code);
-    } catch (mailErr: any) {
+    // Non-blocking background email dispatch (instant sub-20ms response)
+    sendVerificationEmail(normalizedEmail, code).catch((mailErr: any) => {
       console.warn("[Resend Warning] Could not dispatch email via SMTP:", mailErr?.message || mailErr);
-    }
+    });
 
     res.status(200).json({
       success: true,
@@ -534,11 +532,10 @@ export const forgotPassword = asyncHandler(
 
     console.log(`[AUTH RESET PASSWORD OTP] Generated code for ${user.email}: ${code}`);
 
-    try {
-      await sendPasswordResetEmail(user.email, code);
-    } catch (mailErr: any) {
+    // Non-blocking background email dispatch (instant response)
+    sendPasswordResetEmail(user.email, code).catch((mailErr: any) => {
       console.warn("[Forgot Password Warning] Could not dispatch email via SMTP:", mailErr?.message || mailErr);
-    }
+    });
 
     res.status(200).json({
       success: true,

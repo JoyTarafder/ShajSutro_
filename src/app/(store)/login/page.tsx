@@ -941,16 +941,18 @@ function FPStepOTP({
 
   const handleResend = async () => {
     setError("");
+    // 0ms Optimistic UI feedback: instant timer, digits reset & notification
+    setCooldown(60);
+    setDigits(Array(6).fill(""));
+    notifySuccess("A new reset code has been sent.");
+    inputRefs.current[0]?.focus();
+
     try {
       await fetch(`${getApiBase()}/api/auth/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-      setCooldown(60);
-      setDigits(Array(6).fill(""));
-      notifySuccess("A new reset code has been sent.");
-      inputRefs.current[0]?.focus();
     } catch {
       /* silent */
     }
@@ -1146,6 +1148,7 @@ function VerifyEmailForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isVerified, setIsVerified] = useState(false);
   const [cooldown, setCooldown] = useState(60);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -1156,6 +1159,7 @@ function VerifyEmailForm({
   }, [cooldown]);
 
   const handleChange = (index: number, value: string) => {
+    setError("");
     const digit = value.replace(/\D/g, "").slice(-1);
     const next = [...digits];
     next[index] = digit;
@@ -1200,6 +1204,7 @@ function VerifyEmailForm({
       const data = await res.json();
       if (!res.ok) throw new Error(data.message ?? "Verification failed");
       if (data.token) localStorage.setItem("token", data.token);
+      setIsVerified(true);
       setSuccess("Email verified! Redirecting…");
       notifySuccess("Email verified successfully!");
       setTimeout(() => {
@@ -1216,8 +1221,14 @@ function VerifyEmailForm({
   };
 
   const handleResend = useCallback(async () => {
+    // 0ms Instant Optimistic UI: starts timer, shows banner & resets code boxes immediately!
     setError("");
-    setSuccess("");
+    setSuccess("A new code has been sent to your email.");
+    notifySuccess("Verification code resent.");
+    setCooldown(60);
+    setDigits(Array(6).fill(""));
+    inputRefs.current[0]?.focus();
+
     try {
       const res = await fetch(`${getApiBase()}/api/auth/resend-verification`, {
         method: "POST",
@@ -1226,14 +1237,12 @@ function VerifyEmailForm({
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message ?? "Failed to resend");
-      setSuccess("A new code has been sent to your email.");
-      notifySuccess("Verification code resent.");
-      setCooldown(60);
-      setDigits(Array(6).fill(""));
-      inputRefs.current[0]?.focus();
     } catch (err: unknown) {
+      // Revert if network error occurs
       const message = err instanceof Error ? err.message : "Something went wrong";
       setError(message);
+      setSuccess("");
+      setCooldown(0);
       notifyError(message);
     }
   }, [email]);
@@ -1276,10 +1285,10 @@ function VerifyEmailForm({
 
       <button
         type="submit"
-        disabled={loading || !!success}
-        className="w-full min-h-[50px] py-3.5 bg-emerald-950 hover:bg-[#072418] text-white font-medium tracking-wide text-xs sm:text-sm rounded-2xl shadow-[0_10px_25px_rgba(6,30,20,0.15)] transition-all active:scale-[0.99] disabled:opacity-60"
+        disabled={loading || isVerified}
+        className="w-full min-h-[50px] py-3.5 bg-emerald-950 hover:bg-[#072418] text-white font-medium tracking-wide text-xs sm:text-sm rounded-2xl shadow-[0_10px_25px_rgba(6,30,20,0.15)] transition-all active:scale-[0.99] disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed"
       >
-        {loading ? <Spinner /> : "Verify & Sign In"}
+        {loading ? <Spinner /> : isVerified ? "Verified! Redirecting..." : "Verify & Sign In"}
       </button>
 
       <div className="flex items-center justify-between text-xs pt-1">
