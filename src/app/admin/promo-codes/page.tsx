@@ -4,7 +4,7 @@ import AdminAuthGuard from "@/components/admin/AdminAuthGuard";
 import { useAdminAuth } from "@/context/AdminAuthContext";
 import { getApiBase } from "@/lib/apiBase";
 import { useCallback, useEffect, useState } from "react";
-import { Plus, Search, Ticket, Tag, Check } from "lucide-react";
+import { Plus, Search, Ticket, Tag, Check, PartyPopper, ShoppingCart, User } from "lucide-react";
 
 const API = getApiBase();
 
@@ -106,29 +106,6 @@ function PromoCodesContent() {
     setShowForm(true);
   };
 
-  const openQuickWelcome10 = () => {
-    const existing = codes.find((c) => c.code === "WELCOME10");
-    if (existing) {
-      openEdit(existing);
-    } else {
-      setEditTarget(null);
-      setForm({
-        code: "WELCOME10",
-        type: "percentage",
-        value: "10",
-        minOrderAmount: "0",
-        maxDiscountAmount: "",
-        maxUses: "",
-        usageLimitPerUser: "1",
-        isFirstOrderOnly: true,
-        isActive: true,
-        expiresAt: "",
-        description: "Welcome offer: 10% OFF on first order for registered users (1 use per customer)",
-      });
-      setMsg(null);
-      setShowForm(true);
-    }
-  };
 
   const openEdit = (c: PromoCode) => {
     setEditTarget(c);
@@ -270,16 +247,6 @@ function PromoCodesContent() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
-          {/* Quick WELCOME10 Preset Button */}
-          <button
-            type="button"
-            onClick={openQuickWelcome10}
-            className="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 flex-shrink-0"
-            title="Create or configure the 1st Order WELCOME10 promo code"
-          >
-            <span>🎉</span>
-            <span>Configure WELCOME10</span>
-          </button>
 
           {/* Standard Create Button */}
           <button
@@ -320,7 +287,9 @@ function PromoCodesContent() {
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 sm:p-5 backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-amber-400">1st Order Only</span>
-            <span className="p-2 rounded-xl bg-amber-950/40 border border-amber-500/20 text-amber-400 text-xs font-bold">🎉</span>
+            <span className="p-2 rounded-xl bg-amber-950/40 border border-amber-500/20 text-amber-400">
+              <PartyPopper className="w-4 h-4" />
+            </span>
           </div>
           <p className="text-2xl font-bold text-amber-400 mt-2">{firstOrderCount}</p>
           <p className="text-xs text-slate-400 mt-1">First-time buyers only</p>
@@ -329,7 +298,9 @@ function PromoCodesContent() {
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 sm:p-5 backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-violet-400">Total Redeemed</span>
-            <span className="p-2 rounded-xl bg-violet-950/40 border border-violet-500/20 text-violet-400 text-xs font-bold">🛒</span>
+            <span className="p-2 rounded-xl bg-violet-950/40 border border-violet-500/20 text-violet-400">
+              <ShoppingCart className="w-4 h-4" />
+            </span>
           </div>
           <p className="text-2xl font-bold text-violet-400 mt-2">{totalRedeemed}</p>
           <p className="text-xs text-slate-400 mt-1">Total orders discounted</p>
@@ -388,7 +359,7 @@ function PromoCodesContent() {
             <p className="text-xs text-slate-400 max-w-sm">
               {search
                 ? `No promo codes matched "${search}". Try clearing your search query.`
-                : 'Click "Configure WELCOME10" or "Create Promo Code" to get started.'}
+                : 'Click "Create Promo Code" to get started.'}
             </p>
           </div>
         ) : (
@@ -423,14 +394,14 @@ function PromoCodesContent() {
                           </span>
 
                           {c.isFirstOrderOnly && (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 border border-amber-500/30 text-amber-400">
-                              <span>🎉</span> 1st Order Only
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 border border-amber-500/30 text-amber-400">
+                              <PartyPopper className="w-3.5 h-3.5" /> 1st Order Only
                             </span>
                           )}
 
                           {c.usageLimitPerUser && c.usageLimitPerUser > 0 && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-violet-500/10 border border-violet-500/30 text-violet-400">
-                              <span>👤</span> {c.usageLimitPerUser}x / User
+                            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-bold bg-violet-500/10 border border-violet-500/30 text-violet-400">
+                              <User className="w-3 h-3" /> {c.usageLimitPerUser}x / User
                             </span>
                           )}
                         </div>
@@ -641,8 +612,9 @@ function PromoCodesContent() {
                   />
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
+                      <PartyPopper className="w-4 h-4 text-amber-400 shrink-0" />
                       <span className="text-xs font-bold text-slate-100">
-                        🎉 First Order Only (1st Purchase per Registered Customer)
+                        First Order Only (1st Purchase per Registered Customer)
                       </span>
                       {form.isFirstOrderOnly && (
                         <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-bold text-xs uppercase tracking-wider">
