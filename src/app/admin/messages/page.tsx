@@ -252,8 +252,7 @@ function MessagesContent() {
         <div
           className="fixed inset-0 z-[100] p-4 flex items-center justify-center"
           style={{
-            background: "rgba(0,0,0,0.75)",
-            backdropFilter: "blur(8px)",
+            background: "rgba(0, 0, 0, 0.6)",
           }}
         >
           <div

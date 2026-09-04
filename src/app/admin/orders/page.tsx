@@ -345,7 +345,7 @@ function OrderDetailsModal({
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-      style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
+      style={{ background: "rgba(0, 0, 0, 0.6)" }}
     >
       <div
         className="rounded-3xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[90vh]"

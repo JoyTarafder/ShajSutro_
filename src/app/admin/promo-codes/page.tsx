@@ -4,7 +4,7 @@ import AdminAuthGuard from "@/components/admin/AdminAuthGuard";
 import { useAdminAuth } from "@/context/AdminAuthContext";
 import { getApiBase } from "@/lib/apiBase";
 import { useCallback, useEffect, useState } from "react";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Ticket, Tag, Check } from "lucide-react";
 
 const API = getApiBase();
 
@@ -298,7 +298,9 @@ function PromoCodesContent() {
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 sm:p-5 backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-400">Total Codes</span>
-            <span className="p-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">🏷️</span>
+            <span className="p-2 rounded-xl bg-slate-800 text-slate-300">
+              <Tag className="w-4 h-4" />
+            </span>
           </div>
           <p className="text-2xl font-bold text-slate-100 mt-2">{codes.length}</p>
           <p className="text-xs text-slate-400 mt-1">Configured coupons</p>
@@ -307,7 +309,9 @@ function PromoCodesContent() {
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 sm:p-5 backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-emerald-400">Active &amp; Live</span>
-            <span className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-500/20 text-emerald-400 text-xs font-bold">✓</span>
+            <span className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-500/20 text-emerald-400">
+              <Check className="w-4 h-4" />
+            </span>
           </div>
           <p className="text-2xl font-bold text-emerald-400 mt-2">{activeCount}</p>
           <p className="text-xs text-slate-400 mt-1">Ready for checkout</p>
@@ -377,8 +381,8 @@ function PromoCodesContent() {
           </div>
         ) : filteredCodes.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3 text-center px-4">
-            <div className="w-12 h-12 rounded-2xl bg-slate-800 text-slate-400 flex items-center justify-center text-2xl">
-              🎟️
+            <div className="w-12 h-12 rounded-2xl bg-slate-800 text-slate-400 flex items-center justify-center">
+              <Ticket className="w-6 h-6 text-violet-400" />
             </div>
             <p className="text-slate-200 font-bold text-sm">No promo codes found</p>
             <p className="text-xs text-slate-400 max-w-sm">
@@ -579,15 +583,15 @@ function PromoCodesContent() {
         <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
           <div
             onClick={() => setShowForm(false)}
-            className="fixed inset-0 bg-slate-950/80 backdrop-blur-md transition-opacity duration-300"
+            className="fixed inset-0 bg-black/60 transition-opacity duration-300"
           />
 
           <div className="rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden my-6 relative z-10 animate-in zoom-in-95 duration-200 border border-slate-800 bg-slate-950">
             {/* Modal Header */}
             <div className="px-6 py-5 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
               <div className="flex items-center gap-2.5">
-                <span className="p-2 rounded-xl bg-violet-500/20 border border-violet-500/30 text-violet-400 text-base">
-                  🎟️
+                <span className="p-2 rounded-xl bg-violet-500/20 border border-violet-500/30 text-violet-400 flex items-center justify-center">
+                  <Ticket className="w-5 h-5" />
                 </span>
                 <div>
                   <h3 className="text-base font-bold text-slate-100">
@@ -856,7 +860,7 @@ function PromoCodesContent() {
         <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
           <div
             onClick={() => setViewingUsageCode(null)}
-            className="fixed inset-0 bg-slate-950/80 backdrop-blur-md transition-opacity duration-300"
+            className="fixed inset-0 bg-black/60 transition-opacity duration-300"
           />
 
           <div className="rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden my-6 relative z-10 border border-slate-800 bg-slate-950">

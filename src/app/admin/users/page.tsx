@@ -98,7 +98,7 @@ function CreateUserModal({
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-      style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
+      style={{ background: "rgba(0, 0, 0, 0.6)" }}
     >
       <div
         className="w-full max-w-md rounded-3xl overflow-hidden shadow-2xl"
@@ -290,7 +290,7 @@ function DeleteModal({
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-      style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
+      style={{ background: "rgba(0, 0, 0, 0.6)" }}
     >
       <div
         className="rounded-3xl w-full max-w-sm p-8"
@@ -479,7 +479,7 @@ function UserDetailsModal({
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-      style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(10px)" }}
+      style={{ background: "rgba(0, 0, 0, 0.6)" }}
     >
       <div
         className="rounded-3xl shadow-2xl w-full max-w-3xl flex flex-col max-h-[92vh] overflow-hidden"

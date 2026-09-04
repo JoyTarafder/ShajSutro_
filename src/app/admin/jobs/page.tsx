@@ -135,7 +135,7 @@ function JobModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(8px)" }}>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" style={{ background: "rgba(0, 0, 0, 0.6)" }}>
       <div className="rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col" style={{ background: "rgba(15,15,25,0.98)", border: "1px solid rgba(255,255,255,0.08)" }}>
         {/* Header */}
         <div className="flex items-center justify-between px-7 py-5 shrink-0" style={{ background: "rgba(124,58,237,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
@@ -590,7 +590,7 @@ function JobsContent() {
 
       {/* Delete Confirm */}
       {deleteTarget && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(8px)" }}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" style={{ background: "rgba(0, 0, 0, 0.6)" }}>
           <div className="rounded-3xl shadow-2xl w-full max-w-sm p-8" style={{ background: "rgba(15,15,25,0.98)", border: "1px solid rgba(255,255,255,0.08)" }}>
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style={{ background: "rgba(248,113,113,0.12)", border: "1px solid rgba(248,113,113,0.2)" }}>
               <Trash2 className="w-7 h-7 text-red-400" strokeWidth={1.8} />

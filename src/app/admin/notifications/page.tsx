@@ -505,7 +505,7 @@ function NotificationsContent() {
 
       {/* Enhanced Form Modal with Live Storefront Preview */}
       {modalOpen && (
-        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto" style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(8px)" }}>
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto" style={{ background: "rgba(0, 0, 0, 0.6)" }}>
           <div className="rounded-3xl shadow-2xl w-full max-w-5xl overflow-hidden my-6 relative z-10 animate-in zoom-in-95 duration-200" style={{ background: "rgba(15,15,25,0.98)", border: "1px solid rgba(255,255,255,0.08)" }}>
             {/* Modal Header */}
             <div className="px-6 py-5 flex items-center justify-between" style={{ background: "rgba(124,58,237,0.08)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>

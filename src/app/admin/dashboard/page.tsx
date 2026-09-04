@@ -15,6 +15,9 @@ import {
   Users,
   TrendingUp,
   PieChart,
+  Zap,
+  Flame,
+  CheckCircle2,
 } from "lucide-react";
 
 const RevenueChart = dynamic(() => import("@/components/admin/RevenueChart"), {
@@ -291,7 +294,9 @@ function DashboardContent() {
           {/* Weekly Growth Widget */}
           <div className="rounded-2xl border p-5 flex items-center justify-between" style={{ background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.07)", backdropFilter: "blur(16px)" }}>
             <div className="space-y-1">
-              <span className="text-xs font-semibold text-slate-400">⚡ Weekly Sales Growth</span>
+              <span className="text-xs font-semibold text-slate-400 flex items-center gap-1.5">
+                <Zap className="w-3.5 h-3.5 text-amber-400" /> Weekly Sales Growth
+              </span>
               <div className="flex items-baseline gap-2">
                 <span className="text-xl font-extrabold text-slate-100">৳{fmt(growth.thisWeekRevenue)}</span>
                 <span className="text-xs text-slate-400">this week (7d)</span>
@@ -354,7 +359,7 @@ function DashboardContent() {
           <div className="flex items-center justify-between pb-3 border-b border-white/6">
             <div>
               <h2 className="text-sm font-bold text-slate-100 flex items-center gap-2">
-                <span>🔥</span> Top Selling Products
+                <Flame className="w-4 h-4 text-orange-400" /> Top Selling Products
               </h2>
               <p className="text-xs text-slate-500 mt-0.5">Most popular items by sales volume</p>
             </div>
@@ -382,7 +387,9 @@ function DashboardContent() {
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={p.image} alt={p.name} className="w-10 h-10 rounded-lg object-cover shrink-0 border border-white/10" />
                     ) : (
-                      <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center shrink-0 text-xs">🛍️</div>
+                      <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center shrink-0 text-slate-400">
+                        <ShoppingBag className="w-4 h-4" />
+                      </div>
                     )}
                     <div className="min-w-0">
                       <p className="text-xs font-bold text-slate-200 truncate">{p.name}</p>
@@ -403,7 +410,7 @@ function DashboardContent() {
           <div className="flex items-center justify-between pb-3 border-b border-white/6">
             <div>
               <h2 className="text-sm font-bold text-slate-100 flex items-center gap-2">
-                <span>⚠️</span> Low Stock Alert
+                <AlertTriangle className="w-4 h-4 text-amber-400" /> Low Stock Alert
               </h2>
               <p className="text-xs text-slate-500 mt-0.5">Products needing immediate restock</p>
             </div>
@@ -413,8 +420,8 @@ function DashboardContent() {
           </div>
 
           {lowStock.length === 0 ? (
-            <div className="py-6 text-center text-xs text-slate-400">
-              <span className="text-xl block mb-1">✅</span>
+            <div className="py-6 text-center text-xs text-slate-400 flex flex-col items-center gap-1.5">
+              <CheckCircle2 className="w-6 h-6 text-emerald-400 mb-1" />
               All products are well stocked!
             </div>
           ) : (
@@ -430,7 +437,9 @@ function DashboardContent() {
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={img} alt={p.name} className="w-10 h-10 rounded-lg object-cover shrink-0 border border-white/10" />
                       ) : (
-                        <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center shrink-0 text-xs">📦</div>
+                        <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center shrink-0 text-slate-400">
+                          <Package className="w-4 h-4" />
+                        </div>
                       )}
                       <div className="min-w-0">
                         <p className="text-xs font-bold text-slate-200 truncate">{p.name}</p>

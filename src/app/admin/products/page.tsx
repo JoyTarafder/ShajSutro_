@@ -17,6 +17,12 @@ import {
   Trash2,
   ChevronLeft,
   ChevronRight,
+  Sparkles,
+  Zap,
+  Package,
+  BadgePercent,
+  Palette,
+  Eye,
 } from "lucide-react";
 
 // â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -397,8 +403,8 @@ function ProductModal({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 lg:p-6 backdrop-blur-md transition-all animate-fade-in"
-      style={{ background: "rgba(3, 7, 18, 0.85)" }}
+      className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 lg:p-6 transition-all animate-fade-in"
+      style={{ background: "rgba(0, 0, 0, 0.6)" }}
     >
       <div
         className="rounded-3xl shadow-2xl w-full max-w-5xl xl:max-w-6xl flex flex-col max-h-[95vh] overflow-hidden border border-white/10"
@@ -410,7 +416,11 @@ function ProductModal({
         <div className="flex items-center justify-between px-6 sm:px-8 py-5 border-b border-white/8 bg-white/[0.01]">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-violet-600 to-indigo-500 text-white flex items-center justify-center shadow-lg shadow-violet-500/20 text-lg font-bold">
-              {product ? "✏️" : "✨"}
+              {product ? (
+                <Pencil className="w-5 h-5 text-white" />
+              ) : (
+                <Sparkles className="w-5 h-5 text-white" />
+              )}
             </div>
             <div>
               <h2 className="text-lg font-extrabold text-white tracking-wide">
@@ -480,7 +490,7 @@ function ProductModal({
               <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-4">
                 <div className="flex items-center justify-between pb-2 border-b border-white/5">
                   <h3 className="text-xs font-extrabold text-violet-400 uppercase tracking-wider flex items-center gap-1.5">
-                    <span>📦</span> Product Identity
+                    <Package className="w-4 h-4 text-violet-400" /> Product Identity
                   </h3>
                   <span className="text-[11px] text-slate-500 font-medium">Required *</span>
                 </div>
@@ -512,7 +522,7 @@ function ProductModal({
                         title="Auto-generate formatted unique product SKU code"
                         className="px-3.5 py-3 rounded-2xl bg-amber-400/10 border border-amber-400/30 text-amber-300 text-xs font-bold whitespace-nowrap hover:bg-amber-400/20 active:scale-95 transition-all flex items-center gap-1.5"
                       >
-                        <span>⚡</span>
+                        <Zap className="w-3.5 h-3.5 text-amber-400" />
                         <span className="hidden sm:inline">Generate</span>
                       </button>
                     </div>
@@ -633,7 +643,7 @@ function ProductModal({
               <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-4">
                 <div className="flex items-center justify-between pb-2 border-b border-white/5">
                   <h3 className="text-xs font-extrabold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
-                    <span>💰</span> Pricing & Inventory
+                    <BadgePercent className="w-4 h-4 text-amber-400" /> Pricing & Inventory
                   </h3>
                   {discountPercent > 0 && (
                     <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/30 animate-pulse">
@@ -725,7 +735,7 @@ function ProductModal({
               {/* Sizes & Colors Quick Chips */}
               <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-4">
                 <h3 className="text-xs font-extrabold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5 pb-2 border-b border-white/5">
-                  <span>🎨</span> Variant Presets
+                  <Palette className="w-4 h-4 text-emerald-400" /> Variant Presets
                 </h3>
 
                 <div>
@@ -828,7 +838,7 @@ function ProductModal({
               {/* Image URLs input */}
               <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-3">
                 <h3 className="text-xs font-extrabold text-blue-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <span>🖼️</span> Image URLs
+                  <ImageIcon className="w-4 h-4 text-blue-400" /> Image URLs
                 </h3>
                 <Field label="Image Links (comma-separated URLs) *">
                   <textarea
@@ -850,7 +860,7 @@ function ProductModal({
               <div className="p-5 rounded-2xl bg-gradient-to-b from-white/[0.03] to-white/[0.01] border border-white/8 space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-extrabold text-violet-300 uppercase tracking-wider flex items-center gap-1.5">
-                    <span>👁️</span> Live Storefront Card Preview
+                    <Eye className="w-4 h-4 text-violet-400" /> Live Storefront Card Preview
                   </h3>
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                     Real-Time
@@ -872,9 +882,11 @@ function ProductModal({
                         }}
                       />
                     ) : (
-                      <div className="flex flex-col items-center gap-2 text-slate-600">
-                        <span className="text-3xl">🖼️</span>
-                        <span className="text-xs font-bold">No Image Provided</span>
+                      <div className="flex flex-col items-center gap-2.5 text-slate-500">
+                        <div className="w-12 h-12 rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center text-slate-400">
+                          <ImageIcon className="w-6 h-6 text-slate-500" />
+                        </div>
+                        <span className="text-xs font-semibold text-slate-400">No Image Provided</span>
                       </div>
                     )}
 
@@ -1035,7 +1047,8 @@ function ProductModal({
               </>
             ) : (
               <>
-                <span>✨</span> {product ? "Save Changes" : "Publish Product"}
+                <Sparkles className="w-4 h-4" />
+                <span>{product ? "Save Changes" : "Publish Product"}</span>
               </>
             )}
           </button>
@@ -1270,8 +1283,8 @@ function ProductsContent() {
               {filterCategoryName ? ` in "${filterCategoryName}"` : " in store"}
             </p>
             {filterFeatured && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-400/15 text-amber-300 border border-amber-400/30">
-                <span>✨</span> Filtered: Premium Gallery
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-400/15 text-amber-300 border border-amber-400/30">
+                <Sparkles className="w-3 h-3 text-amber-400" /> Filtered: Premium Gallery
               </span>
             )}
           </div>
@@ -1304,7 +1317,7 @@ function ProductsContent() {
                   : "text-amber-300/80 hover:text-amber-300 hover:bg-amber-400/10"
               }`}
             >
-              <span>✨</span>
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
               <span>Premium Gallery</span>
             </button>
           </div>
@@ -1487,7 +1500,11 @@ function ProductsContent() {
                             : "text-slate-400 bg-white/[0.02] border border-white/10 hover:border-amber-400/30 hover:text-amber-300 hover:bg-amber-400/10"
                         }`}
                       >
-                        <span>{p.isFeatured ? "✨" : "+"}</span>
+                        {p.isFeatured ? (
+                          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                        ) : (
+                          <Plus className="w-3.5 h-3.5 text-slate-400" />
+                        )}
                         <span>{p.isFeatured ? "Gallery" : "Add"}</span>
                       </button>
                     </td>
@@ -1598,8 +1615,8 @@ function ProductsContent() {
 
       {deleteId && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-sm p-4"
-          style={{ background: "rgba(0,0,0,0.7)" }}
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          style={{ background: "rgba(0, 0, 0, 0.6)" }}
         >
           <div
             className="rounded-3xl shadow-2xl  w-full max-w-sm p-8"
