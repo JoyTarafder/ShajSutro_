@@ -366,7 +366,9 @@ export default function Navbar() {
                   onClick={(e) => {
                     if (link.href === "/virtual-try-on") {
                       const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-                      if (!token) {
+                      const adminToken = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null;
+                      const hasAuth = Boolean(token || adminToken || isLoggedIn);
+                      if (!hasAuth) {
                         e.preventDefault();
                         notifyInfo("Please log in to access AI Virtual Try-On.");
                         router.push("/login?redirect=/virtual-try-on");
@@ -856,7 +858,9 @@ export default function Navbar() {
               onClick={(e) => {
                 if (link.href === "/virtual-try-on") {
                   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-                  if (!token) {
+                  const adminToken = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null;
+                  const hasAuth = Boolean(token || adminToken || isLoggedIn);
+                  if (!hasAuth) {
                     e.preventDefault();
                     setIsMobileMenuOpen(false);
                     notifyInfo("Please log in to access AI Virtual Try-On.");

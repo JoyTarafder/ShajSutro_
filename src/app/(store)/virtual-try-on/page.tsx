@@ -127,7 +127,9 @@ export default function VirtualTryOnPage() {
 
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-    if (!token) {
+    const adminToken = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null;
+    const hasAuth = Boolean(token || adminToken);
+    if (!hasAuth) {
       notifyInfo("Please log in to access AI Virtual Try-On.");
       router.replace("/login?redirect=/virtual-try-on");
     } else {

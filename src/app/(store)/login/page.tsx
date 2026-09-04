@@ -26,15 +26,37 @@ export default function LoginPage() {
 }
 
 function LoginContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect") || searchParams.get("from") || "/profile";
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
   const [showPassword, setShowPassword] = useState(false);
   const [view, setView] = useState<View>("tabs");
   const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+  const [isAlreadyLoggedIn, setIsAlreadyLoggedIn] = useState(false);
+
+  // If already logged in, automatically forward to the intended page or profile
+  useEffect(() => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const adminToken = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null;
+    if (token || adminToken) {
+      setIsAlreadyLoggedIn(true);
+      const target = redirectUrl && redirectUrl !== "/login" ? redirectUrl : "/profile";
+      router.replace(target);
+    }
+  }, [redirectUrl, router]);
 
   const isCheckoutRedirect = redirectUrl.includes("checkout");
   const isTryOnRedirect = redirectUrl.includes("virtual-try-on");
+
+  if (isAlreadyLoggedIn) {
+    return (
+      <div className="min-h-screen bg-[#faf8f5] flex flex-col items-center justify-center gap-3">
+        <div className="w-8 h-8 border-2 border-emerald-900 border-t-transparent rounded-full animate-spin" />
+        <p className="text-xs text-stone-500 font-medium">You are already logged in. Redirecting...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#faf8f5] relative overflow-x-clip flex items-center justify-center p-3 sm:p-6 lg:p-10 font-sans selection:bg-emerald-900 selection:text-white">
@@ -333,6 +355,10 @@ function SocialButtons({ redirectUrl = "/profile" }: { redirectUrl?: string }) {
             if (!res.ok) throw new Error(data.message ?? "Google login failed");
 
             localStorage.setItem("token", data.token);
+            if (typeof window !== "undefined") {
+              window.dispatchEvent(new Event("user_avatar_updated"));
+              window.dispatchEvent(new Event("storage"));
+            }
             notifySuccess("Logged in with Google successfully!");
             router.push(redirectUrl);
           } catch (err: unknown) {
@@ -447,6 +473,10 @@ function LoginForm({
       const data = await res.json();
       if (!res.ok) throw new Error(data.message ?? "Login failed");
       localStorage.setItem("token", data.token);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("user_avatar_updated"));
+        window.dispatchEvent(new Event("storage"));
+      }
       notifySuccess("Welcome back!");
       router.push(redirectUrl);
     } catch (err: unknown) {
