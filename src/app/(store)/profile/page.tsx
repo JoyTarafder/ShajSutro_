@@ -16,6 +16,7 @@ interface UserData {
   email: string;
   phone?: string;
   role: string;
+  coins?: number;
   createdAt: string;
 }
 
@@ -59,6 +60,9 @@ interface Order {
   discount: number;
   shippingCost: number;
   tax: number;
+  coinsUsed?: number;
+  coinDiscount?: number;
+  coinsEarned?: number;
   status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled" | "returned";
   statusHistory?: StatusHistoryItem[];
   exchangeRequest?: ExchangeRequestData;
@@ -358,6 +362,16 @@ export default function ProfilePage() {
 
 // ─── Overview Tab ─────────────────────────────────────────────────────────────
 
+function CoinsIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <circle cx="8" cy="8" r="6" strokeWidth={1.5} />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.09 10.37A6 6 0 1110.34 18" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 6h2m-1-1v4m7 4h2m-1-1v4" />
+    </svg>
+  );
+}
+
 function OverviewTab({
   user,
   orders,
@@ -374,12 +388,20 @@ function OverviewTab({
   const delivered  = orders.filter((o) => o.status === "delivered").length;
   const active     = orders.filter((o) => ["pending","confirmed","shipped"].includes(o.status)).length;
   const totalSpent = orders.filter((o) => !["cancelled", "returned"].includes(o.status)).reduce((s, o) => s + o.total, 0);
+  const userCoins  = user.coins ?? 0;
 
   const stats = [
-    { label: "Total Orders",    value: orders.length,             icon: BoxIcon },
-    { label: "Active Orders",   value: active,                    icon: TruckIcon },
-    { label: "Delivered",       value: delivered,                 icon: CheckCircleIcon },
-    { label: "Total Spent",     value: `৳${totalSpent.toLocaleString()}`, icon: WalletIcon },
+    { label: "Total Orders",    value: orders.length,                     icon: BoxIcon,         isCoin: false },
+    { label: "Active Orders",   value: active,                            icon: TruckIcon,       isCoin: false },
+    { label: "Delivered",       value: delivered,                         icon: CheckCircleIcon, isCoin: false },
+    { label: "Total Spent",     value: `৳${totalSpent.toLocaleString()}`, icon: WalletIcon,      isCoin: false },
+    {
+      label: "Reward Coins",
+      value: `🪙 ${userCoins.toLocaleString()}`,
+      icon: CoinsIcon,
+      subtext: `≈ ৳${userCoins.toLocaleString()}`,
+      isCoin: true,
+    },
   ];
 
   const recentOrders = [...orders].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 3);
@@ -387,15 +409,42 @@ function OverviewTab({
   return (
     <div className="space-y-6">
       {/* Stats grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-        {stats.map(({ label, value, icon: Icon }) => (
-          <div key={label} className="bg-white rounded-2xl border border-charcoal-100 p-4 sm:p-5 flex flex-col justify-between shadow-2xs">
-            <div className="w-8 h-8 rounded-xl bg-warm-50 border border-charcoal-100 flex items-center justify-center text-charcoal-600 mb-3">
-              <Icon className="w-4 h-4" />
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+        {stats.map(({ label, value, icon: Icon, isCoin, subtext }) => (
+          <div
+            key={label}
+            className={`rounded-2xl border p-4 sm:p-5 flex flex-col justify-between shadow-2xs transition-all ${
+              isCoin
+                ? "bg-gradient-to-br from-amber-50/60 via-white to-amber-50/20 border-amber-200/80 hover:border-amber-300"
+                : "bg-white border-charcoal-100"
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div
+                className={`w-8 h-8 rounded-xl border flex items-center justify-center ${
+                  isCoin
+                    ? "bg-amber-100/70 border-amber-200 text-amber-800"
+                    : "bg-warm-50 border-charcoal-100 text-charcoal-600"
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+              </div>
+              {isCoin && (
+                <span className="px-1.5 py-0.5 text-[9px] font-bold rounded-md bg-amber-400 text-emerald-950 uppercase tracking-wider">
+                  Loyalty
+                </span>
+              )}
             </div>
             <div>
-              <p className="text-xl sm:text-2xl font-bold text-charcoal-950 tracking-tight">{value}</p>
-              <p className="text-xs text-charcoal-400 mt-0.5 font-light">{label}</p>
+              <p className={`text-xl sm:text-2xl font-bold tracking-tight ${isCoin ? "text-amber-950" : "text-charcoal-950"}`}>
+                {value}
+              </p>
+              <div className="flex items-baseline justify-between gap-1 mt-0.5">
+                <p className="text-xs text-charcoal-400 font-light">{label}</p>
+                {subtext && (
+                  <span className="text-[10px] text-amber-700 font-semibold">{subtext}</span>
+                )}
+              </div>
             </div>
           </div>
         ))}
@@ -846,8 +895,20 @@ function OrderRow({
           </p>
           <p className="text-xs text-charcoal-400 mt-0.5 font-light">{formatDate(order.createdAt)}</p>
         </div>
-        <div className="text-right shrink-0 flex flex-col items-end gap-2">
+        <div className="text-right shrink-0 flex flex-col items-end gap-1.5">
           <p className="text-sm sm:text-base font-bold text-charcoal-950">৳{order.total.toLocaleString()}</p>
+          <div className="flex flex-col items-end gap-1">
+            {Boolean(order.coinsEarned && order.coinsEarned > 0) && (
+              <span className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-semibold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full shadow-2xs">
+                🪙 +{order.coinsEarned} Coins
+              </span>
+            )}
+            {Boolean(order.coinsUsed && order.coinsUsed > 0) && (
+              <span className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full shadow-2xs">
+                🪙 -{order.coinsUsed} (৳{order.coinDiscount || order.coinsUsed} off)
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-2 flex-wrap justify-end">
             {order.status === "pending" && (
               <button

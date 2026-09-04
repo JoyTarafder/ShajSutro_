@@ -54,6 +54,7 @@ export interface IUser {
   passwordResetAttempts?: number;
   lastLoginAt?: Date;
   passwordChangedAt?: Date;
+  coins?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -190,6 +191,9 @@ export interface IOrder {
   tax: number;
   discount: number;
   promoCode?: string;
+  coinsUsed?: number;
+  coinDiscount?: number;
+  coinsEarned?: number;
   total: number;
   status:
     | "pending"

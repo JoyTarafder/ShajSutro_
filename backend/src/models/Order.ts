@@ -112,6 +112,9 @@ const orderSchema = new Schema<IOrderDocument>(
     tax:          { type: Number, required: true, default: 0 },
     discount:     { type: Number, required: true, default: 0 },
     promoCode:    { type: String, default: "" },
+    coinsUsed:    { type: Number, default: 0, min: 0 },
+    coinDiscount: { type: Number, default: 0, min: 0 },
+    coinsEarned:  { type: Number, default: 0, min: 0 },
     total:        { type: Number, required: true },
     status: {
       type: String,

@@ -5,6 +5,7 @@ import PDFDocument from "pdfkit";
 import Order from "../models/Order";
 import Product from "../models/Product";
 import PromoCode from "../models/PromoCode";
+import User from "../models/User";
 import { AppError } from "../middleware/error.middleware";
 import { AuthRequest, IShippingAddress } from "../types";
 import { sendOrderConfirmationEmail } from "../services/emailService";
@@ -29,12 +30,14 @@ export const placeOrder = asyncHandler(
       txnId = "",
       items: frontendItems,
       promoCode = "",
+      coinsToUse = 0,
     } = req.body as {
       shippingAddress: IShippingAddress;
       paymentMethod: "bkash" | "nagad" | "rocket" | "cod";
       txnId?: string;
       items: FrontendOrderItem[];
       promoCode?: string;
+      coinsToUse?: number;
     };
 
     if (!shippingAddress) throw new AppError("Shipping address is required", 400);
@@ -188,7 +191,26 @@ export const placeOrder = asyncHandler(
     }
 
     const discountAmt = Math.min(calculatedDiscount, subtotal);
-    const total       = parseFloat((subtotal + shippingCost - discountAmt).toFixed(2));
+
+    // Server-side coin redemption calculation
+    const requestedCoins = Math.max(0, Math.floor(Number(coinsToUse) || 0));
+    let validCoinsUsed = 0;
+    let coinDiscount = 0;
+
+    if (requestedCoins > 0 && req.user?._id) {
+      const currentUser = await User.findById(req.user._id);
+      const availableCoins = currentUser?.coins || 0;
+      if (requestedCoins > availableCoins) {
+        throw new AppError(`You only have ${availableCoins} coins available.`, 400);
+      }
+      // Maximum coin discount cannot exceed remaining subtotal after promo discount
+      const maxApplicableCoins = Math.max(0, Math.floor(subtotal - discountAmt));
+      validCoinsUsed = Math.min(requestedCoins, maxApplicableCoins);
+      coinDiscount = validCoinsUsed; // 1 Coin = 1 BDT
+    }
+
+    const total = parseFloat(Math.max(0, subtotal + shippingCost - discountAmt - coinDiscount).toFixed(2));
+    const coinsEarned = Math.floor(total / 100); // 1 coin per 100 BDT spent
 
     const paymentStatus = paymentMethod === "cod" ? "pending_delivery" : "paid";
 
@@ -204,6 +226,9 @@ export const placeOrder = asyncHandler(
       tax,
       discount: discountAmt,
       promoCode: validatedPromoCode,
+      coinsUsed: validCoinsUsed,
+      coinDiscount,
+      coinsEarned,
       total,
       status: "pending",
       statusHistory: [
@@ -214,6 +239,18 @@ export const placeOrder = asyncHandler(
         },
       ],
     });
+
+    // Update user's coin balance: credit coinsEarned and deduct validCoinsUsed
+    if (req.user?._id) {
+      const coinDelta = coinsEarned - validCoinsUsed;
+      if (coinDelta !== 0) {
+        await User.findByIdAndUpdate(req.user._id, {
+          $inc: { coins: coinDelta },
+        }).catch((err) => {
+          console.error("Failed to update user coin balance:", err);
+        });
+      }
+    }
 
     // Decrement stock and increment totalOrdered
     await Promise.all(stockOps);
@@ -448,6 +485,25 @@ export const cancelOrder = asyncHandler(
       updatedAt: new Date(),
       note: "Cancelled by customer",
     } as any);
+
+    // Revert earned coins and refund used coins back to user
+    if (order.user) {
+      let refundDelta = 0;
+      if (order.coinsUsed && order.coinsUsed > 0) {
+        refundDelta += order.coinsUsed;
+      }
+      if (order.coinsEarned && order.coinsEarned > 0) {
+        refundDelta -= order.coinsEarned;
+      }
+      if (refundDelta !== 0) {
+        await User.findByIdAndUpdate(order.user, { $inc: { coins: refundDelta } }).catch((err) => {
+          console.error("Failed to update user coins upon order cancellation:", err);
+        });
+      }
+      order.coinsUsed = 0;
+      order.coinsEarned = 0;
+    }
+
     await order.save();
 
     res.status(200).json({

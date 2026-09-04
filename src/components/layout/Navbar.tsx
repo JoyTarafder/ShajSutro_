@@ -111,6 +111,7 @@ export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInitial, setUserInitial] = useState("");
   const [avatarImg, setAvatarImg] = useState<string | null>(null);
+  const [userCoins, setUserCoins] = useState<number>(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [categories, setCategories] = useState<NavCategory[]>([]);
@@ -168,6 +169,7 @@ export default function Navbar() {
         .then((d) => {
           if (d?.data) {
             setUserInitial((d.data.name ?? "U").charAt(0).toUpperCase());
+            setUserCoins(d.data.coins ?? 0);
             const userId = d.data.id || d.data._id;
             const savedAvatar = userId
               ? localStorage.getItem(`user_avatar_${userId}`)
@@ -179,6 +181,7 @@ export default function Navbar() {
     } else {
       setIsLoggedIn(false);
       setUserInitial("");
+      setUserCoins(0);
       setAvatarImg(null);
     }
   };
@@ -436,7 +439,19 @@ export default function Navbar() {
                     )}
                   </button>
                   {dropdownOpen && (
-                    <div className="absolute right-0 mt-2.5 w-44 bg-white rounded-2xl border border-charcoal-100 shadow-soft-md py-1.5 z-50">
+                    <div className="absolute right-0 mt-2.5 w-48 bg-white rounded-2xl border border-charcoal-100 shadow-soft-md py-2 z-50">
+                      <Link
+                        href="/profile"
+                        onClick={() => setDropdownOpen(false)}
+                        className="mx-2 mb-2 px-3 py-2 rounded-xl bg-gradient-to-r from-amber-50 to-amber-100/60 border border-amber-200/80 flex items-center justify-between transition-colors hover:border-amber-300"
+                      >
+                        <span className="text-xs font-semibold text-amber-900 flex items-center gap-1.5">
+                          <span>🪙</span> Reward Coins
+                        </span>
+                        <span className="text-xs font-bold text-amber-950 font-mono">
+                          {userCoins}
+                        </span>
+                      </Link>
                       <Link
                         href="/profile"
                         onClick={() => setDropdownOpen(false)}
@@ -884,6 +899,18 @@ export default function Navbar() {
           <div className="pt-4 border-t border-charcoal-100 mt-2 space-y-2">
             {isLoggedIn ? (
               <>
+                <Link
+                  href="/profile"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-50 to-amber-100/60 border border-amber-200/80 flex items-center justify-between text-xs font-semibold text-amber-900"
+                >
+                  <span className="flex items-center gap-1.5">
+                    <span>🪙</span> Reward Coins
+                  </span>
+                  <span className="font-bold text-amber-950 font-mono">
+                    {userCoins}
+                  </span>
+                </Link>
                 <Link
                   href="/profile"
                   className="btn-secondary w-full text-center text-sm"

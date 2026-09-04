@@ -37,6 +37,10 @@ export default function CheckoutPage() {
   const [promoError, setPromoError] = useState("");
   const [promoLoading, setPromoLoading] = useState(false);
 
+  // ── Coin Redemption state ───────────────────────────────────────────────────
+  const [userCoins, setUserCoins] = useState(0);
+  const [useCoins, setUseCoins] = useState(false);
+
   const handleApplyPromo = async () => {
     if (!promoInput.trim()) return;
     setPromoError("");
@@ -80,7 +84,10 @@ export default function CheckoutPage() {
   const shipping = subtotal >= 1200 ? 0 : 9.99;
   const tax = 0;
   const discount = promoResult?.discount ?? 0;
-  const total = subtotal + shipping - discount;
+  const maxApplicableCoins = Math.max(0, Math.min(userCoins, Math.floor(subtotal - discount)));
+  const coinDiscount = useCoins ? maxApplicableCoins : 0;
+  const total = Math.max(0, subtotal + shipping - discount - coinDiscount);
+  const potentialCoinsEarned = Math.floor(total / 100);
 
   const [shippingInfo, setShippingInfo] = useState({
     firstName: "",
@@ -110,6 +117,7 @@ export default function CheckoutPage() {
       .then((data) => {
         if (data?.data) {
           const user = data.data;
+          setUserCoins(user.coins ?? 0);
           const defaultAddr =
             user.addresses?.find((a: any) => a.isDefault) ||
             user.addresses?.[0];
@@ -193,6 +201,8 @@ export default function CheckoutPage() {
   const [placedOrderData, setPlacedOrderData] = useState<{
     _id?: string;
     total?: number;
+    coinsEarned?: number;
+    coinsUsed?: number;
   } | null>(null);
 
   const handlePlaceOrder = async (overrideTxnId?: string) => {
@@ -216,6 +226,7 @@ export default function CheckoutPage() {
         txnId: finalTxnId,
         discount,
         promoCode: promoResult?.code ?? "",
+        coinsToUse: coinDiscount,
         items: state.items
           .filter((i) => Boolean(i && i.product))
           .map((i) => ({
@@ -327,6 +338,20 @@ export default function CheckoutPage() {
               </p>
             </div>
           )}
+
+          {placedOrderData?.coinsEarned ? (
+            <div className="bg-amber-50 border border-amber-200 rounded-2xl px-5 py-3.5 mb-6 text-left flex items-center gap-3">
+              <span className="text-2xl">🪙</span>
+              <div>
+                <p className="text-xs font-bold text-amber-950">
+                  +{placedOrderData.coinsEarned} ShajSutro Coins Earned!
+                </p>
+                <p className="text-[11px] text-amber-800">
+                  Added to your loyalty coin balance for future discounts.
+                </p>
+              </div>
+            </div>
+          ) : null}
 
           <p className="text-xs text-charcoal-400 font-light mb-7">
             Estimated delivery: 3–5 business days &middot; Updates sent to{" "}
@@ -1490,6 +1515,44 @@ export default function CheckoutPage() {
                 )}
               </div>
 
+              {/* ── ShajSutro Reward Coins ── */}
+              {userCoins > 0 && (
+                <div className="mt-4 p-3.5 rounded-2xl bg-gradient-to-r from-amber-50/90 via-amber-50/50 to-amber-100/40 border border-amber-200/80">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-xl">🪙</span>
+                      <div>
+                        <p className="text-xs font-bold text-amber-950 flex items-center gap-1.5">
+                          <span>Reward Coins</span>
+                          <span className="text-[9px] bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded-md font-bold uppercase tracking-wider">
+                            Loyalty
+                          </span>
+                        </p>
+                        <p className="text-[11px] text-amber-800">
+                          {userCoins} coins available (Save up to ৳{maxApplicableCoins})
+                        </p>
+                      </div>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={useCoins}
+                        onChange={(e) => setUseCoins(e.target.checked)}
+                        disabled={maxApplicableCoins <= 0}
+                        className="sr-only peer"
+                      />
+                      <div className="w-9 h-5 bg-stone-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-600"></div>
+                    </label>
+                  </div>
+                  {useCoins && maxApplicableCoins > 0 && (
+                    <p className="text-[11px] text-emerald-800 font-medium mt-2 pt-2 border-t border-amber-200/60 flex items-center justify-between">
+                      <span>Applied {coinDiscount} coins</span>
+                      <span className="font-bold text-emerald-700">−৳{coinDiscount.toFixed(2)}</span>
+                    </p>
+                  )}
+                </div>
+              )}
+
               {/* ── Price breakdown ── */}
               <div className="border-t border-charcoal-100 mt-6 pt-5 space-y-3 text-sm">
                 <div className="flex justify-between text-charcoal-500">
@@ -1517,9 +1580,25 @@ export default function CheckoutPage() {
                     </span>
                   </div>
                 )}
+                {coinDiscount > 0 && (
+                  <div className="flex justify-between text-amber-800">
+                    <span className="font-medium flex items-center gap-1">
+                      <span>🪙</span> Discount (Coins)
+                    </span>
+                    <span className="font-semibold">
+                      −৳{coinDiscount.toFixed(2)}
+                    </span>
+                  </div>
+                )}
                 <div className="border-t border-charcoal-100 pt-3 flex justify-between font-bold text-charcoal-950">
                   <span>Total</span>
                   <span className="text-base">৳{total.toFixed(2)}</span>
+                </div>
+                <div className="pt-2 flex items-center justify-between text-[11px] text-amber-900 bg-amber-50/70 px-3 py-2 rounded-xl border border-amber-200/60 font-medium">
+                  <span className="flex items-center gap-1">
+                    <span>🪙</span> Earn on this order:
+                  </span>
+                  <span className="font-bold text-amber-950">+{potentialCoinsEarned} Coins</span>
                 </div>
               </div>
 

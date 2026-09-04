@@ -137,6 +137,7 @@ export const login = asyncHandler(
         name: user.name,
         email: user.email,
         role: user.role,
+        coins: user.coins ?? 0,
       },
     });
   }
@@ -156,6 +157,7 @@ export const getMe = asyncHandler(
         phone: user?.phone || "",
         role: user?.role,
         addresses: user?.addresses || [],
+        coins: user?.coins ?? 0,
         createdAt: user?.createdAt,
       },
     });
@@ -724,6 +726,7 @@ export const googleLogin = asyncHandler(
         name: user.name,
         email: user.email,
         role: user.role,
+        coins: user.coins ?? 0,
       },
     });
   }

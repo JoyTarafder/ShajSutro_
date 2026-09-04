@@ -580,6 +580,20 @@ export const updateOrderStatus = asyncHandler(
       if ((status === "cancelled" || status === "returned") && order.paymentStatus === "paid") {
         order.paymentStatus = "refunded";
       }
+      if (status === "cancelled" || status === "returned") {
+        if (order.user) {
+          let refundDelta = 0;
+          if (order.coinsUsed && order.coinsUsed > 0) refundDelta += order.coinsUsed;
+          if (order.coinsEarned && order.coinsEarned > 0) refundDelta -= order.coinsEarned;
+          if (refundDelta !== 0) {
+            await User.findByIdAndUpdate(order.user, { $inc: { coins: refundDelta } }).catch((err) => {
+              console.error("Failed to update user coins upon order cancellation:", err);
+            });
+          }
+          order.coinsUsed = 0;
+          order.coinsEarned = 0;
+        }
+      }
       if (!order.statusHistory) order.statusHistory = [];
       order.statusHistory.push({
         status,

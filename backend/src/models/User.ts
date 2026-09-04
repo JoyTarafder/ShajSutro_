@@ -108,6 +108,11 @@ const userSchema = new Schema<IUserDocument>(
       type: Date,
       default: null,
     },
+    coins: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
   },
   { timestamps: true }
 );
