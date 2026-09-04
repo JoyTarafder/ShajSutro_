@@ -133,7 +133,8 @@ export const getProducts = asyncHandler(
         })
         .sort(sort)
         .skip(skip)
-        .limit(limitNum),
+        .limit(limitNum)
+        .lean(),
       Product.countDocuments(filter),
     ]);
 
@@ -173,11 +174,13 @@ export const getProduct = asyncHandler(
       return;
     }
 
-    const product = await Product.findById(req.params.id).populate({
-      path: "category",
-      select: "name slug parent",
-      populate: { path: "parent", select: "name slug" },
-    });
+    const product = await Product.findById(req.params.id)
+      .populate({
+        path: "category",
+        select: "name slug parent",
+        populate: { path: "parent", select: "name slug" },
+      })
+      .lean();
     if (!product) throw new AppError("Product not found", 404);
 
     // Cache single product details for 30 minutes (1800 seconds)

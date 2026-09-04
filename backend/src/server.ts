@@ -1,3 +1,4 @@
+import compression from "compression";
 import cors from "cors";
 import "dotenv/config";
 import express from "express";
@@ -28,13 +29,18 @@ import { ensureWelcomePromoCode } from "./controllers/promoCode.controller";
 import { initRedis } from "./config/redis";
 
 // ─── Connect to Persistence & Cache ───────────────────────────────────────────
-connectDB().then(() => {
-  ensureWelcomePromoCode().catch(() => {});
-});
+connectDB()
+  .then(() => {
+    ensureWelcomePromoCode().catch(() => {});
+  })
+  .catch((err) => console.warn("Initial DB connection attempt warning:", err?.message || err));
 initRedis();
 
 // ─── Express app setup ────────────────────────────────────────────────────────
 const app = express();
+
+// Disable x-powered-by to reduce header bytes and improve security
+app.disable("x-powered-by");
 
 // Trust reverse proxies (Vercel, Nginx, Cloudflare) for accurate client IP rate limiting
 app.set("trust proxy", 1);
@@ -45,6 +51,36 @@ app.use(
     crossOriginResourcePolicy: { policy: "cross-origin" },
   })
 );
+
+// High-performance response compression (Gzip/Deflate) - reduces payload by 70-85%
+app.use(
+  compression({
+    threshold: 1024, // Compress all responses > 1KB
+    level: 6, // Optimal balance between compression ratio and CPU speed
+  })
+);
+
+// ─── Database Readiness Middleware ───────────────────────────────────────────
+// Ensures MongoDB is connected before any controller query runs (prevents buffering timeout on Vercel)
+app.use(async (_req, _res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ─── HTTP Cache-Control for GET requests ──────────────────────────────────────
+app.use((req, res, next) => {
+  if (req.method === "GET") {
+    // Categories and product listings can be cached briefly on CDN / browser
+    if (req.path.startsWith("/api/categories") || (req.path.startsWith("/api/products") && !req.path.includes("/admin"))) {
+      res.setHeader("Cache-Control", "public, max-age=30, stale-while-revalidate=60");
+    }
+  }
+  next();
+});
 
 // ─── Rate Limiting ────────────────────────────────────────────────────────────
 const generalLimiter = rateLimit({

@@ -18,7 +18,7 @@ export const getCategories = asyncHandler(
       return;
     }
 
-    const categories = await Category.find({ parent: null });
+    const categories = await Category.find({ parent: null }).lean();
 
     // Custom sort: Mens first, then Womens, then Kids
     const categoryOrder = ["mens", "womens", "kids"];
@@ -33,7 +33,7 @@ export const getCategories = asyncHandler(
 
     // fetch all subcategories for these root categories in one query
     const rootIds = categories.map((c) => c._id);
-    const allSubs = await Category.find({ parent: { $in: rootIds } }).sort({ name: 1 });
+    const allSubs = await Category.find({ parent: { $in: rootIds } }).sort({ name: 1 }).lean();
     const subsMap = new Map<string, typeof allSubs>();
     for (const sub of allSubs) {
       const key = String(sub.parent);
@@ -48,10 +48,10 @@ export const getCategories = asyncHandler(
       counts.map((c) => [String(c._id), c.count as number]),
     );
 
-    const data = categories.map((cat) => ({
-      ...cat.toObject(),
+    const data = categories.map((cat: any) => ({
+      ...cat,
       productCount: countMap.get(String(cat._id)) ?? 0,
-      subcategories: (subsMap.get(String(cat._id)) ?? []).map((s) => ({
+      subcategories: (subsMap.get(String(cat._id)) ?? []).map((s: any) => ({
         _id: s._id,
         name: s.name,
         slug: s.slug,
@@ -78,10 +78,10 @@ export const getSubcategories = asyncHandler(
       return;
     }
 
-    const parent = await Category.findById(req.params.id);
+    const parent = await Category.findById(req.params.id).lean();
     if (!parent) throw new AppError("Category not found", 404);
 
-    const subcategories = await Category.find({ parent: parent._id }).sort({ name: 1 });
+    const subcategories = await Category.find({ parent: (parent as any)._id }).sort({ name: 1 }).lean();
 
     const counts = await Product.aggregate([
       { $group: { _id: "$category", count: { $sum: 1 } } },
@@ -90,8 +90,8 @@ export const getSubcategories = asyncHandler(
       counts.map((c) => [String(c._id), c.count as number]),
     );
 
-    const data = subcategories.map((cat) => ({
-      ...cat.toObject(),
+    const data = subcategories.map((cat: any) => ({
+      ...cat,
       productCount: countMap.get(String(cat._id)) ?? 0,
     }));
 
@@ -114,13 +114,12 @@ export const getCategoryBySlug = asyncHandler(
       return;
     }
 
-    const category = await Category.findOne({ slug: req.params.slug });
+    const category = await Category.findOne({ slug: req.params.slug }).lean();
     if (!category) throw new AppError("Category not found", 404);
 
-    const products = await Product.find({ category: category._id }).populate(
-      "category",
-      "name slug",
-    );
+    const products = await Product.find({ category: (category as any)._id })
+      .populate("category", "name slug")
+      .lean();
 
     const result = { category, products };
     // Cache for 30 minutes (1800 seconds)
