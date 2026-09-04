@@ -13,6 +13,8 @@ import {
   Search,
   Plus,
   Users,
+  Ban,
+  Unlock,
 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -953,35 +955,6 @@ function UsersContent() {
     }
   };
 
-  const handleRoleChange = async (user: User) => {
-    const newRole: "user" | "admin" | "sub-admin" =
-      user.role === "user"
-        ? "sub-admin"
-        : user.role === "sub-admin"
-          ? "admin"
-          : "user";
-    setActionLoading(user._id + "-role");
-    try {
-      await apiFetch(`/admin/users/${user._id}`, {
-        method: "PUT",
-        body: JSON.stringify({ role: newRole }),
-      });
-      setUsers((prev) =>
-        prev.map((u) => (u._id === user._id ? { ...u, role: newRole } : u)),
-      );
-      const roleLabel =
-        newRole === "admin"
-          ? "Admin"
-          : newRole === "sub-admin"
-            ? "Sub-Admin"
-            : "Customer";
-      showToast("success", `${user.name} role updated to ${roleLabel}`);
-    } catch (e: unknown) {
-      showToast("error", e instanceof Error ? e.message : "Update failed");
-    } finally {
-      setActionLoading(null);
-    }
-  };
 
   return (
     <div className="p-4 sm:p-8 space-y-6 max-w-7xl mx-auto">
@@ -1100,9 +1073,10 @@ function UsersContent() {
                           type="button"
                           onClick={() => setSelectedUserId(user._id)}
                           title="View user details and analytics"
-                          className="px-3 py-1.5 text-xs font-semibold rounded-xl transition-all border bg-violet-950/30 text-violet-300 border-violet-500/20 hover:bg-violet-900/40"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl transition-all border bg-violet-950/30 text-violet-300 border-violet-500/20 hover:bg-violet-900/40"
                         >
-                          Details
+                          <Eye className="w-3.5 h-3.5" />
+                          <span>Details</span>
                         </button>
                         {user.role === "user" && (
                           <button
@@ -1110,32 +1084,31 @@ function UsersContent() {
                             onClick={() => handleBlock(user)}
                             disabled={actionLoading === user._id + "-block"}
                             title={user.isBlocked ? "Unblock user" : "Block user"}
-                            className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-all border disabled:opacity-50 ${
+                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl transition-all border disabled:opacity-50 ${
                               user.isBlocked
                                 ? "bg-emerald-950/30 text-emerald-400 border-emerald-500/20 hover:bg-emerald-900/40"
                                 : "bg-amber-950/30 text-amber-400 border-amber-500/20 hover:bg-amber-900/40"
                             }`}
                           >
-                            {actionLoading === user._id + "-block" ? "..." : user.isBlocked ? "Unblock" : "Block"}
+                            {actionLoading === user._id + "-block" ? (
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            ) : user.isBlocked ? (
+                              <Unlock className="w-3.5 h-3.5" />
+                            ) : (
+                              <Ban className="w-3.5 h-3.5" />
+                            )}
+                            <span>{user.isBlocked ? "Unblock" : "Block"}</span>
                           </button>
                         )}
-                        <button
-                          type="button"
-                          onClick={() => handleRoleChange(user)}
-                          disabled={actionLoading === user._id + "-role"}
-                          title="Click to switch user role"
-                          className="px-3 py-1.5 text-xs font-semibold rounded-xl transition-all bg-white/[0.05] hover:bg-white/[0.1] text-slate-200 border border-white/10 disabled:opacity-50"
-                        >
-                          {actionLoading === user._id + "-role" ? "..." : "Change Role"}
-                        </button>
                         {user.role !== "admin" && (
                           <button
                             type="button"
                             onClick={() => setToDelete(user)}
                             title="Delete user account"
-                            className="px-3 py-1.5 text-xs font-semibold rounded-xl transition-all bg-rose-950/30 hover:bg-rose-900/40 text-rose-400 border border-rose-500/20"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl transition-all bg-rose-950/30 hover:bg-rose-900/40 text-rose-400 border border-rose-500/20"
                           >
-                            Delete
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Delete</span>
                           </button>
                         )}
                       </div>
