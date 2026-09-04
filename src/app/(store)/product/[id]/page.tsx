@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { getColorHex } from "@/lib/colors";
 
 import { notifyError, notifySuccess } from "@/lib/notify";
+import { Star, Check, ShoppingBag, Image as ImageIcon } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -356,19 +357,7 @@ export default function ProductDetailPage() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-charcoal-300">
-                  <svg
-                    className="w-16 h-16"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1}
-                      d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                    />
-                  </svg>
+                  <ImageIcon className="w-16 h-16 stroke-1" />
                 </div>
               )}
 
@@ -438,14 +427,10 @@ export default function ProductDetailPage() {
               <div className="flex items-center gap-3 mt-3">
                 <div className="flex items-center gap-1">
                   {[1, 2, 3, 4, 5].map((star) => (
-                    <svg
+                    <Star
                       key={star}
-                      className={`w-4 h-4 ${star <= Math.round(product.rating) ? "text-warm-500" : "text-charcoal-200"}`}
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
+                      className={`w-4 h-4 ${star <= Math.round(product.rating) ? "text-warm-500 fill-warm-500" : "text-charcoal-200 fill-charcoal-200"}`}
+                    />
                   ))}
                 </div>
                 <span className="text-sm text-charcoal-400">
@@ -597,28 +582,14 @@ export default function ProductDetailPage() {
             >
               {added ? (
                 <span className="flex items-center justify-center gap-2">
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
+                  <Check className="w-4 h-4 stroke-2" />
                   Added to Cart
                 </span>
               ) : !product.inStock ? (
                 "Out of Stock"
               ) : (
                 <>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                  </svg>
+                  <ShoppingBag className="w-4 h-4 stroke-[1.5]" />
                   Add to Cart
                 </>
               )}
@@ -724,12 +695,9 @@ export default function ProductDetailPage() {
                           onClick={() => setNewRating(star)}
                           className="p-1 text-amber-400 hover:scale-125 transition-transform"
                         >
-                          <svg
-                            className={`w-5 h-5 ${star <= newRating ? "fill-amber-400" : "fill-charcoal-200 text-charcoal-200"}`}
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
+                          <Star
+                            className={`w-5 h-5 ${star <= newRating ? "fill-amber-400 text-amber-400" : "fill-charcoal-200 text-charcoal-200"}`}
+                          />
                         </button>
                       ))}
                     </div>
@@ -780,13 +748,10 @@ export default function ProductDetailPage() {
                             </p>
                             <div className="flex items-center gap-0.5 text-amber-500 mt-1">
                               {[...Array(5)].map((_, i) => (
-                                <svg
+                                <Star
                                   key={i}
-                                  className={`w-3 h-3 ${i < rev.rating ? "fill-current" : "text-charcoal-200 fill-charcoal-200"}`}
-                                  viewBox="0 0 20 20"
-                                >
-                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
+                                  className={`w-3 h-3 ${i < rev.rating ? "fill-amber-500 text-amber-500" : "text-charcoal-200 fill-charcoal-200"}`}
+                                />
                               ))}
                             </div>
                           </div>

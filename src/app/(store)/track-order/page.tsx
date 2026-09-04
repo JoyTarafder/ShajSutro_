@@ -4,6 +4,7 @@ import { Suspense, useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { getApiBase } from "@/lib/apiBase";
+import { Search, X, Loader2, ArrowRight, Check, Truck } from "lucide-react";
 
 interface OrderItem {
   name: string;
@@ -157,9 +158,7 @@ function TrackOrderContent() {
           <form onSubmit={handleSubmit} className="max-w-2xl mx-auto pt-6">
             <div className="flex flex-col sm:flex-row items-center gap-3 p-2 rounded-2xl bg-white border border-slate-200 shadow-sm focus-within:ring-2 focus-within:ring-violet-500 focus-within:border-violet-500 transition-all">
               <div className="relative w-full flex-1 flex items-center">
-                <svg className="w-5 h-5 absolute left-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+                <Search className="w-5 h-5 absolute left-4 text-slate-400" />
                 <input
                   type="text"
                   value={query}
@@ -173,7 +172,7 @@ function TrackOrderContent() {
                     onClick={() => { setQuery(""); setError(null); }}
                     className="absolute right-3 p-1 rounded-full text-slate-400 hover:text-slate-600"
                   >
-                    ✕
+                    <X className="w-4 h-4" />
                   </button>
                 )}
               </div>
@@ -184,15 +183,13 @@ function TrackOrderContent() {
               >
                 {loading ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin" />
                     Tracking...
                   </>
                 ) : (
                   <>
                     Track Package
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
+                    <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                   </>
                 )}
               </button>
@@ -265,9 +262,7 @@ function TrackOrderContent() {
                             }`}
                           >
                             {isDone ? (
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                              </svg>
+                              <Check className="w-5 h-5 stroke-[3]" />
                             ) : (
                               idx + 1
                             )}
@@ -379,8 +374,8 @@ function TrackOrderContent() {
         ) : (
           !error && (
             <div className="text-center py-16 p-8 rounded-2xl border border-dashed border-slate-200 bg-warm-50">
-              <div className="w-16 h-16 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center text-2xl mx-auto mb-4">
-                🚚
+              <div className="w-16 h-16 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center mx-auto mb-4">
+                <Truck className="w-8 h-8" />
               </div>
               <h3 className="text-base font-semibold text-slate-950">Enter Your Order Details Above</h3>
               <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto font-light">

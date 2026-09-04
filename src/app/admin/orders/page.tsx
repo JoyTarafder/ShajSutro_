@@ -4,6 +4,20 @@ import AdminAuthGuard from "@/components/admin/AdminAuthGuard";
 import AdminSpinner from "@/components/admin/AdminSpinner";
 import { useAdminAuth } from "@/context/AdminAuthContext";
 import { useCallback, useEffect, useState } from "react";
+import {
+  Check,
+  X,
+  Loader2,
+  ChevronDown,
+  ArrowLeftRight,
+  RotateCcw,
+  Ban,
+  CheckCircle2,
+  Clock,
+  PackageOpen,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
 // --- Types ---
 
@@ -163,33 +177,9 @@ function Toast({ msg, type }: { msg: string; type: "success" | "error" }) {
       className={`fixed top-5 right-5 z-[100] flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-xl text-sm font-medium ${type === "success" ? "bg-emerald-600 text-white" : "bg-red-600 text-white"}`}
     >
       {type === "success" ? (
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2.5}
-            d="M5 13l4 4L19 7"
-          />
-        </svg>
+        <Check className="w-4 h-4" strokeWidth={2.5} />
       ) : (
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2.5}
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
+        <X className="w-4 h-4" strokeWidth={2.5} />
       )}
       {msg}
     </div>
@@ -230,38 +220,14 @@ function StatusSelect({
         className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${style.badge} ${updating ? "opacity-60" : "hover:opacity-80"}`}
       >
         {updating ? (
-          <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-            />
-          </svg>
+          <Loader2 className="w-3 h-3 animate-spin" />
         ) : (
           <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
         )}
         {STATUS_LABEL[current]}
-        <svg
+        <ChevronDown
           className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
+        />
       </button>
 
       {open && (
@@ -288,19 +254,7 @@ function StatusSelect({
                   />
                   {STATUS_LABEL[s]}
                   {s === current && (
-                    <svg
-                      className="w-3 h-3 ml-auto text-blue-400 shrink-0"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2.5}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
+                    <Check className="w-3 h-3 ml-auto text-blue-400 shrink-0" strokeWidth={2.5} />
                   )}
                 </button>
               );
@@ -426,19 +380,7 @@ function OrderDetailsModal({
               color: "rgba(148,163,184,0.8)",
             }}
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <X className="w-4 h-4" />
           </button>
         </div>
 
@@ -482,19 +424,7 @@ function OrderDetailsModal({
                   className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
                   style={{ color: "#fb923c" }}
                 >
-                  <svg
-                    className="w-4 h-4 text-orange-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
-                    />
-                  </svg>
+                  <ArrowLeftRight className="w-4 h-4 text-orange-400" />
                   Exchange / Return Request ({order.exchangeRequest.status})
                 </div>
                 <span className="text-[11px] font-mono text-orange-400">
@@ -549,19 +479,7 @@ function OrderDetailsModal({
               }}
             >
               <div className="flex items-center gap-3">
-                <svg
-                  className="w-5 h-5 text-purple-400 shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
-                  />
-                </svg>
+                <RotateCcw className="w-5 h-5 text-purple-400 shrink-0" />
                 <p className="text-sm font-bold text-purple-300">
                   Payment Returned (
                   {order.paymentMethod && order.paymentMethod !== "cod"
@@ -585,19 +503,7 @@ function OrderDetailsModal({
               }}
             >
               <div className="flex items-center gap-3">
-                <svg
-                  className="w-5 h-5 text-rose-400 shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <Ban className="w-5 h-5 text-rose-400 shrink-0" />
                 <p className="text-sm font-semibold text-rose-400">
                   Order Cancelled
                 </p>
@@ -608,19 +514,7 @@ function OrderDetailsModal({
                   onClick={handleRefund}
                   className="px-3 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 text-xs font-bold transition-colors border border-purple-500/30 flex items-center gap-1.5 disabled:opacity-50"
                 >
-                  <svg
-                    className="w-3.5 h-3.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
-                    />
-                  </svg>
+                  <RotateCcw className="w-3.5 h-3.5" />
                   {refundingPay ? "Refunding..." : "Refund Payment"}
                 </button>
               )}
@@ -634,19 +528,7 @@ function OrderDetailsModal({
               }}
             >
               <div className="flex items-center gap-3">
-                <svg
-                  className="w-5 h-5 text-orange-400 shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 15v-1a4 4 0 00-4-4H4m0 0l4-4m-4 4l4 4"
-                  />
-                </svg>
+                <RotateCcw className="w-5 h-5 text-orange-400 shrink-0" />
                 <p className="text-sm font-semibold text-orange-400">
                   Order Returned
                 </p>
@@ -657,19 +539,7 @@ function OrderDetailsModal({
                   onClick={handleRefund}
                   className="px-3 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 text-xs font-bold transition-colors border border-purple-500/30 flex items-center gap-1.5 disabled:opacity-50"
                 >
-                  <svg
-                    className="w-3.5 h-3.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
-                    />
-                  </svg>
+                  <RotateCcw className="w-3.5 h-3.5" />
                   {refundingPay ? "Refunding..." : "Refund Payment"}
                 </button>
               )}
@@ -685,19 +555,7 @@ function OrderDetailsModal({
               }}
             >
               <div className="flex items-center gap-3">
-                <svg
-                  className="w-5 h-5 text-emerald-400 shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
                 <p className="text-sm font-bold text-emerald-400">
                   Payment Confirmed (
                   {order.paymentMethod && order.paymentMethod !== "cod"
@@ -718,19 +576,7 @@ function OrderDetailsModal({
                     onClick={handleRefund}
                     className="px-3 py-1 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 text-xs font-bold transition-colors border border-purple-500/30 flex items-center gap-1 disabled:opacity-50"
                   >
-                    <svg
-                      className="w-3.5 h-3.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
-                      />
-                    </svg>
+                    <RotateCcw className="w-3.5 h-3.5" />
                     {refundingPay ? "Refunding..." : "Refund"}
                   </button>
                 )}
@@ -744,19 +590,7 @@ function OrderDetailsModal({
                 border: "1px solid rgba(96,165,250,0.2)",
               }}
             >
-              <svg
-                className="w-5 h-5 text-blue-400 shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              <Clock className="w-5 h-5 text-blue-400 shrink-0" />
               <p className="text-sm font-semibold text-blue-400">
                 Awaiting Delivery / Payment
               </p>
@@ -874,19 +708,7 @@ function OrderDetailsModal({
                   onClick={handleRefund}
                   className="px-3 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 text-xs font-bold transition-colors border border-purple-500/30 flex items-center gap-1.5 disabled:opacity-50"
                 >
-                  <svg
-                    className="w-3.5 h-3.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
-                    />
-                  </svg>
+                  <RotateCcw className="w-3.5 h-3.5" />
                   {refundingPay ? "Refunding..." : "Refund Payment"}
                 </button>
               )}
@@ -1302,19 +1124,7 @@ function OrdersContent() {
           <AdminSpinner label="Loading orders..." />
         ) : orders.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-slate-400">
-            <svg
-              className="w-12 h-12 mb-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1}
-                d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"
-              />
-            </svg>
+            <PackageOpen className="w-12 h-12 mb-3" strokeWidth={1} />
             <p className="text-sm font-medium">
               No orders{" "}
               {statusFilter !== "all" ? `with status "${statusFilter}"` : "yet"}
@@ -1528,19 +1338,7 @@ function OrdersContent() {
                   color: "rgba(226,232,240,0.8)",
                 }}
               >
-                <svg
-                  className="w-3.5 h-3.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
+                <ChevronLeft className="w-3.5 h-3.5" />
                 Previous
               </button>
 
@@ -1557,19 +1355,7 @@ function OrdersContent() {
                 }}
               >
                 Next
-                <svg
-                  className="w-3.5 h-3.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>

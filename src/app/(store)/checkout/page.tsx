@@ -10,6 +10,19 @@ import { useEffect, useState } from "react";
 import { getApiBase } from "@/lib/apiBase";
 import { DIVISIONS, getDistricts, getThanas } from "@/lib/bangladeshLocations";
 import { notifyError, notifyInfo, notifySuccess } from "@/lib/notify";
+import {
+  CheckCircle2,
+  ChevronLeft,
+  Check,
+  AlertCircle,
+  Banknote,
+  Smartphone,
+  Info,
+  Lock,
+  Loader2,
+  AlertTriangle,
+  X,
+} from "lucide-react";
 
 const API = getApiBase();
 
@@ -286,19 +299,7 @@ export default function CheckoutPage() {
       <div className="min-h-screen bg-warm-50 flex items-center justify-center px-6 py-20">
         <div className="bg-white rounded-3xl shadow-soft border border-charcoal-100 p-10 max-w-lg w-full text-center">
           <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-7">
-            <svg
-              className="w-10 h-10 text-green-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+            <CheckCircle2 className="w-10 h-10 text-green-600" strokeWidth={1.5} />
           </div>
           <h1 className="text-2xl font-bold text-charcoal-950 mb-2 tracking-tight">
             Order Placed!
@@ -399,19 +400,7 @@ export default function CheckoutPage() {
             href="/cart"
             className="text-sm text-charcoal-500 hover:text-charcoal-900 transition-colors duration-300 group flex items-center gap-1.5"
           >
-            <svg
-              className="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
+            <ChevronLeft className="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" strokeWidth={1.5} />
             Back to Cart
           </Link>
         </div>
@@ -431,19 +420,7 @@ export default function CheckoutPage() {
                   }`}
                 >
                   {idx < currentStep ? (
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
+                    <Check className="w-4 h-4" strokeWidth={2} />
                   ) : (
                     idx + 1
                   )}
@@ -497,17 +474,7 @@ export default function CheckoutPage() {
                       />
                       {shippingErrors.firstName && (
                         <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
-                          <svg
-                            className="w-3 h-3 shrink-0"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
+                          <AlertCircle className="w-3 h-3 shrink-0" />
                           {shippingErrors.firstName}
                         </p>
                       )}
@@ -533,17 +500,7 @@ export default function CheckoutPage() {
                       />
                       {shippingErrors.lastName && (
                         <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
-                          <svg
-                            className="w-3 h-3 shrink-0"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
+                          <AlertCircle className="w-3 h-3 shrink-0" />
                           {shippingErrors.lastName}
                         </p>
                       )}
@@ -567,17 +524,7 @@ export default function CheckoutPage() {
                       />
                       {shippingErrors.email && (
                         <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
-                          <svg
-                            className="w-3 h-3 shrink-0"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
+                          <AlertCircle className="w-3 h-3 shrink-0" />
                           {shippingErrors.email}
                         </p>
                       )}
@@ -610,17 +557,7 @@ export default function CheckoutPage() {
                       />
                       {shippingErrors.phone && (
                         <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
-                          <svg
-                            className="w-3 h-3 shrink-0"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
+                          <AlertCircle className="w-3 h-3 shrink-0" />
                           {shippingErrors.phone}
                         </p>
                       )}
@@ -645,17 +582,7 @@ export default function CheckoutPage() {
                       />
                       {shippingErrors.address && (
                         <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
-                          <svg
-                            className="w-3 h-3 shrink-0"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
+                          <AlertCircle className="w-3 h-3 shrink-0" />
                           {shippingErrors.address}
                         </p>
                       )}
@@ -694,17 +621,7 @@ export default function CheckoutPage() {
                       </select>
                       {shippingErrors.city && (
                         <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
-                          <svg
-                            className="w-3 h-3 shrink-0"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
+                          <AlertCircle className="w-3 h-3 shrink-0" />
                           {shippingErrors.city}
                         </p>
                       )}
@@ -746,17 +663,7 @@ export default function CheckoutPage() {
                       </select>
                       {shippingErrors.state && (
                         <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
-                          <svg
-                            className="w-3 h-3 shrink-0"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
+                          <AlertCircle className="w-3 h-3 shrink-0" />
                           {shippingErrors.state}
                         </p>
                       )}
@@ -794,17 +701,7 @@ export default function CheckoutPage() {
                       </select>
                       {shippingErrors.zip && (
                         <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
-                          <svg
-                            className="w-3 h-3 shrink-0"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
+                          <AlertCircle className="w-3 h-3 shrink-0" />
                           {shippingErrors.zip}
                         </p>
                       )}
@@ -875,19 +772,7 @@ export default function CheckoutPage() {
                         >
                           {active && (
                             <span className="absolute top-3 right-3 w-4 h-4 rounded-full bg-charcoal-950 flex items-center justify-center">
-                              <svg
-                                className="w-2.5 h-2.5 text-white"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={3}
-                                  d="M5 13l4 4L19 7"
-                                />
-                              </svg>
+                              <Check className="w-2.5 h-2.5 text-white stroke-[3]" />
                             </span>
                           )}
                           {m.logo ? (
@@ -899,19 +784,7 @@ export default function CheckoutPage() {
                             />
                           ) : (
                             <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-charcoal-950 text-white">
-                              <svg
-                                className="w-4 h-4 text-amber-400 shrink-0"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
-                                />
-                              </svg>
+                              <Banknote className="w-4 h-4 text-amber-400 shrink-0" />
                               <span className="text-xs font-bold">
                                 Cash on Delivery
                               </span>
@@ -927,17 +800,7 @@ export default function CheckoutPage() {
 
                   {paymentErrors.method && (
                     <p className="mt-3 mb-1 text-xs text-red-500 flex items-center gap-1">
-                      <svg
-                        className="w-3 h-3 shrink-0"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                      <AlertCircle className="w-3 h-3 shrink-0" />
                       {paymentErrors.method}
                     </p>
                   )}
@@ -999,19 +862,7 @@ export default function CheckoutPage() {
                               }}
                               className={`w-full sm:w-auto px-7 py-3.5 rounded-xl text-white font-bold text-sm shadow-lg transition-all ${numBg} hover:opacity-90 flex items-center justify-center gap-2 shrink-0`}
                             >
-                              <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
-                                />
-                              </svg>
+                              <Smartphone className="w-5 h-5" />
                               Pay ৳{total.toFixed(2)} Now
                             </button>
                           </div>
@@ -1042,17 +893,7 @@ export default function CheckoutPage() {
                           ) : (
                             paymentErrors.txnId && (
                               <p className="text-xs text-red-500 font-medium flex items-center gap-1.5 bg-red-50 border border-red-200 rounded-xl p-3">
-                                <svg
-                                  className="w-4 h-4 shrink-0 text-red-500"
-                                  fill="currentColor"
-                                  viewBox="0 0 20 20"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                    clipRule="evenodd"
-                                  />
-                                </svg>
+                                <AlertCircle className="w-4 h-4 shrink-0 text-red-500" />
                                 {paymentErrors.txnId}
                               </p>
                             )
@@ -1064,19 +905,7 @@ export default function CheckoutPage() {
                   {/* ── Cash on Delivery note ── */}
                   {paymentInfo.method === "cod" && (
                     <div className="mt-5 flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4">
-                      <svg
-                        className="w-5 h-5 text-amber-500 shrink-0 mt-0.5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                        />
-                      </svg>
+                      <Info className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                       <div className="text-xs text-amber-800 space-y-1 leading-relaxed">
                         <p className="font-semibold">
                           Cash on Delivery selected
@@ -1091,19 +920,7 @@ export default function CheckoutPage() {
                   )}
 
                   <div className="flex items-center gap-2 mt-6 text-xs text-charcoal-400">
-                    <svg
-                      className="w-4 h-4 text-green-500 shrink-0"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
-                      />
-                    </svg>
+                    <Lock className="w-4 h-4 text-green-500 shrink-0" />
                     <span className="font-light">
                       Your payment information is safe and secure.
                     </span>
@@ -1291,17 +1108,7 @@ export default function CheckoutPage() {
 
                   {orderError && (
                     <div className="mt-6 flex items-start gap-2.5 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-                      <svg
-                        className="w-4 h-4 text-red-500 shrink-0 mt-0.5"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                      <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
                       <p className="text-xs text-red-700 font-light">
                         {orderError}
                       </p>
@@ -1321,25 +1128,7 @@ export default function CheckoutPage() {
                     >
                       {isPlacingOrder ? (
                         <span className="flex items-center justify-center gap-2">
-                          <svg
-                            className="w-4 h-4 animate-spin"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            />
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                            />
-                          </svg>
+                          <Loader2 className="w-4 h-4 animate-spin" />
                           Processing...
                         </span>
                       ) : (
@@ -1421,25 +1210,7 @@ export default function CheckoutPage() {
                         className="px-5 py-2.5 bg-charcoal-950 text-white text-xs font-semibold rounded-xl hover:bg-charcoal-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
                       >
                         {promoLoading ? (
-                          <svg
-                            className="animate-spin w-4 h-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            />
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                            />
-                          </svg>
+                          <Loader2 className="animate-spin w-4 h-4" />
                         ) : (
                           "Apply"
                         )}
@@ -1447,19 +1218,7 @@ export default function CheckoutPage() {
                     </div>
                     {promoError && (
                       <p className="text-xs text-red-500 font-light px-1 flex items-center gap-1">
-                        <svg
-                          className="w-3.5 h-3.5 shrink-0"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
-                          />
-                        </svg>
+                        <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                         {promoError}
                       </p>
                     )}
@@ -1467,19 +1226,7 @@ export default function CheckoutPage() {
                 ) : (
                   <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-4 py-3">
                     <div className="flex items-center gap-2.5">
-                      <svg
-                        className="w-4 h-4 text-green-600 shrink-0"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
+                      <Check className="w-4 h-4 text-green-600 shrink-0" />
                       <div>
                         <p className="text-xs font-bold text-green-800 font-mono tracking-wider">
                           {promoResult.code}
@@ -1497,19 +1244,7 @@ export default function CheckoutPage() {
                       className="text-green-500 hover:text-red-500 transition-colors p-1"
                       title="Remove"
                     >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
                 )}
@@ -1604,19 +1339,7 @@ export default function CheckoutPage() {
 
               {/* Security badge */}
               <div className="mt-5 flex items-center gap-2 text-xs text-charcoal-400 justify-center">
-                <svg
-                  className="w-3.5 h-3.5 text-green-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
-                  />
-                </svg>
+                <Lock className="w-3.5 h-3.5 text-green-500" />
                 <span className="font-light">Secure 256-bit SSL checkout</span>
               </div>
             </div>

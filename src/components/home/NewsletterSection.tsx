@@ -2,6 +2,7 @@
 
 import { getApiBase } from "@/lib/apiBase";
 import { useState } from "react";
+import { Mail, Check } from "lucide-react";
 
 export default function NewsletterSection() {
   const [email, setEmail] = useState("");
@@ -46,9 +47,7 @@ export default function NewsletterSection() {
         
         {/* Sleek Line Envelope Icon Container */}
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-white/[0.08] via-white/[0.03] to-white/[0.01] border border-white/15 flex items-center justify-center mb-3.5 shadow-xl transition-all duration-300 hover:scale-105 select-none">
-          <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
+          <Mail className="w-5 h-5 text-amber-400" strokeWidth={1.5} />
         </div>
 
         {/* Headings */}
@@ -76,9 +75,7 @@ export default function NewsletterSection() {
             <div className="relative flex flex-col items-center justify-center p-6 sm:p-7 rounded-2xl bg-gradient-to-b from-[#11241c] via-[#0d1c16] to-[#0a1510] border border-emerald-500/40 text-center shadow-2xl backdrop-blur-xl space-y-3.5">
               {/* Glowing Emerald Check Icon */}
               <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.35)] shrink-0">
-                <svg className="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                </svg>
+                <Check className="w-6 h-6 stroke-[2.5]" />
               </div>
 
               <div>
@@ -151,9 +148,7 @@ export default function NewsletterSection() {
             "Minimalist Style Guides",
           ].map((benefit) => (
             <div key={benefit} className="flex items-center gap-2">
-              <svg className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-              </svg>
+              <Check className="w-3.5 h-3.5 text-amber-400 shrink-0 stroke-[2.5]" />
               <span className="font-light tracking-wide text-gray-300">{benefit}</span>
             </div>
           ))}

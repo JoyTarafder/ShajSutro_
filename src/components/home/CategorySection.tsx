@@ -8,6 +8,7 @@ import { Product } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, Heart, Loader2, ShoppingBag, ArrowRight } from "lucide-react";
 
 interface ApiProduct {
   _id: string;
@@ -213,14 +214,7 @@ export default function CategorySection() {
               aria-label="Previous Product"
               className="w-11 h-11 rounded-full border border-charcoal-200 bg-white/90 backdrop-blur-sm text-charcoal-800 flex items-center justify-center hover:bg-charcoal-950 hover:text-white hover:border-charcoal-950 transition-all duration-300 shadow-soft active:scale-95 group"
             >
-              <svg
-                className="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-0.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
+              <ChevronLeft className="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-0.5" />
             </button>
 
             {/* Right Button */}
@@ -229,14 +223,7 @@ export default function CategorySection() {
               aria-label="Next Product"
               className="w-11 h-11 rounded-full border border-charcoal-200 bg-white/90 backdrop-blur-sm text-charcoal-800 flex items-center justify-center hover:bg-charcoal-950 hover:text-white hover:border-charcoal-950 transition-all duration-300 shadow-soft active:scale-95 group"
             >
-              <svg
-                className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
+              <ChevronRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
             </button>
           </div>
         </div>
@@ -323,19 +310,11 @@ export default function CategorySection() {
                         }`}
                         aria-label={favored ? "Remove favorite" : "Add favorite"}
                       >
-                        <svg
+                        <Heart
                           className="w-4 h-4"
                           fill={favored ? "currentColor" : "none"}
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.7}
-                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-                          />
-                        </svg>
+                          strokeWidth={1.7}
+                        />
                       </button>
 
                       {/* Quick Add To Cart Overlay Pill */}
@@ -354,17 +333,12 @@ export default function CategorySection() {
                         >
                           {addingId === product.id ? (
                             <>
-                              <svg className="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <circle cx="12" cy="12" r="10" strokeWidth="4" className="opacity-25" />
-                                <path d="M4 12a8 8 0 018-8" strokeWidth="4" className="opacity-75" />
-                              </svg>
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
                               <span>Added</span>
                             </>
                           ) : product.inStock ? (
                             <>
-                              <svg className="w-3.5 h-3.5 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                              </svg>
+                              <ShoppingBag className="w-3.5 h-3.5 text-emerald-200" strokeWidth={2} />
                               <span>Quick Add</span>
                             </>
                           ) : (
@@ -411,10 +385,10 @@ export default function CategorySection() {
 
                         <Link
                           href={`/product/${product.id}`}
-                          className="text-xs font-bold text-charcoal-400 group-hover:text-charcoal-950 transition-colors flex items-center gap-0.5"
+                          className="text-xs font-bold text-charcoal-400 group-hover:text-charcoal-950 transition-colors flex items-center gap-1"
                         >
                           <span>View</span>
-                          <span className="group-hover:translate-x-0.5 transition-transform">&rarr;</span>
+                          <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
                         </Link>
                       </div>
                     </div>
@@ -448,14 +422,7 @@ export default function CategorySection() {
             className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-charcoal-800 hover:text-charcoal-950 group transition-colors"
           >
             <span>Explore all gallery products</span>
-            <svg
-              className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
+            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
         </div>
       </div>

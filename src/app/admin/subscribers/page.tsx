@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAdminAuth } from "@/context/AdminAuthContext";
 import { getApiBase } from "@/lib/apiBase";
 import Logo from "@/components/layout/Logo";
+import { Megaphone, RefreshCw, Download, Mail, CheckCircle2, Ban, Search } from "lucide-react";
 
 const API = getApiBase();
 
@@ -211,9 +212,7 @@ export default function AdminSubscribersPage() {
             }}
             className="px-4 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold border border-violet-400/20 shadow-xs flex items-center gap-2 transition-all"
           >
-            <svg className="w-4 h-4 text-violet-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
-            </svg>
+            <Megaphone className="w-4 h-4 text-violet-200" />
             <span className="whitespace-nowrap">Broadcast Promo Mail</span>
           </button>
 
@@ -222,9 +221,7 @@ export default function AdminSubscribersPage() {
             onClick={fetchSubscribers}
             className="px-4 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-slate-200 text-xs font-semibold flex items-center gap-2 transition-all"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
+            <RefreshCw className="w-4 h-4" />
             Refresh
           </button>
 
@@ -234,9 +231,7 @@ export default function AdminSubscribersPage() {
             disabled={subscribers.length === 0}
             className="px-4 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-slate-200 text-xs font-semibold flex items-center gap-2 transition-all disabled:opacity-40"
           >
-            <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
+            <Download className="w-4 h-4 text-emerald-400" />
             Export CSV
           </button>
         </div>
@@ -251,9 +246,7 @@ export default function AdminSubscribersPage() {
               <p className="text-2xl font-bold text-slate-100 mt-1">{totalSubscribers}</p>
             </div>
             <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
+              <Mail className="w-5 h-5" />
             </div>
           </div>
         </div>
@@ -265,9 +258,7 @@ export default function AdminSubscribersPage() {
               <p className="text-2xl font-bold text-emerald-400 mt-1">{activeSubscribers}</p>
             </div>
             <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <CheckCircle2 className="w-5 h-5" />
             </div>
           </div>
         </div>
@@ -279,9 +270,7 @@ export default function AdminSubscribersPage() {
               <p className="text-2xl font-bold text-slate-300 mt-1">{totalSubscribers - activeSubscribers}</p>
             </div>
             <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-slate-400 flex items-center justify-center">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-              </svg>
+              <Ban className="w-5 h-5" />
             </div>
           </div>
         </div>
@@ -291,9 +280,7 @@ export default function AdminSubscribersPage() {
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/[0.02] border border-white/8 rounded-2xl p-4">
         <div className="relative w-full sm:w-80">
           <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            <Search className="w-4 h-4" />
           </div>
           <input
             type="text"

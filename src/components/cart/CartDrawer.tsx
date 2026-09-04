@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { notifyInfo } from "@/lib/notify";
+import { X, ShoppingBag, Minus, Plus, Trash2, Truck, Check } from "lucide-react";
 
 export default function CartDrawer() {
   const router = useRouter();
@@ -59,9 +60,7 @@ export default function CartDrawer() {
             className="p-2.5 text-charcoal-300 hover:text-charcoal-900 hover:bg-charcoal-50 rounded-full transition-all duration-300"
             aria-label="Close cart"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -69,9 +68,7 @@ export default function CartDrawer() {
           {state.items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <div className="w-20 h-20 rounded-full bg-charcoal-50 flex items-center justify-center mb-5">
-                <svg className="w-9 h-9 text-charcoal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
-                </svg>
+                <ShoppingBag className="w-9 h-9 text-charcoal-300" strokeWidth={1.5} />
               </div>
               <h3 className="text-base font-semibold text-charcoal-900 mb-1.5">Your cart is empty</h3>
               <p className="text-sm text-charcoal-400 mb-7 font-light">Discover our curated collection</p>
@@ -123,9 +120,7 @@ export default function CartDrawer() {
                           className="w-7 h-7 flex items-center justify-center text-charcoal-400 hover:text-charcoal-900 transition-colors"
                           aria-label="Decrease quantity"
                         >
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                          </svg>
+                          <Minus className="w-3 h-3" />
                         </button>
                         <span className="w-7 text-center text-sm font-medium text-charcoal-900">
                           {item.quantity}
@@ -137,9 +132,7 @@ export default function CartDrawer() {
                           className="w-7 h-7 flex items-center justify-center text-charcoal-400 hover:text-charcoal-900 transition-colors"
                           aria-label="Increase quantity"
                         >
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                          </svg>
+                          <Plus className="w-3 h-3" />
                         </button>
                       </div>
 
@@ -154,9 +147,7 @@ export default function CartDrawer() {
                           className="p-1 text-charcoal-300 hover:text-red-500 transition-colors duration-300"
                           aria-label="Remove item"
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                          </svg>
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
@@ -172,18 +163,14 @@ export default function CartDrawer() {
             {/* Free shipping banner */}
             {subtotal < 1200 ? (
               <div className="flex items-center gap-2.5 bg-accent-50 rounded-xl px-4 py-3">
-                <svg className="w-4 h-4 text-accent-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-                </svg>
+                <Truck className="w-4 h-4 text-accent-600 flex-shrink-0" />
                 <p className="text-xs text-accent-700">
                   Add <strong>৳{(1200 - subtotal).toFixed(2)}</strong> more for free shipping
                 </p>
               </div>
             ) : (
               <div className="flex items-center gap-2.5 bg-green-50 rounded-xl px-4 py-3">
-                <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
-                </svg>
+                <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
                 <p className="text-xs text-green-700 font-medium">You qualify for free shipping!</p>
               </div>
             )}

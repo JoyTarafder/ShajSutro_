@@ -6,6 +6,7 @@ import { getApiBase } from "@/lib/apiBase";
 import { Product } from "@/types";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ChevronRight } from "lucide-react";
 
 interface ApiProduct {
   _id: string;
@@ -100,19 +101,7 @@ export default function NewArrivalsSection() {
             className="hidden sm:inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-charcoal-700 hover:text-emerald-950 transition-colors group"
           >
             <span>View all</span>
-            <svg
-              className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
+            <ChevronRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
         </div>
 

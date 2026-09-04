@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getApiBase } from "@/lib/apiBase";
+import { Copy, Check, ChevronRight } from "lucide-react";
 
 interface BannerNotification {
   _id: string;
@@ -101,19 +102,11 @@ export default function PromoBanner() {
                   title="Click to copy promo code"
                   className="inline-flex items-center gap-1.5 ml-2 px-3 py-1 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 font-mono text-xs font-bold text-white shadow-md transition-all hover:bg-white/20 hover:border-white/40 active:scale-95"
                 >
-                  <svg
-                    className="w-3.5 h-3.5 text-accent-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M7 7h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
+                  {copied ? (
+                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  ) : (
+                    <Copy className="w-3.5 h-3.5 text-accent-400" />
+                  )}
                   <span>{promoCode}</span>
                   {copied ? (
                     <span className="text-[10px] text-emerald-400 font-bold uppercase ml-1">
@@ -138,19 +131,7 @@ export default function PromoBanner() {
               className="relative inline-flex items-center gap-3 px-8 sm:px-10 py-4 sm:py-4.5 bg-white text-charcoal-950 font-extrabold text-sm sm:text-base rounded-full transition-all duration-300 hover:scale-[1.03] hover:bg-warm-50 shadow-2xl"
             >
               <span>{buttonText}</span>
-              <svg
-                className="w-4 h-4 transition-transform duration-300 ease-out group-hover/btn:translate-x-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2.5}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
+              <ChevronRight className="w-4 h-4 transition-transform duration-300 ease-out group-hover/btn:translate-x-1 stroke-[2.5]" />
             </Link>
           </div>
         </div>

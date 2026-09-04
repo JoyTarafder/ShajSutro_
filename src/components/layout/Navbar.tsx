@@ -8,6 +8,20 @@ import { notifyInfo } from "@/lib/notify";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import {
+  ChevronDown,
+  Search,
+  User,
+  Package,
+  Heart,
+  LogOut,
+  Bell,
+  ShoppingBag,
+  X,
+  Menu,
+  Check,
+  Copy,
+} from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -96,8 +110,16 @@ function CopyPromoButton({ code }: { code: string }) {
         Code:
       </span>
       <span className="tracking-wider text-amber-950 font-black">{code}</span>
-      <span className="text-[10px] font-sans font-bold ml-1 text-violet-700">
-        {copied ? "✓ Copied!" : "📋 Copy"}
+      <span className="text-[10px] font-sans font-bold ml-1 text-violet-700 inline-flex items-center gap-1">
+        {copied ? (
+          <>
+            <Check className="w-3 h-3 text-emerald-600" /> Copied!
+          </>
+        ) : (
+          <>
+            <Copy className="w-3 h-3" /> Copy
+          </>
+        )}
       </span>
     </button>
   );
@@ -321,19 +343,9 @@ export default function Navbar() {
                   >
                     {cat.name}
                     {cat.subcategories.length > 0 && (
-                      <svg
+                      <ChevronDown
                         className={`w-3 h-3 transition-transform duration-200 ${openCat === cat._id ? "rotate-180" : ""}`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
+                      />
                     )}
                   </Link>
 
@@ -414,19 +426,7 @@ export default function Navbar() {
                 aria-label="Search products"
                 title="Search products (Ctrl+K)"
               >
-                <svg
-                  className="w-[18px] h-[18px]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                  />
-                </svg>
+                <Search className="w-[18px] h-[18px]" strokeWidth={1.75} />
               </button>
 
               {isLoggedIn ? (
@@ -468,19 +468,7 @@ export default function Navbar() {
                         onClick={() => setDropdownOpen(false)}
                         className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-charcoal-700 hover:bg-charcoal-50 transition-colors"
                       >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                          />
-                        </svg>
+                        <User className="w-4 h-4" />
                         My Profile
                       </Link>
                       <Link
@@ -488,19 +476,7 @@ export default function Navbar() {
                         onClick={() => setDropdownOpen(false)}
                         className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-charcoal-700 hover:bg-charcoal-50 transition-colors"
                       >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
-                          />
-                        </svg>
+                        <Package className="w-4 h-4" />
                         My Orders
                       </Link>
                       <Link
@@ -508,19 +484,7 @@ export default function Navbar() {
                         onClick={() => setDropdownOpen(false)}
                         className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-charcoal-700 hover:bg-charcoal-50 transition-colors"
                       >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-                          />
-                        </svg>
+                        <Heart className="w-4 h-4" />
                         Favorites
                       </Link>
                       <div className="my-1.5 h-px bg-charcoal-50" />
@@ -528,19 +492,7 @@ export default function Navbar() {
                         onClick={handleLogout}
                         className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
                       >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
-                          />
-                        </svg>
+                        <LogOut className="w-4 h-4" />
                         Sign Out
                       </button>
                     </div>
@@ -552,19 +504,7 @@ export default function Navbar() {
                   className="hidden sm:flex p-2.5 text-charcoal-400 hover:text-charcoal-900 rounded-full hover:bg-charcoal-50 transition-all duration-300"
                   aria-label="Account"
                 >
-                  <svg
-                    className="w-[18px] h-[18px]"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                    />
-                  </svg>
+                  <User className="w-[18px] h-[18px]" strokeWidth={1.75} />
                 </Link>
               )}
 
@@ -575,19 +515,7 @@ export default function Navbar() {
                   className="relative flex p-2.5 text-charcoal-400 hover:text-charcoal-900 rounded-full hover:bg-charcoal-50 transition-all duration-300"
                   aria-label="Notifications"
                 >
-                  <svg
-                    className="w-[18px] h-[18px]"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
-                    />
-                  </svg>
+                  <Bell className="w-[18px] h-[18px]" strokeWidth={1.75} />
                   {notifications.length > 0 && (
                     <span className="absolute top-1 right-1 flex items-center justify-center w-[16px] h-[16px] text-[9px] font-extrabold text-white bg-rose-600 rounded-full ring-2 ring-white animate-pulse">
                       {notifications.length > 9 ? "9+" : notifications.length}
@@ -600,7 +528,7 @@ export default function Navbar() {
                     <div className="flex items-center justify-between pb-3.5 mb-3 border-b border-charcoal-100">
                       <div className="flex items-center gap-2">
                         <span className="flex items-center justify-center w-7 h-7 rounded-xl bg-warm-100 text-charcoal-900 text-xs font-bold">
-                          🔔
+                          <Bell className="w-3.5 h-3.5" />
                         </span>
                         <div>
                           <h3 className="text-xs font-bold text-charcoal-950">
@@ -615,7 +543,7 @@ export default function Navbar() {
                         onClick={() => setNotifDropdownOpen(false)}
                         className="w-6 h-6 rounded-full bg-charcoal-50 hover:bg-charcoal-100 text-charcoal-500 text-xs flex items-center justify-center transition-colors"
                       >
-                        ✕
+                        <X className="w-3.5 h-3.5" />
                       </button>
                     </div>
 
@@ -726,19 +654,7 @@ export default function Navbar() {
                 className="relative hidden md:flex p-2.5 text-charcoal-400 hover:text-charcoal-900 rounded-full hover:bg-charcoal-50 transition-all duration-300"
                 aria-label={`Cart (${totalItems} items)`}
               >
-                <svg
-                  className="w-[18px] h-[18px]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                  />
-                </svg>
+                <ShoppingBag className="w-[18px] h-[18px]" strokeWidth={1.75} />
                 {totalItems > 0 && (
                   <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center w-[18px] h-[18px] text-[10px] font-bold text-white bg-charcoal-950 rounded-full ring-2 ring-white">
                     {totalItems > 9 ? "9+" : totalItems}
@@ -752,33 +668,9 @@ export default function Navbar() {
                 aria-label="Menu"
               >
                 {isMobileMenuOpen ? (
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
+                  <X className="w-5 h-5" />
                 ) : (
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                    />
-                  </svg>
+                  <Menu className="w-5 h-5" />
                 )}
               </button>
             </div>
@@ -834,19 +726,9 @@ export default function Navbar() {
                     className="p-2.5 text-charcoal-400 hover:text-charcoal-900 transition-colors"
                     aria-label={`Toggle ${cat.name} sub-categories`}
                   >
-                    <svg
+                    <ChevronDown
                       className={`w-4 h-4 transition-transform duration-200 ${mobileOpenCat === cat._id ? "rotate-180" : ""}`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
+                    />
                   </button>
                 )}
               </div>

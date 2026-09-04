@@ -6,6 +6,18 @@ import { getColorHex } from "@/lib/colors";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState } from "react";
+import {
+  Check,
+  X,
+  Loader2,
+  Plus,
+  ShoppingBag,
+  Image as ImageIcon,
+  Pencil,
+  Trash2,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
 // â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
@@ -102,33 +114,9 @@ function Toast({ msg, type }: { msg: string; type: "success" | "error" }) {
       className={`fixed top-5 right-5 z-[100] flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-xl text-sm font-medium ${type === "success" ? "bg-emerald-600 text-white" : "bg-red-600 text-white"}`}
     >
       {type === "success" ? (
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2.5}
-            d="M5 13l4 4L19 7"
-          />
-        </svg>
+        <Check className="w-4 h-4" />
       ) : (
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2.5}
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
+        <X className="w-4 h-4" />
       )}
       {msg}
     </div>
@@ -478,9 +466,7 @@ function ProductModal({
               onClick={onClose}
               className="w-9 h-9 flex items-center justify-center rounded-2xl text-slate-400 hover:text-white bg-white/[0.04] hover:bg-rose-500/20 hover:border-rose-500/30 border border-white/8 transition-all"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <X className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -1044,10 +1030,7 @@ function ProductModal({
           >
             {saving ? (
               <>
-                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
+                <Loader2 className="w-4 h-4 animate-spin" />
                 Saving Product...
               </>
             ) : (
@@ -1330,19 +1313,7 @@ function ProductsContent() {
             onClick={() => setModalProduct("new")}
             className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl text-xs sm:text-sm font-bold hover:brightness-110 active:scale-95 transition-all shadow-md"
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M12 4.5v15m7.5-7.5h-15"
-              />
-            </svg>
+            <Plus className="w-4 h-4" />
             Add Product
           </button>
         </div>
@@ -1361,19 +1332,7 @@ function ProductsContent() {
           </div>
         ) : products.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-            <svg
-              className="w-12 h-12 mb-3 text-slate-500"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1}
-                d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z"
-              />
-            </svg>
+            <ShoppingBag className="w-12 h-12 mb-3 text-slate-500" strokeWidth={1} />
             <p className="text-sm font-medium">No products found</p>
             {filterFeatured ? (
               <button
@@ -1439,19 +1398,7 @@ function ProductsContent() {
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-gray-300">
-                              <svg
-                                className="w-4 h-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={1.5}
-                                  d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                                />
-                              </svg>
+                              <ImageIcon className="w-4 h-4" />
                             </div>
                           )}
                         </div>
@@ -1586,9 +1533,7 @@ function ProductsContent() {
                           aria-label={`Edit ${p.name}`}
                           className="p-1.5 sm:px-2.5 sm:py-1 text-xs font-semibold text-slate-200 bg-white/[0.06] border border-white/10 rounded-lg hover:bg-white/[0.12] hover:text-white transition-all shadow-sm flex items-center gap-1"
                         >
-                          <svg className="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
-                          </svg>
+                          <Pencil className="w-3.5 h-3.5 text-slate-300" />
                           <span className="hidden sm:inline">Edit</span>
                         </button>
                         <button
@@ -1596,9 +1541,7 @@ function ProductsContent() {
                           aria-label={`Delete ${p.name}`}
                           className="p-1.5 sm:px-2.5 sm:py-1 text-xs font-semibold text-rose-400 bg-rose-950/30 border border-rose-500/20 rounded-lg hover:bg-rose-900/40 hover:text-rose-300 transition-all shadow-sm flex items-center gap-1"
                         >
-                          <svg className="w-3.5 h-3.5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                          </svg>
+                          <Trash2 className="w-3.5 h-3.5 text-rose-400" />
                           <span className="hidden sm:inline">Delete</span>
                         </button>
                       </div>
@@ -1622,19 +1565,7 @@ function ProductsContent() {
                 disabled={page === 1}
                 className="px-4 py-2 text-xs font-semibold border border-slate-800 rounded-xl bg-slate-900/60 hover:bg-slate-800 text-slate-300 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
               >
-                <svg
-                  className="w-3.5 h-3.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
+                <ChevronLeft className="w-3.5 h-3.5" />
                 Previous
               </button>
               <button
@@ -1645,19 +1576,7 @@ function ProductsContent() {
                 className="px-4 py-2 text-xs font-semibold border border-slate-800 rounded-xl bg-slate-900/60 hover:bg-slate-800 text-slate-300 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
               >
                 Next
-                <svg
-                  className="w-3.5 h-3.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
@@ -1690,19 +1609,7 @@ function ProductsContent() {
             }}
           >
             <div className="w-14 h-14 rounded-2xl bg-red-900/25 flex items-center justify-center mb-5">
-              <svg
-                className="w-7 h-7 text-red-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.8}
-                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                />
-              </svg>
+              <Trash2 className="w-7 h-7 text-red-600" strokeWidth={1.8} />
             </div>
             <h3 className="text-xl font-bold text-slate-100 mb-2">
               Delete Product
@@ -1723,25 +1630,7 @@ function ProductsContent() {
                 className="flex-1 px-5 py-3 bg-red-600 text-white rounded-2xl text-sm font-semibold hover:bg-red-700 disabled:opacity-60 flex items-center justify-center gap-2"
               >
                 {deleting && (
-                  <svg
-                    className="w-4 h-4 animate-spin"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    />
-                  </svg>
+                  <Loader2 className="w-4 h-4 animate-spin" />
                 )}
                 Delete
               </button>

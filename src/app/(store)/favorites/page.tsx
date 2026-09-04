@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { Heart } from "lucide-react";
 import ProductGrid from "@/components/product/ProductGrid";
 import { useFavorites } from "@/context/FavoritesContext";
 import { getApiBase } from "@/lib/apiBase";
@@ -122,9 +123,7 @@ export default function FavoritesPage() {
           ) : products.length === 0 ? (
             <div className="bg-white rounded-3xl border border-charcoal-100 shadow-soft p-10 sm:p-12 text-center">
               <div className="w-14 h-14 rounded-2xl bg-charcoal-50 border border-charcoal-100 mx-auto grid place-items-center text-charcoal-500">
-                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                </svg>
+                <Heart className="w-7 h-7" strokeWidth={1.6} />
               </div>
               <h2 className="mt-5 text-xl font-semibold text-charcoal-950">
                 No favorites yet

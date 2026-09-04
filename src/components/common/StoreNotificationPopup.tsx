@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getApiBase } from "@/lib/apiBase";
 import Link from "next/link";
+import { X, ArrowRight, Copy, Check } from "lucide-react";
 
 interface NotificationItem {
   _id: string;
@@ -36,8 +37,16 @@ function CopyPromoButton({ code }: { code: string }) {
     >
       <span className="text-[10px] uppercase font-sans font-bold text-amber-700">Code:</span>
       <span className="tracking-wider text-amber-950 font-black text-sm">{code}</span>
-      <span className="text-xs font-sans font-bold ml-1 text-violet-700">
-        {copied ? "✓ Copied!" : "📋 Copy"}
+      <span className="inline-flex items-center gap-1 text-xs font-sans font-bold ml-1 text-violet-700">
+        {copied ? (
+          <>
+            <Check className="w-3.5 h-3.5" /> Copied!
+          </>
+        ) : (
+          <>
+            <Copy className="w-3.5 h-3.5" /> Copy
+          </>
+        )}
       </span>
     </button>
   );
@@ -168,9 +177,7 @@ export default function StoreNotificationPopup() {
           aria-label="Close notification modal"
           className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/80 hover:bg-white text-charcoal-500 hover:text-charcoal-950 border border-charcoal-200/80 transition-all duration-200 flex items-center justify-center z-30 shadow-md backdrop-blur-xs group"
         >
-          <svg className="w-4 h-4 transition-transform group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <X className="w-4 h-4 transition-transform group-hover:rotate-90" />
         </button>
 
         {/* IMAGE ONLY MODE */}
@@ -281,6 +288,12 @@ export default function StoreNotificationPopup() {
               </p>
             )}
 
+            {code && (
+              <div className="mt-4 flex items-center justify-start">
+                <CopyPromoButton code={code} />
+              </div>
+            )}
+
             {/* Action CTA Button */}
             {notification.link && (
               <div className="mt-6">
@@ -293,9 +306,7 @@ export default function StoreNotificationPopup() {
                     className={`w-full py-3.5 px-6 rounded-2xl text-xs font-bold tracking-wide transition-all duration-300 flex items-center justify-center gap-2 group ${config.btnBg}`}
                   >
                     <span>Explore Offer</span>
-                    <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
+                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                   </a>
                 ) : (
                   <Link
@@ -304,9 +315,7 @@ export default function StoreNotificationPopup() {
                     className={`w-full py-3.5 px-6 rounded-2xl text-xs font-bold tracking-wide transition-all duration-300 flex items-center justify-center gap-2 group ${config.btnBg}`}
                   >
                     <span>Explore Offer</span>
-                    <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
+                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                   </Link>
                 )}
               </div>

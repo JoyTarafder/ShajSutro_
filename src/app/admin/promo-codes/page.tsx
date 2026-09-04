@@ -4,6 +4,7 @@ import AdminAuthGuard from "@/components/admin/AdminAuthGuard";
 import { useAdminAuth } from "@/context/AdminAuthContext";
 import { getApiBase } from "@/lib/apiBase";
 import { useCallback, useEffect, useState } from "react";
+import { Plus, Search } from "lucide-react";
 
 const API = getApiBase();
 
@@ -286,9 +287,7 @@ function PromoCodesContent() {
             onClick={openCreate}
             className="px-4 py-2.5 bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 flex-shrink-0"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
+            <Plus className="w-4 h-4" strokeWidth={2.5} />
             <span>Create Promo Code</span>
           </button>
         </div>
@@ -343,9 +342,7 @@ function PromoCodesContent() {
             placeholder="Search by code or description..."
             className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:border-violet-500 transition-colors"
           />
-          <svg className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
+          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
         </div>
 
         <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">

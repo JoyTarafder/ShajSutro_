@@ -7,6 +7,16 @@ import { Product, SortOption } from "@/types";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
+import {
+  SlidersHorizontal,
+  X,
+  ChevronDown,
+  Search,
+  ChevronRight,
+  Check,
+  ChevronLeft,
+  SearchX,
+} from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -456,9 +466,7 @@ function ShopContent() {
       <div className="flex items-center justify-between pb-3 border-b border-emerald-100/70">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-emerald-950 text-white flex items-center justify-center shadow-xs">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-            </svg>
+            <SlidersHorizontal className="w-4 h-4" />
           </div>
           <div>
             <h2 className="text-sm font-bold text-emerald-950 tracking-tight">Refine Products</h2>
@@ -473,9 +481,7 @@ function ShopContent() {
             className="text-[11px] font-semibold text-emerald-800 hover:text-emerald-950 bg-emerald-100/50 hover:bg-emerald-100 px-2.5 py-1 rounded-full transition-all flex items-center gap-1 active:scale-95"
           >
             <span>Reset</span>
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X className="w-3 h-3" />
           </button>
         )}
       </div>
@@ -496,16 +502,11 @@ function ShopContent() {
                 </span>
               )}
             </div>
-            <svg
+            <ChevronDown
               className={`w-4 h-4 text-emerald-800/80 transform transition-transform duration-200 ${
                 openSections.categories ? "rotate-180" : ""
               }`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
+            />
           </button>
 
           {openSections.categories && (
@@ -519,9 +520,7 @@ function ShopContent() {
                     onChange={(e) => setCategorySearch(e.target.value)}
                     className="w-full text-xs pl-8 pr-7 py-1.5 rounded-xl border border-emerald-200/80 bg-white placeholder-emerald-800/40 text-emerald-950 focus:outline-none focus:ring-1 focus:ring-emerald-500/40"
                   />
-                  <svg className="w-3.5 h-3.5 text-emerald-700/60 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
+                  <Search className="w-3.5 h-3.5 text-emerald-700/60 absolute left-2.5 top-2.5" />
                   {categorySearch && (
                     <button
                       type="button"
@@ -563,16 +562,11 @@ function ShopContent() {
                               className="p-1 -ml-1 text-emerald-800/70 hover:text-emerald-950 hover:bg-emerald-100/60 rounded-md transition-colors"
                               title={isExpanded ? "Collapse" : "Expand"}
                             >
-                              <svg
-                                className={`w-3.5 h-3.5 transform transition-transform duration-200 ${
+                              <ChevronRight
+                                className={`w-3.5 h-3.5 transform transition-transform duration-200 stroke-[2.5] ${
                                   isExpanded ? "rotate-90" : ""
                                 }`}
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                              </svg>
+                              />
                             </button>
                           )}
 
@@ -584,9 +578,7 @@ function ShopContent() {
                             }`}
                           >
                             {isSelected && (
-                              <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3.5} d="M5 13l4 4L19 7" />
-                              </svg>
+                              <Check className="w-2.5 h-2.5 stroke-[3.5]" />
                             )}
                           </span>
 
@@ -634,9 +626,7 @@ function ShopContent() {
                                     }`}
                                   >
                                     {isSubSelected && (
-                                      <svg className="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3.5} d="M5 13l4 4L19 7" />
-                                      </svg>
+                                      <Check className="w-2 h-2 stroke-[3.5]" />
                                     )}
                                   </span>
                                   <span className="text-[11px] font-medium truncate">{sub.name}</span>
@@ -679,16 +669,11 @@ function ShopContent() {
               </span>
             )}
           </div>
-          <svg
+          <ChevronDown
             className={`w-4 h-4 text-emerald-800/80 transform transition-transform duration-200 ${
               openSections.price ? "rotate-180" : ""
             }`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
+          />
         </button>
 
         {openSections.price && (
@@ -817,16 +802,11 @@ function ShopContent() {
               </span>
             )}
           </div>
-          <svg
+          <ChevronDown
             className={`w-4 h-4 text-emerald-800/80 transform transition-transform duration-200 ${
               openSections.sizes ? "rotate-180" : ""
             }`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
+          />
         </button>
 
         {openSections.sizes && (
@@ -876,16 +856,11 @@ function ShopContent() {
               </span>
             )}
           </div>
-          <svg
+          <ChevronDown
             className={`w-4 h-4 text-emerald-800/80 transform transition-transform duration-200 ${
               openSections.badges ? "rotate-180" : ""
             }`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
+          />
         </button>
 
         {openSections.badges && (
@@ -1017,19 +992,7 @@ function ShopContent() {
                 onClick={() => setIsMobileFiltersOpen(true)}
                 className="flex lg:hidden items-center gap-2 text-xs sm:text-sm font-semibold text-emerald-950 border border-emerald-200/80 bg-white/90 px-4 py-2.5 rounded-xl hover:bg-white transition-all shadow-xs active:scale-95"
               >
-                <svg
-                  className="w-4 h-4 text-emerald-800"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
-                  />
-                </svg>
+                <SlidersHorizontal className="w-4 h-4 text-emerald-800" strokeWidth={1.5} />
                 Filters
                 {hasActiveFilters && (
                   <span className="w-5 h-5 rounded-full bg-emerald-950 text-white text-[11px] flex items-center justify-center font-bold">
@@ -1163,19 +1126,7 @@ function ShopContent() {
             ) : filteredProducts.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center bg-white/60 backdrop-blur-md border border-emerald-100/60 rounded-3xl p-8 shadow-glass mt-4">
                 <div className="w-16 h-16 rounded-2xl bg-emerald-100/50 border border-emerald-200/60 flex items-center justify-center mb-6">
-                  <svg
-                    className="w-7 h-7 text-emerald-800"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                    />
-                  </svg>
+                  <SearchX className="w-7 h-7 text-emerald-800" strokeWidth={1.5} />
                 </div>
                 <h3 className="text-xl font-bold text-emerald-950">
                   No products match your criteria
@@ -1233,9 +1184,7 @@ function ShopContent() {
                         className="px-3.5 py-2 rounded-xl text-xs font-semibold border border-emerald-200/80 bg-white text-emerald-950 hover:bg-emerald-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-xs flex items-center gap-1"
                         aria-label="Previous Page"
                       >
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                        </svg>
+                        <ChevronLeft className="w-3.5 h-3.5" />
                         Prev
                       </button>
 
@@ -1277,9 +1226,7 @@ function ShopContent() {
                         aria-label="Next Page"
                       >
                         Next
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
+                        <ChevronRight className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
@@ -1301,9 +1248,7 @@ function ShopContent() {
             <div className="flex items-center justify-between px-5 py-4 border-b border-emerald-100/50 bg-white/80 backdrop-blur-md">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-md bg-emerald-950 text-white flex items-center justify-center text-xs">
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                  </svg>
+                  <SlidersHorizontal className="w-3.5 h-3.5" />
                 </div>
                 <h2 className="text-sm font-bold text-emerald-950 uppercase tracking-wider">
                   Filters {hasActiveFilters ? `(${activeFiltersCount})` : ""}
@@ -1314,9 +1259,7 @@ function ShopContent() {
                 onClick={() => setIsMobileFiltersOpen(false)}
                 className="p-1.5 text-emerald-800/70 hover:text-emerald-950 hover:bg-emerald-100/50 rounded-full transition-colors"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X className="w-5 h-5" />
               </button>
             </div>
 

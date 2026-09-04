@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 
 const faqs = [
   {
@@ -87,16 +88,11 @@ export default function FAQSection() {
                         : "bg-warm-50 border-charcoal-200/80 text-charcoal-600"
                     }`}
                   >
-                    <svg
+                    <ChevronDown
                       className={`w-4 h-4 transition-transform duration-300 ${
                         isOpen ? "rotate-180" : "rotate-0"
                       }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
+                    />
                   </span>
                 </button>
 

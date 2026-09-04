@@ -3,6 +3,7 @@
 import AdminAuthGuard from "@/components/admin/AdminAuthGuard";
 import { useAdminAuth } from "@/context/AdminAuthContext";
 import { ChangeEvent, DragEvent, useEffect, useState } from "react";
+import { Check, X, Plus, Loader2 } from "lucide-react";
 
 interface NotificationItem {
   _id: string;
@@ -98,33 +99,9 @@ function Toast({ msg, type }: { msg: string; type: "success" | "error" }) {
       }`}
     >
       {type === "success" ? (
-        <svg
-          className="w-4 h-4 flex-shrink-0"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2.5}
-            d="M5 13l4 4L19 7"
-          />
-        </svg>
+        <Check className="w-4 h-4 flex-shrink-0" strokeWidth={2.5} />
       ) : (
-        <svg
-          className="w-4 h-4 flex-shrink-0"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2.5}
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
+        <X className="w-4 h-4 flex-shrink-0" strokeWidth={2.5} />
       )}
       {msg}
     </div>
@@ -321,19 +298,7 @@ function NotificationsContent() {
           onClick={openCreateModal}
           className="px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 flex-shrink-0"
         >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2.5}
-              d="M12 4.5v15m7.5-7.5h-15"
-            />
-          </svg>
+          <Plus className="w-4 h-4" strokeWidth={2.5} />
           Create New Notification
         </button>
       </div>
@@ -396,25 +361,7 @@ function NotificationsContent() {
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-16 text-slate-400 bg-white/[0.02] border border-white/8 rounded-2xl">
-            <svg
-              className="w-8 h-8 animate-spin text-violet-400 mb-3"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-              />
-            </svg>
+            <Loader2 className="w-8 h-8 animate-spin text-violet-400 mb-3" />
             <p className="text-sm font-medium">Loading notifications...</p>
           </div>
         ) : notifications.length === 0 ? (
@@ -577,19 +524,7 @@ function NotificationsContent() {
                 className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
                 style={{ background: "rgba(255,255,255,0.06)", color: "rgba(148,163,184,0.8)" }}
               >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <X className="w-5 h-5" />
               </button>
             </div>
 
@@ -901,27 +836,7 @@ function NotificationsContent() {
                     disabled={saving}
                     className="px-8 py-3 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold text-sm shadow-md hover:shadow-lg disabled:opacity-60 flex items-center gap-2"
                   >
-                    {saving && (
-                      <svg
-                        className="w-4 h-4 animate-spin"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                        />
-                      </svg>
-                    )}
+                    {saving && <Loader2 className="w-4 h-4 animate-spin" />}
                     {editingItem
                       ? "Update Notification"
                       : "Publish Notification"}

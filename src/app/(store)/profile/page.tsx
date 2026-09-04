@@ -6,6 +6,30 @@ import { useCallback, useEffect, useState } from "react";
 import { getApiBase } from "@/lib/apiBase";
 import { DIVISIONS, getDistricts, getThanas } from "@/lib/bangladeshLocations";
 import ProfileSkeleton from "@/components/profile/ProfileSkeleton";
+import {
+  LayoutGrid,
+  Package,
+  User as UserIcon,
+  MapPin,
+  Lock,
+  LogOut,
+  Truck,
+  CheckCircle2,
+  Wallet,
+  Coins,
+  Star,
+  Eye,
+  EyeOff,
+  Loader2,
+  XCircle,
+  RotateCcw,
+  Check,
+  X,
+  ArrowLeftRight,
+  ChevronDown,
+  Upload,
+  Trash2,
+} from "lucide-react";
 
 const API = getApiBase();
 
@@ -313,12 +337,12 @@ export default function ProfilePage() {
             <nav className="bg-white rounded-2xl border border-charcoal-100 overflow-hidden shadow-2xs">
               {(
                 [
-                  { id: "overview",  icon: GridIcon,    label: "Overview" },
-                  { id: "orders",    icon: BoxIcon,      label: "My Orders" },
-                  { id: "account",   icon: UserIcon,     label: "Account Settings" },
-                  { id: "addresses", icon: MapPinIcon,   label: "Addresses" },
-                  { id: "security",  icon: LockIcon,     label: "Security" },
-                ] as { id: Tab; icon: React.FC<{ className?: string }>; label: string }[]
+                  { id: "overview",  icon: LayoutGrid,  label: "Overview" },
+                  { id: "orders",    icon: Package,     label: "My Orders" },
+                  { id: "account",   icon: UserIcon,    label: "Account Settings" },
+                  { id: "addresses", icon: MapPin,      label: "Addresses" },
+                  { id: "security",  icon: Lock,        label: "Security" },
+                ] as { id: Tab; icon: React.ComponentType<{ className?: string }>; label: string }[]
               ).map(({ id, icon: Icon, label }) => (
                 <button
                   key={id}
@@ -343,7 +367,7 @@ export default function ProfilePage() {
               onClick={() => { localStorage.removeItem("token"); router.push("/login"); }}
               className="w-full flex items-center gap-3 px-5 py-3.5 text-xs sm:text-sm font-semibold text-rose-600 hover:text-rose-700 bg-white hover:bg-rose-50 rounded-2xl border border-charcoal-100 transition-all duration-200 shadow-2xs"
             >
-              <LogoutIcon className="w-4 h-4 shrink-0" />
+              <LogOut className="w-4 h-4 shrink-0" />
               Sign Out
             </button>
           </aside>
@@ -372,17 +396,6 @@ export default function ProfilePage() {
 
 // ─── Overview Tab ─────────────────────────────────────────────────────────────
 
-function CoinsIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-      <circle cx="8" cy="8" r="6" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M18.09 10.37A6 6 0 1 1 10.34 18" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M7 6h1v4" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M16.7 13.3h1v4" />
-    </svg>
-  );
-}
-
 function OverviewTab({
   user,
   orders,
@@ -402,14 +415,14 @@ function OverviewTab({
   const userCoins  = user.coins ?? 0;
 
   const stats = [
-    { label: "Total Orders",  value: orders.length.toString(),          icon: BoxIcon,         badge: null,                                 isCoin: false },
-    { label: "Active Orders", value: active.toString(),                 icon: TruckIcon,       badge: null,                                 isCoin: false },
-    { label: "Delivered",     value: delivered.toString(),              icon: CheckCircleIcon, badge: null,                                 isCoin: false },
-    { label: "Total Spent",   value: `৳${totalSpent.toLocaleString()}`, icon: WalletIcon,      badge: null,                                 isCoin: false },
+    { label: "Total Orders",  value: orders.length.toString(),          icon: Package,      badge: null,                                 isCoin: false },
+    { label: "Active Orders", value: active.toString(),                 icon: Truck,        badge: null,                                 isCoin: false },
+    { label: "Delivered",     value: delivered.toString(),              icon: CheckCircle2, badge: null,                                 isCoin: false },
+    { label: "Total Spent",   value: `৳${totalSpent.toLocaleString()}`, icon: Wallet,       badge: null,                                 isCoin: false },
     {
       label: "Reward Coins",
       value: userCoins.toLocaleString(),
-      icon: CoinsIcon,
+      icon: Coins,
       badge: `≈ ৳${userCoins.toLocaleString()}`,
       isCoin: true,
     },
@@ -466,7 +479,7 @@ function OverviewTab({
           <p className="text-white font-semibold">{formatDate(user.createdAt!)}</p>
         </div>
         <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
-          <StarIcon className="w-5 h-5 text-white/70" />
+          <Star className="w-5 h-5 text-white/70" />
         </div>
       </div>
 
@@ -492,7 +505,7 @@ function OverviewTab({
 
       {recentOrders.length === 0 && (
         <EmptyState
-          icon={BoxIcon}
+          icon={Package}
           title="No orders yet"
           description="Start shopping and your orders will appear here."
           actionLabel="Shop Now"
@@ -533,7 +546,7 @@ function OrdersTab({ orders, onFetch, token }: { orders: Order[]; onFetch: () =>
   if (sorted.length === 0) {
     return (
       <EmptyState
-        icon={BoxIcon}
+        icon={Package}
         title="No orders yet"
         description="When you place orders, they'll show up here."
         actionLabel="Start Shopping"
@@ -606,9 +619,7 @@ function OrderStatusStepper({ order }: { order: Order }) {
     return (
       <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs font-semibold text-red-600">
-          <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <XCircle className="w-4 h-4 shrink-0" />
           Order Cancelled {cancelItem ? `• ${formatDateTime(cancelItem.updatedAt)}` : ""}
         </div>
         <span className="text-xs text-red-600 font-medium">This order was cancelled</span>
@@ -621,9 +632,7 @@ function OrderStatusStepper({ order }: { order: Order }) {
     return (
       <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-xl flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs font-semibold text-orange-700">
-          <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 15v-1a4 4 0 00-4-4H4m0 0l4-4m-4 4l4 4" />
-          </svg>
+          <RotateCcw className="w-4 h-4 shrink-0" />
           Order Returned {returnItem ? `• ${formatDateTime(returnItem.updatedAt)}` : ""}
         </div>
         <span className="text-xs text-orange-700 font-medium">This order was returned</span>
@@ -671,9 +680,7 @@ function OrderStatusStepper({ order }: { order: Order }) {
                 }`}
               >
                 {isCompleted ? (
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                  </svg>
+                  <Check className="w-3.5 h-3.5" strokeWidth={2.5} />
                 ) : (
                   <span>{idx + 1}</span>
                 )}
@@ -753,16 +760,12 @@ function ExchangeModal({
           onClick={onClose}
           className="absolute top-5 right-5 text-charcoal-400 hover:text-charcoal-700 p-1.5 rounded-full hover:bg-charcoal-50 transition-colors"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <X className="w-5 h-5" />
         </button>
 
         <div className="flex items-center gap-3 mb-5">
           <div className="w-10 h-10 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-600">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-            </svg>
+            <ArrowLeftRight className="w-5 h-5" />
           </div>
           <div>
             <h3 className="text-base font-bold text-charcoal-950">Request Exchange / Return</h3>
@@ -975,14 +978,9 @@ function OrderRow({
               className="inline-flex items-center gap-2 px-3.5 py-2 min-h-[38px] text-xs font-semibold text-charcoal-700 bg-warm-50 hover:bg-charcoal-100 border border-charcoal-200 rounded-xl transition-all shadow-2xs"
             >
               <span>{showTracking ? "Hide History" : "Show History"}</span>
-              <svg
+              <ChevronDown
                 className={`w-3.5 h-3.5 transition-transform duration-200 ${showTracking ? "rotate-180" : ""}`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
+              />
             </button>
           </div>
 
@@ -1173,13 +1171,9 @@ function ReviewModal({
                     className="p-1"
                     aria-label={`Set ${star} star rating`}
                   >
-                    <svg
-                      className={`w-6 h-6 ${active ? "text-amber-500" : "text-charcoal-200"}`}
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
+                    <Star
+                      className={`w-6 h-6 ${active ? "text-amber-500 fill-amber-500" : "text-charcoal-200"}`}
+                    />
                   </button>
                 );
               })}
@@ -1338,9 +1332,7 @@ function AccountTab({
                 htmlFor="storefront-avatar-upload"
                 className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-charcoal-200 hover:border-charcoal-450 bg-white text-xs font-semibold text-charcoal-700 hover:text-charcoal-950 transition-all cursor-pointer active:scale-[0.97]"
               >
-                <svg className="w-3.5 h-3.5 text-charcoal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                </svg>
+                <Upload className="w-3.5 h-3.5 text-charcoal-500" />
                 Upload Photo
               </label>
               <input
@@ -1357,9 +1349,7 @@ function AccountTab({
                   onClick={() => onAvatarChange(null)}
                   className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-red-200 hover:border-red-300 bg-red-50 text-xs font-semibold text-red-600 hover:text-red-700 transition-all active:scale-[0.97]"
                 >
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
+                  <Trash2 className="w-3.5 h-3.5" />
                   Remove Photo
                 </button>
               )}
@@ -1420,7 +1410,7 @@ function AccountTab({
             disabled={loading}
             className="btn-primary px-8 py-3.5 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {loading ? <SmallSpinner /> : "Save Changes"}
+            {loading ? <Loader2 className="animate-spin h-4 w-4 text-white mx-auto" /> : "Save Changes"}
           </button>
         </div>
       </form>
@@ -1498,7 +1488,7 @@ function SecurityTab({ token }: { token: string }) {
                 onClick={() => setShow(!show)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-charcoal-300 hover:text-charcoal-600 transition-colors"
               >
-                <EyeIconSmall open={show} />
+                {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
           </div>
@@ -1510,7 +1500,7 @@ function SecurityTab({ token }: { token: string }) {
             disabled={loading}
             className="btn-primary px-8 py-3.5 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {loading ? <SmallSpinner /> : "Update Password"}
+            {loading ? <Loader2 className="animate-spin h-4 w-4 text-white mx-auto" /> : "Update Password"}
           </button>
         </div>
       </form>
@@ -1679,7 +1669,7 @@ function AddressesTab({ token }: { token: string }) {
   if (loading) {
     return (
       <div className="bg-white rounded-2xl border border-charcoal-100 p-8 flex items-center justify-center min-h-[300px]">
-        <SmallSpinner />
+        <Loader2 className="w-6 h-6 animate-spin text-charcoal-400" />
       </div>
     );
   }
@@ -1718,7 +1708,7 @@ function AddressesTab({ token }: { token: string }) {
       {addresses.length === 0 ? (
         <div className="bg-white rounded-2xl border border-charcoal-100 p-12 text-center flex flex-col items-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-charcoal-50 flex items-center justify-center">
-            <MapPinIcon className="w-6 h-6 text-charcoal-400" />
+            <MapPin className="w-6 h-6 text-charcoal-400" />
           </div>
           <div>
             <p className="font-semibold text-charcoal-950 text-sm">No addresses saved yet</p>
@@ -1956,7 +1946,7 @@ function AddressesTab({ token }: { token: string }) {
                   disabled={submitting}
                   className="btn-primary px-6 py-2.5 text-xs disabled:opacity-50"
                 >
-                  {submitting ? <SmallSpinner /> : editingAddr ? "Save Changes" : "Add Address"}
+                  {submitting ? <Loader2 className="animate-spin h-4 w-4 text-white mx-auto" /> : editingAddr ? "Save Changes" : "Add Address"}
                 </button>
               </div>
             </form>
@@ -1998,106 +1988,4 @@ function EmptyState({
   );
 }
 
-// ─── Icons ────────────────────────────────────────────────────────────────────
 
-function GridIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
-    </svg>
-  );
-}
-
-function BoxIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-    </svg>
-  );
-}
-
-function UserIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-    </svg>
-  );
-}
-
-function MapPinIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-    </svg>
-  );
-}
-
-function LockIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-    </svg>
-  );
-}
-
-function LogoutIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-    </svg>
-  );
-}
-
-function TruckIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-    </svg>
-  );
-}
-
-function CheckCircleIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-  );
-}
-
-function WalletIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
-    </svg>
-  );
-}
-
-function StarIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
-    </svg>
-  );
-}
-
-function EyeIconSmall({ open }: { open: boolean }) {
-  return (
-    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      {open ? (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
-      ) : (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-      )}
-    </svg>
-  );
-}
-
-function SmallSpinner() {
-  return (
-    <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-    </svg>
-  );
-}

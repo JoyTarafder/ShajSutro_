@@ -4,6 +4,17 @@ import AdminAuthGuard from "@/components/admin/AdminAuthGuard";
 import { useAdminAuth } from "@/context/AdminAuthContext";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import {
+  Check,
+  X,
+  Loader2,
+  Trash2,
+  FolderTree,
+  GitFork,
+  ShoppingBag,
+  ChevronLeft,
+  Plus,
+} from "lucide-react";
 
 // â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
@@ -27,33 +38,9 @@ function Toast({ msg, type }: { msg: string; type: "success" | "error" }) {
       className={`fixed top-5 right-5 z-[100] flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-xl text-sm font-medium ${type === "success" ? "bg-emerald-600 text-white" : "bg-red-600 text-white"}`}
     >
       {type === "success" ? (
-        <svg
-          className="w-4 h-4 flex-shrink-0"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2.5}
-            d="M5 13l4 4L19 7"
-          />
-        </svg>
+        <Check className="w-4 h-4 flex-shrink-0" strokeWidth={2.5} />
       ) : (
-        <svg
-          className="w-4 h-4 flex-shrink-0"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2.5}
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
+        <X className="w-4 h-4 flex-shrink-0" strokeWidth={2.5} />
       )}
       {msg}
     </div>
@@ -145,19 +132,7 @@ function CategoryModal({
               color: "rgba(148,163,184,0.8)",
             }}
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <X className="w-4 h-4" />
           </button>
         </div>
 
@@ -259,27 +234,7 @@ function CategoryModal({
               disabled={saving}
               className="flex-1 px-5 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-2xl text-sm font-bold hover:from-violet-700 hover:to-indigo-700 transition-all disabled:opacity-60 flex items-center justify-center gap-2"
             >
-              {saving && (
-                <svg
-                  className="w-4 h-4 animate-spin"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                  />
-                </svg>
-              )}
+              {saving && <Loader2 className="w-4 h-4 animate-spin" />}
               {category ? "Save Changes" : "Create"}
             </button>
           </div>
@@ -322,19 +277,7 @@ function DeleteConfirm({
             border: "1px solid rgba(248,113,113,0.2)",
           }}
         >
-          <svg
-            className="w-7 h-7 text-red-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.8}
-              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-            />
-          </svg>
+          <Trash2 className="w-7 h-7 text-red-600" strokeWidth={1.8} />
         </div>
         <h3 className="text-xl font-bold mb-2" style={{ color: "#e2e8f0" }}>
           Delete?
@@ -361,27 +304,7 @@ function DeleteConfirm({
             disabled={deleting}
             className="flex-1 px-5 py-3 bg-red-600 text-white rounded-2xl text-sm font-semibold hover:bg-red-700 disabled:opacity-60 flex items-center justify-center gap-2"
           >
-            {deleting && (
-              <svg
-                className="w-4 h-4 animate-spin"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                />
-              </svg>
-            )}
+            {deleting && <Loader2 className="w-4 h-4 animate-spin" />}
             Delete
           </button>
         </div>
@@ -420,19 +343,7 @@ function CategoryCard({
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-slate-600">
-              <svg
-                className="w-10 h-10"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1}
-                  d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776"
-                />
-              </svg>
+              <FolderTree className="w-10 h-10" strokeWidth={1} />
             </div>
           )}
         </div>
@@ -466,19 +377,7 @@ function CategoryCard({
             onClick={onManageSub}
             className="w-full px-3 py-2 text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 transition-all bg-violet-500/15 hover:bg-violet-500/25 text-violet-300 border border-violet-500/30 shadow-xs whitespace-nowrap"
           >
-            <svg
-              className="w-3.5 h-3.5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h10M4 18h7"
-              />
-            </svg>
+            <GitFork className="w-3.5 h-3.5" />
             Sub-categories
           </button>
         ) : (
@@ -487,19 +386,7 @@ function CategoryCard({
             onClick={onManageProducts}
             className="w-full px-3 py-2 text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 transition-all bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 shadow-xs whitespace-nowrap"
           >
-            <svg
-              className="w-3.5 h-3.5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z"
-              />
-            </svg>
+            <ShoppingBag className="w-3.5 h-3.5" strokeWidth={1.5} />
             View Products
           </button>
         )}
@@ -672,19 +559,7 @@ function CategoriesContent() {
               onClick={closeSubPanel}
               className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-slate-200 transition-colors"
             >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
+              <ChevronLeft className="w-4 h-4" />
               Categories
             </button>
           )}
@@ -710,19 +585,7 @@ function CategoriesContent() {
           onClick={() => setModal("new")}
           className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl text-xs font-bold hover:from-violet-700 hover:to-indigo-700 transition-all hover:shadow-lg hover:shadow-violet-300/40 hover:-translate-y-0.5"
         >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2.5}
-              d="M12 4.5v15m7.5-7.5h-15"
-            />
-          </svg>
+          <Plus className="w-4 h-4" strokeWidth={2.5} />
           {isSubView ? "Add Sub-category" : "Add Category"}
         </button>
       </div>
@@ -743,19 +606,7 @@ function CategoriesContent() {
           className="flex flex-col items-center justify-center py-24"
           style={{ color: "rgba(148,163,184,0.4)" }}
         >
-          <svg
-            className="w-12 h-12 mb-3"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1}
-              d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776"
-            />
-          </svg>
+          <FolderTree className="w-12 h-12 mb-3" strokeWidth={1} />
           <p className="text-sm font-medium">
             No {isSubView ? "sub-categories" : "categories"} yet
           </p>

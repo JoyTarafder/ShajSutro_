@@ -5,6 +5,7 @@ import { getApiBase } from "@/lib/apiBase";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { Menu, Bell, RefreshCw } from "lucide-react";
 
 const API = getApiBase();
 
@@ -193,9 +194,7 @@ export default function AdminHeader() {
           className="md:hidden p-2 rounded-xl text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
           aria-label="Toggle Admin Sidebar"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-          </svg>
+          <Menu className="w-5 h-5" />
         </button>
 
         <div>
@@ -230,20 +229,7 @@ export default function AdminHeader() {
             title={unreadCount > 0 ? `Notifications (${unreadCount} unread)` : "Notifications & Activity Alerts"}
             aria-label={unreadCount > 0 ? `Notifications (${unreadCount} unread)` : "Notifications & Activity Alerts"}
           >
-            <svg
-              className="w-[19px] h-[19px]"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.75}
-                d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
-              />
-            </svg>
+            <Bell className="w-[19px] h-[19px]" strokeWidth={1.75} />
 
             {unreadCount > 0 && (
               <span
@@ -288,19 +274,7 @@ export default function AdminHeader() {
                   style={{ background: "rgba(255,255,255,0.06)", color: "rgba(226,232,240,0.7)" }}
                   title="Refresh activity"
                 >
-                  <svg
-                    className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 4v5h5M20 20v-5h-5M4 9a9 9 0 0115.357-2m1.643 9a9 9 0 01-15.357 2"
-                    />
-                  </svg>
+                  <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
                 </button>
               </div>
 

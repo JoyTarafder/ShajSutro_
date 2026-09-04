@@ -9,6 +9,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import {
+  ShoppingBag,
+  Check,
+  Minus,
+  Plus,
+  Trash2,
+  ChevronLeft,
+  Lock,
+} from "lucide-react";
 
 interface ApiProduct {
   _id: string;
@@ -83,19 +92,7 @@ export default function CartPage() {
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6 text-center py-28">
         <div className="w-20 h-20 rounded-full bg-charcoal-50 flex items-center justify-center mb-7">
-          <svg
-            className="w-9 h-9 text-charcoal-300"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z"
-            />
-          </svg>
+          <ShoppingBag className="w-9 h-9 text-charcoal-300" strokeWidth={1.5} />
         </div>
         <h1 className="text-2xl font-semibold text-charcoal-950 mb-3">
           Your cart is empty
@@ -146,19 +143,7 @@ export default function CartPage() {
             )}
             {subtotal >= 1200 && (
               <div className="mb-7 p-5 bg-green-50 rounded-2xl flex items-center gap-2.5">
-                <svg
-                  className="w-4 h-4 text-green-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
+                <Check className="w-4 h-4 text-green-600" />
                 <span className="text-sm text-green-700 font-medium">
                   You qualify for free shipping!
                 </span>
@@ -231,19 +216,7 @@ export default function CartPage() {
                           }
                           className="w-9 h-9 flex items-center justify-center text-charcoal-400 hover:text-charcoal-900 transition-colors"
                         >
-                          <svg
-                            className="w-3.5 h-3.5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M20 12H4"
-                            />
-                          </svg>
+                          <Minus className="w-3.5 h-3.5" />
                         </button>
                         <span className="w-9 text-center text-sm font-medium text-charcoal-900">
                           {item.quantity}
@@ -259,19 +232,7 @@ export default function CartPage() {
                           }
                           className="w-9 h-9 flex items-center justify-center text-charcoal-400 hover:text-charcoal-900 transition-colors"
                         >
-                          <svg
-                            className="w-3.5 h-3.5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M12 4v16m8-8H4"
-                            />
-                          </svg>
+                          <Plus className="w-3.5 h-3.5" />
                         </button>
                       </div>
 
@@ -281,19 +242,7 @@ export default function CartPage() {
                         }
                         className="text-sm text-charcoal-300 hover:text-red-500 transition-colors duration-300 flex items-center gap-1.5"
                       >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                          />
-                        </svg>
+                        <Trash2 className="w-4 h-4" />
                         Remove
                       </button>
                     </div>
@@ -307,19 +256,7 @@ export default function CartPage() {
                 href="/shop"
                 className="btn-secondary text-sm inline-flex items-center gap-2 group"
               >
-                <svg
-                  className="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
+                <ChevronLeft className="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" />
                 Continue Shopping
               </Link>
             </div>
@@ -383,19 +320,7 @@ export default function CartPage() {
               </button>
 
               <div className="mt-5 flex items-center justify-center gap-2 text-xs text-charcoal-300">
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
-                  />
-                </svg>
+                <Lock className="w-4 h-4" />
                 <span className="font-light">
                   Secure SSL encrypted checkout
                 </span>

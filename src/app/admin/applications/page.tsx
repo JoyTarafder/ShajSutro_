@@ -3,6 +3,7 @@
 import AdminAuthGuard from "@/components/admin/AdminAuthGuard";
 import { useAdminAuth } from "@/context/AdminAuthContext";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { Search, RefreshCw, Download } from "lucide-react";
 
 type Application = {
   _id: string;
@@ -84,29 +85,17 @@ function ApplicationsContent() {
               className="w-full px-4 py-3 rounded-2xl text-sm transition-all focus:outline-none"
               style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "#f1f5f9" }}
             />
-            <svg
+            <Search
               className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4"
               style={{ color: "rgba(148,163,184,0.5)" }}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.8}
-                d="M21 21l-4.35-4.35m1.6-5.15a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
+            />
           </div>
           <button
             onClick={fetchAll}
             className="px-5 py-3 rounded-2xl text-sm font-bold text-white transition-all flex items-center gap-2"
             style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h5M20 20v-5h-5M4 9a9 9 0 0115.357-2m1.643 9a9 9 0 01-15.357 2" />
-            </svg>
+            <RefreshCw className="w-4 h-4" />
             Refresh
           </button>
         </div>
@@ -173,9 +162,7 @@ function ApplicationsContent() {
                         rel="noreferrer"
                       >
                         Download
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 16.5V3m0 13.5l-3.75-3.75M12 16.5l3.75-3.75M3.75 20.25h16.5" />
-                        </svg>
+                        <Download className="w-3.5 h-3.5" />
                       </a>
                     </td>
                     <td className="px-6 py-4">

@@ -4,6 +4,7 @@ import { getApiBase } from "@/lib/apiBase";
 import { notifyError, notifySuccess } from "@/lib/notify";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { Users, Briefcase, Clock, CheckCircle2, Search, ArrowUpRight, X } from "lucide-react";
 
 type Job = {
   _id: string;
@@ -295,90 +296,22 @@ export default function CareersPage() {
           <Stat
             label="Team size"
             value="10–20"
-            icon={
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.6}
-                  d="M17 20.25v-1.5a3.75 3.75 0 00-3.75-3.75h-2.5A3.75 3.75 0 007 18.75v1.5M12 12a3.75 3.75 0 100-7.5A3.75 3.75 0 0012 12z"
-                />
-              </svg>
-            }
+            icon={<Users className="w-5 h-5" strokeWidth={1.6} />}
           />
           <Stat
             label="Work style"
             value="Remote-first"
-            icon={
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.6}
-                  d="M8 7V6a4 4 0 018 0v1M6 7h12v14H6V7z"
-                />
-              </svg>
-            }
+            icon={<Briefcase className="w-5 h-5" strokeWidth={1.6} />}
           />
           <Stat
             label="Hiring process"
             value="2–3 weeks"
-            icon={
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.6}
-                  d="M12 6v6l4 2"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.6}
-                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            }
+            icon={<Clock className="w-5 h-5" strokeWidth={1.6} />}
           />
           <Stat
             label="Benefits"
             value="Top-tier"
-            icon={
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.6}
-                  d="M9 12.75L11.25 15 15 9.75"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.6}
-                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            }
+            icon={<CheckCircle2 className="w-5 h-5" strokeWidth={1.6} />}
           />
         </div>
       </section>
@@ -410,19 +343,7 @@ export default function CareersPage() {
                 placeholder="Search roles…"
                 className="w-full px-4 py-3 rounded-2xl border border-charcoal-200 bg-white text-sm text-charcoal-900 placeholder-charcoal-300 focus:outline-none focus:ring-2 focus:ring-charcoal-200 focus:border-charcoal-400 transition-all"
               />
-              <svg
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-charcoal-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.6}
-                  d="M21 21l-4.35-4.35m1.6-5.15a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
+              <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-charcoal-300" />
             </div>
 
             <select
@@ -537,19 +458,7 @@ export default function CareersPage() {
                         : (!!j.deadline && new Date() > new Date(j.deadline))
                         ? "Closed"
                         : "Apply"}
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.6}
-                          d="M7 17L17 7M17 7H9m8 0v8"
-                        />
-                      </svg>
+                      <ArrowUpRight className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
@@ -664,19 +573,7 @@ export default function CareersPage() {
                 className="w-9 h-9 rounded-2xl border border-charcoal-200 bg-white text-charcoal-500 hover:text-charcoal-900 hover:bg-charcoal-50 transition-colors grid place-items-center disabled:opacity-60"
                 aria-label="Close"
               >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <X className="w-4 h-4" />
               </button>
             </div>
 

@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { Search, X, ChevronRight, SearchX } from "lucide-react";
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -179,19 +180,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
           className="relative flex items-center px-6 py-5 border-b border-charcoal-100 bg-white/80"
         >
           <div className="flex items-center justify-center w-9 h-9 rounded-full bg-warm-100/70 text-charcoal-800 mr-3.5 flex-shrink-0">
-            <svg
-              className="w-4.5 h-4.5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-              />
-            </svg>
+            <Search className="w-4.5 h-4.5" />
           </div>
 
           <input
@@ -213,7 +202,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
               className="w-7 h-7 rounded-full bg-charcoal-100 text-charcoal-600 hover:bg-charcoal-200 hover:text-charcoal-950 flex items-center justify-center text-xs mr-2 transition-colors"
               aria-label="Clear search"
             >
-              ✕
+              <X className="w-3.5 h-3.5" />
             </button>
           )}
 
@@ -392,9 +381,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     </div>
 
                     <div className="w-8 h-8 rounded-full bg-charcoal-50 group-hover:bg-charcoal-950 group-hover:text-white flex items-center justify-center text-charcoal-400 transition-all flex-shrink-0">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
+                      <ChevronRight className="w-4 h-4" />
                     </div>
                   </Link>
                 );
@@ -406,7 +393,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
           {!loading && query.trim() && results.length === 0 && (
             <div className="py-12 text-center space-y-3">
               <div className="w-12 h-12 rounded-full bg-warm-100 text-charcoal-600 flex items-center justify-center mx-auto text-xl">
-                🔍
+                <SearchX className="w-6 h-6 text-charcoal-500" />
               </div>
               <p className="text-sm font-bold text-charcoal-900">
                 No luxury pieces found for &ldquo;{query}&rdquo;

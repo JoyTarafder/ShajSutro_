@@ -4,6 +4,7 @@ import { getApiBase } from "@/lib/apiBase";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ChevronRight } from "lucide-react";
 
 interface ApiProduct {
   _id: string;
@@ -162,19 +163,7 @@ export default function PromoGrid() {
                   </p>
                   <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-charcoal-950 text-xs font-bold rounded-full transition-all shadow-xs group-hover:bg-warm-50">
                     <span>{mainItem.cta}</span>
-                    <svg
-                      className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
+                    <ChevronRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
                   </span>
                 </div>
               </Link>
@@ -205,19 +194,7 @@ export default function PromoGrid() {
                   </p>
                   <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-white group-hover:gap-2.5 transition-all">
                     <span>{item.cta}</span>
-                    <svg
-                      className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
+                    <ChevronRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
                   </span>
                 </div>
               </Link>
