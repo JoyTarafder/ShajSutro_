@@ -44,7 +44,8 @@ export default function StatCard({
 
   return (
     <div
-      className={`rounded-3xl p-5 sm:p-6 border transition-all duration-300 hover:-translate-y-1 ${cfg.border} flex items-center gap-4 relative overflow-hidden group shadow-xl`}
+      title={`${title}: ${value}`}
+      className={`rounded-3xl p-4 sm:p-5 xl:p-4 2xl:p-5 border transition-all duration-300 hover:-translate-y-1 ${cfg.border} flex items-center gap-3.5 sm:gap-4 relative overflow-hidden group shadow-xl`}
       style={{
         background: "rgba(15, 15, 25, 0.75)",
         borderColor: "rgba(255, 255, 255, 0.08)",
@@ -58,7 +59,7 @@ export default function StatCard({
 
       {/* Icon Badge */}
       <div
-        className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${cfg.gradient} flex items-center justify-center text-white shadow-lg ${cfg.glow} shrink-0 group-hover:scale-105 transition-transform duration-300 ring-1 ring-white/15`}
+        className={`w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br ${cfg.gradient} flex items-center justify-center text-white shadow-lg ${cfg.glow} shrink-0 group-hover:scale-105 transition-transform duration-300 ring-1 ring-white/15`}
       >
         {icon}
       </div>
@@ -68,7 +69,10 @@ export default function StatCard({
         <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-1">
           {title}
         </p>
-        <p className="text-2xl sm:text-3xl font-black tracking-tight text-slate-100 leading-none truncate">
+        <p
+          title={String(value)}
+          className="text-xl sm:text-2xl xl:text-xl 2xl:text-2xl font-black tracking-tight text-slate-100 leading-tight break-words"
+        >
           {value}
         </p>
         {sub && (
