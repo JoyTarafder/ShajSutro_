@@ -274,9 +274,11 @@ function SocialButtons({ redirectUrl = "/profile" }: { redirectUrl?: string }) {
   };
 
   const handleGoogleLogin = async () => {
-    const clientId =
-      process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
-      "30233845656-lmb96sgoph6u4ug4olhedr5bmcfp5jr8.apps.googleusercontent.com";
+    const clientId = (process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "").trim();
+    if (!clientId) {
+      notifyError("Google Client ID is not configured in .env.local");
+      return;
+    }
 
     try {
       setGoogleLoading(true);
