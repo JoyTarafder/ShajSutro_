@@ -364,10 +364,11 @@ export default function ProfilePage() {
 
 function CoinsIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <circle cx="8" cy="8" r="6" strokeWidth={1.5} />
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.09 10.37A6 6 0 1110.34 18" />
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 6h2m-1-1v4m7 4h2m-1-1v4" />
+    <svg className={className} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+      <circle cx="8" cy="8" r="6" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M18.09 10.37A6 6 0 1 1 10.34 18" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M7 6h1v4" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M16.7 13.3h1v4" />
     </svg>
   );
 }
@@ -391,15 +392,15 @@ function OverviewTab({
   const userCoins  = user.coins ?? 0;
 
   const stats = [
-    { label: "Total Orders",    value: orders.length,                     icon: BoxIcon,         isCoin: false },
-    { label: "Active Orders",   value: active,                            icon: TruckIcon,       isCoin: false },
-    { label: "Delivered",       value: delivered,                         icon: CheckCircleIcon, isCoin: false },
-    { label: "Total Spent",     value: `৳${totalSpent.toLocaleString()}`, icon: WalletIcon,      isCoin: false },
+    { label: "Total Orders",  value: orders.length.toString(),          icon: BoxIcon,         badge: null,                                 isCoin: false },
+    { label: "Active Orders", value: active.toString(),                 icon: TruckIcon,       badge: null,                                 isCoin: false },
+    { label: "Delivered",     value: delivered.toString(),              icon: CheckCircleIcon, badge: null,                                 isCoin: false },
+    { label: "Total Spent",   value: `৳${totalSpent.toLocaleString()}`, icon: WalletIcon,      badge: null,                                 isCoin: false },
     {
       label: "Reward Coins",
-      value: `🪙 ${userCoins.toLocaleString()}`,
+      value: userCoins.toLocaleString(),
       icon: CoinsIcon,
-      subtext: `≈ ৳${userCoins.toLocaleString()}`,
+      badge: `≈ ৳${userCoins.toLocaleString()}`,
       isCoin: true,
     },
   ];
@@ -410,41 +411,39 @@ function OverviewTab({
     <div className="space-y-6">
       {/* Stats grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-        {stats.map(({ label, value, icon: Icon, isCoin, subtext }) => (
+        {stats.map(({ label, value, icon: Icon, isCoin, badge }) => (
           <div
             key={label}
-            className={`rounded-2xl border p-4 sm:p-5 flex flex-col justify-between shadow-2xs transition-all ${
+            className={`bg-white rounded-2xl border p-4 sm:p-5 flex flex-col justify-between shadow-2xs transition-all ${
               isCoin
-                ? "bg-gradient-to-br from-amber-50/60 via-white to-amber-50/20 border-amber-200/80 hover:border-amber-300"
-                : "bg-white border-charcoal-100"
+                ? "border-amber-200/70 hover:border-amber-300"
+                : "border-charcoal-100 hover:border-charcoal-200"
             }`}
           >
             <div className="flex items-center justify-between mb-3">
               <div
                 className={`w-8 h-8 rounded-xl border flex items-center justify-center ${
                   isCoin
-                    ? "bg-amber-100/70 border-amber-200 text-amber-800"
+                    ? "bg-amber-50 border-amber-200/60 text-amber-600"
                     : "bg-warm-50 border-charcoal-100 text-charcoal-600"
                 }`}
               >
                 <Icon className="w-4 h-4" />
               </div>
-              {isCoin && (
-                <span className="px-1.5 py-0.5 text-[9px] font-bold rounded-md bg-amber-400 text-emerald-950 uppercase tracking-wider">
-                  Loyalty
+              {badge && (
+                <span className="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-amber-50 border border-amber-200/80 text-amber-700 tracking-tight whitespace-nowrap">
+                  {badge}
                 </span>
               )}
             </div>
             <div>
-              <p className={`text-xl sm:text-2xl font-bold tracking-tight ${isCoin ? "text-amber-950" : "text-charcoal-950"}`}>
-                {value}
+              <p className="text-xl sm:text-2xl font-bold tracking-tight text-charcoal-950 flex items-center gap-1.5">
+                {isCoin && <span className="text-lg sm:text-xl select-none leading-none">🪙</span>}
+                <span>{value}</span>
               </p>
-              <div className="flex items-baseline justify-between gap-1 mt-0.5">
-                <p className="text-xs text-charcoal-400 font-light">{label}</p>
-                {subtext && (
-                  <span className="text-[10px] text-amber-700 font-semibold">{subtext}</span>
-                )}
-              </div>
+              <p className="text-xs text-charcoal-400 font-light mt-1 truncate">
+                {label}
+              </p>
             </div>
           </div>
         ))}
