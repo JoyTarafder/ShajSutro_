@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { getApiBase } from "@/lib/apiBase";
 import { DIVISIONS, getDistricts, getThanas } from "@/lib/bangladeshLocations";
+import ProfileSkeleton from "@/components/profile/ProfileSkeleton";
 
 const API = getApiBase();
 
@@ -197,20 +198,37 @@ export default function ProfilePage() {
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   const fetchUser = useCallback(async () => {
-    if (!token) { router.replace("/login"); return; }
+    const currentToken = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    if (!currentToken) {
+      router.replace("/login");
+      return;
+    }
     try {
       const res = await fetch(`${API}/api/auth/me`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${currentToken}` },
       });
-      if (!res.ok) { router.replace("/login"); return; }
+      if (!res.ok) {
+        localStorage.removeItem("token");
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new Event("user_avatar_updated"));
+          window.dispatchEvent(new Event("storage"));
+        }
+        router.replace("/login");
+        return;
+      }
       const data = await res.json();
       setUser(data.data);
     } catch {
+      localStorage.removeItem("token");
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("user_avatar_updated"));
+        window.dispatchEvent(new Event("storage"));
+      }
       router.replace("/login");
     } finally {
       setLoadingUser(false);
     }
-  }, [token, router]);
+  }, [router]);
 
   const fetchOrders = useCallback(async () => {
     if (!token) return;
@@ -250,15 +268,7 @@ export default function ProfilePage() {
   };
 
   if (loadingUser) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-warm-50">
-        <div className="flex gap-1.5">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="w-2 h-2 rounded-full bg-charcoal-300 animate-bounce" style={{ animationDelay: `${i * 0.12}s` }} />
-          ))}
-        </div>
-      </div>
-    );
+    return <ProfileSkeleton />;
   }
 
   if (!user) return null;

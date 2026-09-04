@@ -165,8 +165,19 @@ export default function Navbar() {
       fetch(`${getApiBase()}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-        .then((r) => r.json())
+        .then((r) => {
+          if (r.status === 401 || r.status === 403) {
+            localStorage.removeItem("token");
+            setIsLoggedIn(false);
+            setUserInitial("");
+            setUserCoins(0);
+            setAvatarImg(null);
+            return null;
+          }
+          return r.json();
+        })
         .then((d) => {
+          if (!d) return;
           if (d?.data) {
             setUserInitial((d.data.name ?? "U").charAt(0).toUpperCase());
             setUserCoins(d.data.coins ?? 0);

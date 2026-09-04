@@ -35,15 +35,42 @@ function LoginContent() {
   const [pendingEmail, setPendingEmail] = useState<string | null>(null);
   const [isAlreadyLoggedIn, setIsAlreadyLoggedIn] = useState(false);
 
-  // If already logged in, automatically forward to the intended page or profile
+  // If already logged in, verify token before forwarding to avoid redirect loops
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-    const adminToken = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null;
-    if (token || adminToken) {
-      setIsAlreadyLoggedIn(true);
-      const target = redirectUrl && redirectUrl !== "/login" ? redirectUrl : "/profile";
-      router.replace(target);
+    if (!token) {
+      setIsAlreadyLoggedIn(false);
+      return;
     }
+
+    let isMounted = true;
+    fetch(`${getApiBase()}/api/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        if (!isMounted) return;
+        if (res.ok) {
+          setIsAlreadyLoggedIn(true);
+          const target = redirectUrl && redirectUrl !== "/login" ? redirectUrl : "/profile";
+          router.replace(target);
+        } else {
+          // Token is invalid/expired - remove it to break redirect loop
+          localStorage.removeItem("token");
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new Event("user_avatar_updated"));
+            window.dispatchEvent(new Event("storage"));
+          }
+          setIsAlreadyLoggedIn(false);
+        }
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setIsAlreadyLoggedIn(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, [redirectUrl, router]);
 
   const isCheckoutRedirect = redirectUrl.includes("checkout");
