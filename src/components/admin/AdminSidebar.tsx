@@ -189,17 +189,13 @@ export default function AdminSidebar() {
         style={{ background: "#09090b" }}
       >
       {/* Brand */}
-      <div className="px-5 py-5 border-b border-white/10 relative overflow-hidden bg-gradient-to-r from-violet-950/30 via-slate-900 to-indigo-950/30 shrink-0 flex items-center justify-between">
+      <div className="px-5 py-4 border-b border-white/10 relative overflow-hidden bg-gradient-to-r from-violet-950/30 via-slate-900 to-indigo-950/30 shrink-0 flex items-center">
         <Link
           href="/admin/dashboard"
           className="flex items-center gap-3 group relative z-10"
         >
-          <Logo size="sm" dark={false} />
+          <Logo size="md" dark={false} />
         </Link>
-        <span className="text-violet-400/90 text-[10px] font-extrabold tracking-[0.15em] uppercase px-2 py-0.5 rounded-md bg-white/5 border border-white/10 flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
-          {isRootAdmin ? "Root" : "Admin"}
-        </span>
       </div>
 
       {/* Navigation */}
