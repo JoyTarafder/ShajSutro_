@@ -3,6 +3,7 @@
 import AdminAuthGuard from "@/components/admin/AdminAuthGuard";
 import DataTable from "@/components/admin/DataTable";
 import StatCard from "@/components/admin/StatCard";
+import { DashboardSkeleton } from "@/components/admin/AdminSkeleton";
 import { useAdminAuth } from "@/context/AdminAuthContext";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -207,11 +208,7 @@ function DashboardContent() {
   ];
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="w-8 h-8 border-2 border-white/10 border-t-violet-500 rounded-full animate-spin" />
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   if (error) {

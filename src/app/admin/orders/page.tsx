@@ -2,6 +2,7 @@
 
 import AdminAuthGuard from "@/components/admin/AdminAuthGuard";
 import AdminSpinner from "@/components/admin/AdminSpinner";
+import { OrdersTableSkeleton } from "@/components/admin/AdminSkeleton";
 import { useAdminAuth } from "@/context/AdminAuthContext";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -1121,7 +1122,7 @@ function OrdersContent() {
         }}
       >
         {loading ? (
-          <AdminSpinner label="Loading orders..." />
+          <OrdersTableSkeleton rows={8} />
         ) : orders.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-slate-400">
             <PackageOpen className="w-12 h-12 mb-3" strokeWidth={1} />

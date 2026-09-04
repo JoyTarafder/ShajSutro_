@@ -1,6 +1,7 @@
 "use client";
 
 import AdminAuthGuard from "@/components/admin/AdminAuthGuard";
+import { ProductsTableSkeleton } from "@/components/admin/AdminSkeleton";
 import { useAdminAuth } from "@/context/AdminAuthContext";
 import { getColorHex } from "@/lib/colors";
 import Image from "next/image";
@@ -1340,9 +1341,7 @@ function ProductsContent() {
         }}
       >
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-[2.5px] border-white/10 border-t-violet-500 rounded-full animate-spin" />
-          </div>
+          <ProductsTableSkeleton rows={8} />
         ) : products.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-slate-400">
             <ShoppingBag className="w-12 h-12 mb-3 text-slate-500" strokeWidth={1} />

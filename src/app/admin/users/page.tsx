@@ -1,6 +1,7 @@
 "use client";
 
 import AdminAuthGuard from "@/components/admin/AdminAuthGuard";
+import { UsersTableSkeleton } from "@/components/admin/AdminSkeleton";
 import { useAdminAuth } from "@/context/AdminAuthContext";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -1001,9 +1002,7 @@ function UsersContent() {
       {/* Users Table Container */}
       <div className="bg-white/[0.02] border border-white/8 rounded-2xl overflow-hidden shadow-lg">
         {loading ? (
-          <div className="flex items-center justify-center py-24">
-            <div className="w-8 h-8 border-2 border-white/10 border-t-violet-500 rounded-full animate-spin" />
-          </div>
+          <UsersTableSkeleton rows={8} />
         ) : users.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-slate-400">
             <Users className="w-12 h-12 mb-3 text-slate-600" strokeWidth={1} />
