@@ -89,7 +89,7 @@ function compressImage(file: File): Promise<string> {
     reader.onload = (e) => {
       const img = new window.Image();
       img.onload = () => {
-        const maxDim = 1100;
+        const maxDim = 900;
         let width = img.width;
         let height = img.height;
         if (width > maxDim || height > maxDim) {
@@ -106,7 +106,7 @@ function compressImage(file: File): Promise<string> {
         canvas.height = height;
         const ctx = canvas.getContext("2d");
         ctx?.drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL("image/jpeg", 0.85));
+        resolve(canvas.toDataURL("image/jpeg", 0.82));
       };
       img.onerror = reject;
       img.src = e.target?.result as string;
@@ -167,6 +167,13 @@ export default function VirtualTryOnPage() {
 
   // Recent Looks History in this session
   const [recentLooks, setRecentLooks] = useState<TryOnHistoryItem[]>([]);
+
+  // Instant session cache for generated looks (garmentId -> resultUrl)
+  const [resultsCache, setResultsCache] = useState<Record<string, string>>({});
+
+  // Drag & Drop hover states
+  const [isDraggingStep1, setIsDraggingStep1] = useState<boolean>(false);
+  const [isDraggingPreview, setIsDraggingPreview] = useState<boolean>(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pollTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -297,46 +304,51 @@ export default function VirtualTryOnPage() {
     return { step, text, pct };
   }, [elapsedSeconds, selectedGarment.name]);
 
-  // Handle user photo upload with instant compression & background pre-upload
+  // Helper to process photo file (from file input or drag-and-drop)
+  const processPhotoFile = async (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      notifyInfo("Please select an image file (JPG, PNG, or WEBP).");
+      return;
+    }
+    setUploadedFileName(file.name);
+    try {
+      const compressedBase64 = await compressImage(file);
+      setUploadedPhotoBase64(compressedBase64);
+      setUploadedPublicUrl(null);
+      setAiResultUrl(null);
+      setErrorMessage(null);
+      setActiveView("user_photo");
+      notifySuccess("Photo loaded! Pre-optimizing for instant try-on... ✨");
+
+      // Background Pre-Upload: convert to public URL while user selects outfit
+      setIsPreUploading(true);
+      fetch("/api/virtual-try-on", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "uploadOnly",
+          personImageUrl: compressedBase64,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.publicUrl) {
+            setUploadedPublicUrl(data.publicUrl);
+            console.log("Background pre-upload completed:", data.publicUrl);
+          }
+        })
+        .catch((err) => console.warn("Background pre-upload error:", err))
+        .finally(() => setIsPreUploading(false));
+    } catch {
+      notifyInfo("Failed to process image. Please try another photo.");
+    }
+  };
+
+  // Handle user photo upload via file picker
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (!file.type.startsWith("image/")) {
-        notifyInfo("Please select an image file (JPG, PNG, or WEBP).");
-        return;
-      }
-      setUploadedFileName(file.name);
-      try {
-        const compressedBase64 = await compressImage(file);
-        setUploadedPhotoBase64(compressedBase64);
-        setUploadedPublicUrl(null);
-        setAiResultUrl(null);
-        setErrorMessage(null);
-        setActiveView("user_photo");
-        notifySuccess("Photo loaded! Pre-optimizing for instant try-on... ✨");
-
-        // Background Pre-Upload: convert to public URL while user selects outfit
-        setIsPreUploading(true);
-        fetch("/api/virtual-try-on", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "uploadOnly",
-            personImageUrl: compressedBase64,
-          }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.success && data.publicUrl) {
-              setUploadedPublicUrl(data.publicUrl);
-              console.log("Background pre-upload completed:", data.publicUrl);
-            }
-          })
-          .catch((err) => console.warn("Background pre-upload error:", err))
-          .finally(() => setIsPreUploading(false));
-      } catch {
-        notifyInfo("Failed to process image. Please try another photo.");
-      }
+      await processPhotoFile(file);
     }
   };
 
@@ -368,6 +380,15 @@ export default function VirtualTryOnPage() {
     }
 
     if (isGenerating) return;
+
+    // Instant Cache check: If this garment was already generated for this photo, show instantly!
+    const cacheKey = `${selectedGarment.id}`;
+    if (resultsCache[cacheKey]) {
+      setAiResultUrl(resultsCache[cacheKey]);
+      setActiveView("result");
+      notifySuccess("Loaded from cache instantly! ⚡");
+      return;
+    }
 
     setErrorMessage(null);
     setIsGenerating(true);
@@ -402,9 +423,9 @@ export default function VirtualTryOnPage() {
 
       const orderId = data.orderId;
 
-      // Smart polling every 2.5s for fast response
+      // Ultra-fast polling every 1.5s for minimum latency
       let attempts = 0;
-      const maxAttempts = 45; // ~110s
+      const maxAttempts = 70; // ~105s
 
       pollTimerRef.current = setInterval(async () => {
         attempts += 1;
@@ -422,7 +443,13 @@ export default function VirtualTryOnPage() {
           if (statusData.outputUrl) {
             if (pollTimerRef.current) clearInterval(pollTimerRef.current);
             if (elapsedTimerRef.current) clearInterval(elapsedTimerRef.current);
+
+            // Pre-load image so it renders immediately without flicker
+            const preImg = new window.Image();
+            preImg.src = statusData.outputUrl;
+
             setAiResultUrl(statusData.outputUrl);
+            setResultsCache((prev) => ({ ...prev, [cacheKey]: statusData.outputUrl }));
             setIsGenerating(false);
             setActiveView("result");
             notifySuccess("Dress fitted onto your photo! ✨");
@@ -463,7 +490,7 @@ export default function VirtualTryOnPage() {
         } catch (pollErr) {
           console.warn("Polling error:", pollErr);
         }
-      }, 2500);
+      }, 1500);
     } catch (err: unknown) {
       console.error("Try-on initiation error:", err);
       if (pollTimerRef.current) clearInterval(pollTimerRef.current);
@@ -650,8 +677,51 @@ export default function VirtualTryOnPage() {
                 </span>
               </div>
 
-              {/* Viewport Area */}
-              <div className="relative aspect-[3/4] w-full bg-slate-100 flex items-center justify-center overflow-hidden">
+              {/* Viewport Area with Full Drag & Drop Support */}
+              <div
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsDraggingPreview(true);
+                }}
+                onDragEnter={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsDraggingPreview(true);
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsDraggingPreview(false);
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsDraggingPreview(false);
+                  const file = e.dataTransfer.files?.[0];
+                  if (file) {
+                    processPhotoFile(file);
+                  }
+                }}
+                className={`relative aspect-[3/4] w-full bg-slate-100 flex items-center justify-center overflow-hidden transition-all ${
+                  isDraggingPreview
+                    ? "ring-4 ring-emerald-500 ring-inset bg-emerald-50/70"
+                    : ""
+                }`}
+              >
+                {/* Dragging Active Drop Overlay */}
+                {isDraggingPreview && (
+                  <div className="absolute inset-0 z-40 bg-emerald-950/85 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center text-white select-none pointer-events-none animate-in fade-in duration-200">
+                    <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 border-2 border-dashed border-emerald-400 flex items-center justify-center mb-3 animate-bounce shadow-lg">
+                      <UploadCloud className="w-8 h-8 text-emerald-300" />
+                    </div>
+                    <p className="text-base font-bold text-white">Drop your photo here!</p>
+                    <p className="text-xs text-emerald-200 mt-1 max-w-xs font-light">
+                      Release to instantly load and optimize your photo for AI Try-On
+                    </p>
+                  </div>
+                )}
+
                 {/* Generation Loading Overlay */}
                 {isGenerating && (
                   <div className="absolute inset-0 z-30 bg-white/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center select-none">
@@ -738,11 +808,11 @@ export default function VirtualTryOnPage() {
                       No Photo Uploaded Yet
                     </h4>
                     <p className="text-xs text-slate-500 max-w-xs font-light mb-4">
-                      Upload your portrait or full-body picture to see the try-on.
+                      Drag &amp; drop your portrait here, or click to browse (JPG, PNG, WEBP)
                     </p>
                     <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold uppercase tracking-wider group-hover:bg-emerald-600 group-hover:text-white transition-all">
                       <Camera className="w-3.5 h-3.5" />
-                      <span>Upload Photo</span>
+                      <span>Click or Drop Photo</span>
                     </span>
                   </div>
                 ) : (
@@ -922,8 +992,36 @@ export default function VirtualTryOnPage() {
               </div>
 
               {uploadedPhotoBase64 ? (
-                /* Photo Uploaded Preview Card */
-                <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-200">
+                /* Photo Uploaded Preview Card with drag to replace */
+                <div
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsDraggingStep1(true);
+                  }}
+                  onDragEnter={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsDraggingStep1(true);
+                  }}
+                  onDragLeave={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsDraggingStep1(false);
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsDraggingStep1(false);
+                    const file = e.dataTransfer.files?.[0];
+                    if (file) processPhotoFile(file);
+                  }}
+                  className={`flex items-center gap-3 p-3 rounded-2xl transition-all ${
+                    isDraggingStep1
+                      ? "bg-emerald-50 border-2 border-dashed border-emerald-500 ring-2 ring-emerald-500/20"
+                      : "bg-slate-50 border border-slate-200"
+                  }`}
+                >
                   <div className="w-16 h-16 rounded-xl overflow-hidden relative border border-slate-200 flex-shrink-0 shadow-2xs">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
@@ -934,11 +1032,11 @@ export default function VirtualTryOnPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-slate-900 truncate">
-                      {uploadedFileName || "Your Uploaded Photo"}
+                      {isDraggingStep1 ? "Drop to replace photo!" : (uploadedFileName || "Your Uploaded Photo")}
                     </p>
                     <p className="text-[11px] text-emerald-700 font-medium mt-0.5 flex items-center gap-1">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>{isPreUploading ? "Pre-optimizing cloud link..." : "Ready for AI Try-On"}</span>
+                      <span>{isDraggingStep1 ? "Release file to swap" : isPreUploading ? "Pre-optimizing cloud link..." : "Ready for AI Try-On"}</span>
                     </p>
                   </div>
                   <button
@@ -951,19 +1049,49 @@ export default function VirtualTryOnPage() {
                   </button>
                 </div>
               ) : (
-                /* Empty Upload Dropzone */
+                /* Empty Upload Dropzone with Full Drag & Drop Support */
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="p-6 rounded-2xl border-2 border-dashed border-slate-300 hover:border-emerald-500 bg-slate-50/50 hover:bg-emerald-50/20 text-center cursor-pointer transition-all group"
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsDraggingStep1(true);
+                  }}
+                  onDragEnter={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsDraggingStep1(true);
+                  }}
+                  onDragLeave={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsDraggingStep1(false);
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsDraggingStep1(false);
+                    const file = e.dataTransfer.files?.[0];
+                    if (file) processPhotoFile(file);
+                  }}
+                  className={`p-6 rounded-2xl border-2 border-dashed text-center cursor-pointer transition-all group ${
+                    isDraggingStep1
+                      ? "border-emerald-500 bg-emerald-50/70 ring-4 ring-emerald-500/20 scale-[1.01]"
+                      : "border-slate-300 hover:border-emerald-500 bg-slate-50/50 hover:bg-emerald-50/20"
+                  }`}
                 >
-                  <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 group-hover:border-emerald-500 flex items-center justify-center text-slate-400 group-hover:text-emerald-600 mx-auto mb-2 transition-all shadow-2xs">
+                  <div className={`w-12 h-12 rounded-2xl bg-white border flex items-center justify-center mx-auto mb-2 transition-all shadow-2xs ${
+                    isDraggingStep1
+                      ? "border-emerald-500 text-emerald-600 scale-110 shadow-md"
+                      : "border-slate-200 group-hover:border-emerald-500 text-slate-400 group-hover:text-emerald-600"
+                  }`}>
                     <UploadCloud className="w-6 h-6" />
                   </div>
                   <p className="text-xs font-bold text-slate-800 group-hover:text-emerald-700 transition-colors">
-                    Click to Upload Your Photo
+                    {isDraggingStep1 ? "Drop your photo right here!" : "Click or Drag & Drop Your Photo"}
                   </p>
                   <p className="text-[11px] text-slate-500 mt-1 font-light">
-                    Upload a clear front-facing portrait or full-body picture (JPG, PNG)
+                    Upload a clear front-facing portrait or full-body picture (JPG, PNG, WEBP)
                   </p>
                 </div>
               )}
