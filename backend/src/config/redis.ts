@@ -1,7 +1,6 @@
 import Redis, { RedisOptions } from "ioredis";
 
 let redisClient: Redis | null = null;
-let isConnected = false;
 
 const redisUrl = process.env.REDIS_URL || process.env.KV_URL;
 const redisHost = process.env.REDIS_HOST || "127.0.0.1";
@@ -47,28 +46,17 @@ export const initRedis = (): Redis | null => {
     }
 
     redisClient.on("connect", () => {
-      isConnected = true;
       console.log("✓ Redis connected successfully");
     });
 
-    redisClient.on("ready", () => {
-      isConnected = true;
-    });
-
     redisClient.on("error", (err: Error) => {
-      isConnected = false;
       if (process.env.NODE_ENV !== "production") {
         console.warn(`[Redis Cache Warning]: ${err.message} (Fallback to MongoDB direct queries)`);
       }
     });
 
-    redisClient.on("close", () => {
-      isConnected = false;
-    });
-
     // Attempt initial async connection without blocking application startup
     redisClient.connect().catch((_err) => {
-      isConnected = false;
       if (process.env.NODE_ENV !== "production") {
         console.warn(`[Redis Notice]: Local Redis not found at ${redisUrl || `${redisHost}:${redisPort}`}. Operating in direct MongoDB mode.`);
       }
@@ -78,7 +66,6 @@ export const initRedis = (): Redis | null => {
   } catch (error) {
     console.warn("[Redis Init Error]:", error);
     redisClient = null;
-    isConnected = false;
     return null;
   }
 };
@@ -91,7 +78,7 @@ export const getRedisClient = (): Redis | null => {
 };
 
 export const isRedisReady = (): boolean => {
-  return isConnected && redisClient !== null && redisClient.status === "ready";
+  return redisClient !== null && redisClient.status === "ready";
 };
 
 export default getRedisClient;

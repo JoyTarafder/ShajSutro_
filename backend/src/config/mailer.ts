@@ -1,15 +1,15 @@
-import nodemailer from "nodemailer";
-import dotenv from "dotenv";
+import nodemailer, { Transporter } from "nodemailer";
 
-// Load environment variables
-dotenv.config();
+let cachedTransporter: Transporter | null = null;
 
-export function getTransporter() {
+export function getTransporter(): Transporter {
+  if (cachedTransporter) return cachedTransporter;
+
   const isCustomSmtp = Boolean(process.env.EMAIL_HOST);
   const emailUser = (process.env.EMAIL_USER || "").trim();
   const emailPass = (process.env.EMAIL_PASS || "").replace(/\s+/g, "");
 
-  return nodemailer.createTransport(
+  cachedTransporter = nodemailer.createTransport(
     isCustomSmtp
       ? {
           host: process.env.EMAIL_HOST,
@@ -37,6 +37,8 @@ export function getTransporter() {
           },
         }
   );
+
+  return cachedTransporter;
 }
 
 const transporter = {
@@ -45,3 +47,4 @@ const transporter = {
 };
 
 export default transporter;
+

@@ -158,9 +158,6 @@ const connectDB = async (): Promise<void> => {
     } catch (error: any) {
       cachedPromise = null; // Reset on failure so next request can retry
       console.error("✗ Primary MongoDB connection failed:", error?.message || error);
-      if (!process.env.VERCEL && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
-        // Only exit process in non-serverless long-running process if initial boot fails
-      }
       throw error;
     }
   })();

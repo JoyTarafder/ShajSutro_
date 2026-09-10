@@ -161,10 +161,10 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 // Static uploads (CV files)
-const isServerless = Boolean(
-  process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME,
-);
-const uploadsBaseDir = isServerless ? os.tmpdir() : process.cwd();
+const uploadsBaseDir =
+  process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME
+    ? os.tmpdir()
+    : process.cwd();
 const uploadsPath = path.join(uploadsBaseDir, "uploads");
 
 try {
