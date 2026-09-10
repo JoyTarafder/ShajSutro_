@@ -360,11 +360,19 @@ export default function CheckoutPage() {
               {shippingInfo.email || "shajsutro@gmail.com"}
             </strong>
           </p>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
+            {placedOrderId && (
+              <Link
+                href={`/track-order?id=${placedOrderId}`}
+                className="btn-primary flex-1 flex items-center justify-center gap-2"
+              >
+                Track Order
+              </Link>
+            )}
             <Link href="/profile" className="btn-secondary flex-1">
               My Orders
             </Link>
-            <Link href="/shop" className="btn-primary flex-1">
+            <Link href="/shop" className="btn-secondary flex-1">
               Continue Shopping
             </Link>
           </div>

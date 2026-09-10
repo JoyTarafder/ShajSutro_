@@ -105,13 +105,24 @@ const authLimiter = rateLimit({
   },
 });
 
+const trackLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // 100 track queries per 15 mins
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many order tracking queries from this network. Please wait a few moments and try again.",
+  },
+});
+
 app.use("/api", generalLimiter);
 app.use("/api/auth/login", authLimiter);
 app.use("/api/auth/register", authLimiter);
 app.use("/api/auth/verify-email", authLimiter);
 app.use("/api/auth/forgot-password", authLimiter);
 app.use("/api/auth/reset-password", authLimiter);
-app.use("/api/orders/track", authLimiter);
+app.use("/api/orders/track", trackLimiter);
 
 // CORS — allow localhost, *.vercel.app, and any origins in CLIENT_URL (comma-separated)
 const allowedOrigins = (process.env.CLIENT_URL ?? "")

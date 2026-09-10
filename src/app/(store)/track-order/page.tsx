@@ -4,7 +4,7 @@ import { Suspense, useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { getApiBase } from "@/lib/apiBase";
-import { Search, X, Loader2, ArrowRight, Check, Truck } from "lucide-react";
+import { Search, X, Loader2, ArrowRight, Check, Truck, Copy } from "lucide-react";
 
 interface OrderItem {
   name: string;
@@ -22,6 +22,7 @@ interface ShippingAddress {
   city?: string;
   state?: string;
   zip?: string;
+  country?: string;
   email?: string;
   phone?: string;
 }
@@ -92,6 +93,15 @@ function TrackOrderContent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [order, setOrder] = useState<OrderData | null>(null);
+  const [copiedId, setCopiedId] = useState(false);
+
+  const copyOrderRef = (id: string) => {
+    if (typeof window !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(id);
+      setCopiedId(true);
+      setTimeout(() => setCopiedId(false), 2000);
+    }
+  };
 
   const handleTrack = useCallback(async (searchQuery: string) => {
     const q = searchQuery.trim();
@@ -151,7 +161,7 @@ function TrackOrderContent() {
             Track Your Order
           </h1>
           <p className="text-slate-500 text-sm sm:text-base max-w-xl mx-auto font-light leading-relaxed">
-            Enter your Order ID, or Phone Number below to check live shipment status.
+            Enter your Order ID (e.g. #B716FDBA), Phone Number, or Email to check live shipment status.
           </p>
 
           {/* Search Box Form */}
@@ -163,7 +173,7 @@ function TrackOrderContent() {
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Enter Order ID (e.g. #E17841866), or Phone..."
+                  placeholder="Enter Order ID (e.g. #B716FDBA), Phone, or Email..."
                   className="w-full pl-12 pr-10 py-3.5 bg-transparent text-sm text-slate-900 placeholder-slate-400 focus:outline-none"
                 />
                 {query && (
@@ -214,10 +224,33 @@ function TrackOrderContent() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
                 <div>
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Order Reference</span>
-                  <h2 className="text-xl sm:text-2xl font-bold text-slate-950 mt-0.5">
-                    #{order._id}
-                  </h2>
-                  <p className="text-xs text-slate-500 mt-1">Placed on {formatDate(order.createdAt)}</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-950 font-mono">
+                      #{order._id.length > 8 ? order._id.slice(-8).toUpperCase() : order._id}
+                    </h2>
+                    <button
+                      type="button"
+                      onClick={() => copyOrderRef(order._id)}
+                      className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 transition-colors"
+                      title="Copy full Order ID"
+                    >
+                      {copiedId ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 text-emerald-600" />
+                          <span className="text-[11px] text-emerald-700 font-bold">Copied</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3.5 h-3.5" />
+                          <span className="text-[11px]">Copy ID</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Placed on {formatDate(order.createdAt)}
+                    <span className="text-slate-400 font-mono ml-2 text-[11px] hidden sm:inline">({order._id})</span>
+                  </p>
                 </div>
                 <div className="flex items-center gap-3">
                   <span
@@ -298,15 +331,19 @@ function TrackOrderContent() {
                     </p>
                   </div>
                   <div>
-                    <span className="text-slate-400 font-bold block text-[10px] uppercase">Address</span>
+                    <span className="text-slate-400 font-bold block text-[10px] uppercase">Delivery Address</span>
                     <p className="text-slate-700 mt-0.5 leading-relaxed">
-                      {order.shippingAddress?.address}, {order.shippingAddress?.city}
+                      {[order.shippingAddress?.address, order.shippingAddress?.city, order.shippingAddress?.state, order.shippingAddress?.country]
+                        .filter(Boolean)
+                        .join(", ") || "Confirmed Address"}
                     </p>
                   </div>
-                  <div>
-                    <span className="text-slate-400 font-bold block text-[10px] uppercase">Contact Phone</span>
-                    <p className="font-bold text-slate-800 mt-0.5">{order.shippingAddress?.phone}</p>
-                  </div>
+                  {order.shippingAddress?.phone && (
+                    <div>
+                      <span className="text-slate-400 font-bold block text-[10px] uppercase">Contact Phone</span>
+                      <p className="font-bold text-slate-800 mt-0.5 font-mono">{order.shippingAddress.phone}</p>
+                    </div>
+                  )}
                   {order.paymentMethod && (
                     <div>
                       <span className="text-slate-400 font-bold block text-[10px] uppercase">Payment Method</span>

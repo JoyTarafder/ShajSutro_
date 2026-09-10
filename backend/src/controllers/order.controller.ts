@@ -584,23 +584,68 @@ export const trackOrder = asyncHandler(
       throw new AppError("Please enter a valid Order ID, Phone number, or Transaction ID", 400);
     }
 
-    // Strip leading '#' if customer copied reference like '#E1841066'
-    const cleanSearch = rawSearch.replace(/^#/g, "").trim();
+    // Strip common prefixes like 'Order #', 'Order:', '#', 'REF:'
+    const cleanSearch = rawSearch
+      .replace(/^(order\s*#?|ref(erence)?\s*#?|#)/i, "")
+      .trim();
 
     let order = null;
 
+    // 1. Exact 24-character MongoDB ObjectId
     if (mongoose.isValidObjectId(cleanSearch)) {
       order = await Order.findById(cleanSearch);
     }
 
-    // Exact phone match (e.g. 01XXXXXXXXX)
-    if (!order && /^01[3-9]\d{8}$/.test(cleanSearch)) {
-      order = await Order.findOne({ "shippingAddress.phone": cleanSearch }).sort({ createdAt: -1 });
+    // 2. Short Order ID match (hex suffix of _id, e.g. 8-char 'B716FDBA' or 6-12 chars)
+    if (!order && /^[a-fA-F0-9]{6,24}$/.test(cleanSearch)) {
+      const hexClean = cleanSearch.toLowerCase();
+      order = await Order.findOne({
+        $expr: {
+          $regexMatch: {
+            input: { $toString: "$_id" },
+            regex: `${hexClean}$`,
+            options: "i",
+          },
+        },
+      }).sort({ createdAt: -1 });
     }
 
-    // Exact transaction ID match (alphanumeric, at least 4 chars)
-    if (!order && cleanSearch.length >= 4 && /^[a-zA-Z0-9_-]+$/.test(cleanSearch)) {
-      order = await Order.findOne({ txnId: cleanSearch }).sort({ createdAt: -1 });
+    // 3. Phone number match (supporting +88, 88, hyphens, spaces)
+    if (!order) {
+      const digitsOnly = cleanSearch.replace(/\D/g, "");
+      let phoneCandidate = "";
+      if (digitsOnly.length === 11 && digitsOnly.startsWith("01")) {
+        phoneCandidate = digitsOnly;
+      } else if (digitsOnly.length === 13 && digitsOnly.startsWith("8801")) {
+        phoneCandidate = digitsOnly.slice(2);
+      } else if (digitsOnly.length >= 10 && digitsOnly.length <= 15) {
+        phoneCandidate = digitsOnly;
+      }
+
+      if (phoneCandidate) {
+        order = await Order.findOne({
+          $or: [
+            { "shippingAddress.phone": phoneCandidate },
+            { "shippingAddress.phone": { $regex: phoneCandidate.slice(-10) } },
+          ],
+        }).sort({ createdAt: -1 });
+      }
+    }
+
+    // 4. Email address match
+    if (!order && cleanSearch.includes("@")) {
+      const escaped = cleanSearch.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      order = await Order.findOne({
+        "shippingAddress.email": { $regex: new RegExp(`^${escaped}$`, "i") },
+      }).sort({ createdAt: -1 });
+    }
+
+    // 5. Transaction ID match (case-insensitive)
+    if (!order && cleanSearch.length >= 4) {
+      const escaped = cleanSearch.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      order = await Order.findOne({
+        txnId: { $regex: new RegExp(`^${escaped}$`, "i") },
+      }).sort({ createdAt: -1 });
     }
 
     if (!order) {
@@ -608,6 +653,33 @@ export const trackOrder = asyncHandler(
     }
 
     // Privacy-preserving response: Mask phone and address for public tracking queries
+    const rawPhone = order.shippingAddress?.phone || "";
+    const maskedPhone =
+      rawPhone.length >= 7
+        ? `${rawPhone.slice(0, 4)}****${rawPhone.slice(-3)}`
+        : rawPhone
+        ? "***"
+        : "";
+
+    const rawAddress = (order.shippingAddress?.address || "").trim();
+    const maskedAddress =
+      rawAddress.length > 10
+        ? `*** ${rawAddress.slice(-10)}`
+        : rawAddress
+        ? `*** ${rawAddress}`
+        : "";
+
+    const statusHistory =
+      Array.isArray(order.statusHistory) && order.statusHistory.length > 0
+        ? order.statusHistory
+        : [
+            {
+              status: order.status || "pending",
+              updatedAt: order.createdAt || new Date(),
+              note: "Order placed and received in our system.",
+            },
+          ];
+
     const sanitizedOrder = {
       _id: order._id,
       status: order.status,
@@ -618,10 +690,12 @@ export const trackOrder = asyncHandler(
       discount: order.discount,
       total: order.total,
       items: order.items,
-      statusHistory: order.statusHistory,
+      statusHistory,
       shippingAddress: {
         firstName: order.shippingAddress?.firstName || "Customer",
         lastName: (order.shippingAddress?.lastName || "").charAt(0) ? `${(order.shippingAddress?.lastName || "").charAt(0)}.` : "",
+        address: maskedAddress,
+        phone: maskedPhone,
         city: order.shippingAddress?.city || "",
         state: order.shippingAddress?.state || "",
         country: order.shippingAddress?.country || "Bangladesh",

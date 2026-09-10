@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
@@ -941,6 +942,13 @@ function OrderRow({
                 Exchange Product
               </button>
             )}
+            <Link
+              href={`/track-order?id=${order._id}`}
+              className="px-3 py-1.5 text-xs font-semibold text-violet-700 bg-violet-50 border border-violet-200 hover:bg-violet-100 rounded-xl transition-all shadow-2xs inline-flex items-center gap-1"
+            >
+              <Truck className="w-3.5 h-3.5" />
+              Track
+            </Link>
             {expanded && (
               <button
                 onClick={() => setOpen(!open)}

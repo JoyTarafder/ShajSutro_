@@ -21,6 +21,7 @@ import {
   Menu,
   Check,
   Copy,
+  Truck,
 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -84,6 +85,7 @@ const BEFORE_CATS = [
   { label: "Shop", href: "/shop" },
 ];
 const AFTER_CATS = [
+  { label: "Track Order", href: "/track-order" },
   { label: "Virtual Try-On", href: "/virtual-try-on", badge: "AI" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
@@ -478,6 +480,14 @@ export default function Navbar() {
                       >
                         <Package className="w-4 h-4" />
                         My Orders
+                      </Link>
+                      <Link
+                        href="/track-order"
+                        onClick={() => setDropdownOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-charcoal-700 hover:bg-charcoal-50 transition-colors"
+                      >
+                        <Truck className="w-4 h-4" />
+                        Track Order
                       </Link>
                       <Link
                         href="/favorites"

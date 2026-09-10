@@ -217,7 +217,7 @@ function emailShell(bodyContent: string, previewText = ""): string {
                   <td style="text-align:center;padding-bottom:14px;">
                     <a href="${frontendUrl}/shop" style="font-size:11px;color:#94a3b8;text-decoration:none;margin:0 8px;font-weight:700;">SHOP NOW</a>
                     <span style="color:#334155;font-size:11px;">•</span>
-                    <a href="${frontendUrl}/track" style="font-size:11px;color:#94a3b8;text-decoration:none;margin:0 8px;font-weight:700;">TRACK ORDER</a>
+                    <a href="${frontendUrl}/track-order" style="font-size:11px;color:#94a3b8;text-decoration:none;margin:0 8px;font-weight:700;">TRACK ORDER</a>
                     <span style="color:#334155;font-size:11px;">•</span>
                     <a href="${instagramUrl}" target="_blank" style="font-size:11px;color:#f43f5e;text-decoration:none;margin:0 8px;font-weight:700;">INSTAGRAM</a>
                     <span style="color:#334155;font-size:11px;">•</span>
@@ -576,7 +576,7 @@ export const sendOrderConfirmationEmail = async (
 
     <!-- Track Order Action Button -->
     <div style="text-align:center;margin-top:28px;">
-      <a href="${frontendUrl}/track" style="display:inline-block;background:linear-gradient(135deg, #00B14F 0%, #059669 100%);color:#ffffff;font-size:13px;font-weight:900;letter-spacing:0.08em;text-decoration:none;padding:15px 36px;border-radius:100px;box-shadow:0 10px 24px rgba(0,177,79,0.35);text-transform:uppercase;">
+      <a href="${frontendUrl}/track-order?order=${order._id}" style="display:inline-block;background:linear-gradient(135deg, #00B14F 0%, #059669 100%);color:#ffffff;font-size:13px;font-weight:900;letter-spacing:0.08em;text-decoration:none;padding:15px 36px;border-radius:100px;box-shadow:0 10px 24px rgba(0,177,79,0.35);text-transform:uppercase;">
         TRACK YOUR ORDER &rarr;
       </a>
     </div>
