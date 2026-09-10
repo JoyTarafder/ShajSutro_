@@ -3,22 +3,15 @@ name: ponytail-review
 description: >
   Code review focused exclusively on over-engineering. Finds what to delete:
   reinvented standard library, unneeded dependencies, speculative abstractions,
-  dead flexibility. One line per finding: location, what to cut, what replaces
-  it. Use when the user says "review for over-engineering", "what can we
-  delete", "is this over-engineered", "simplify review", or invokes
+  dead flexibility. Use when the user says "review for over-engineering", "what
+  can we delete", "is this over-engineered", "simplify review", or invokes
   /ponytail-review. Complements correctness-focused review, this one only
   hunts complexity.
 ---
 
-Review diffs for unnecessary complexity. One line per finding: location, what
-to cut, what replaces it. The diff's best outcome is getting shorter.
+Review code or diffs for unnecessary complexity. The diff's best outcome is getting shorter.
 
-## Format
-
-`L<line>: <tag> <what>. <replacement>.`, or `<file>:L<line>: ...` for
-multi-file diffs.
-
-Tags:
+## Tags
 
 - `delete:` dead code, unused flexibility, speculative feature. Replacement: nothing.
 - `stdlib:` hand-rolled thing the standard library ships. Name the function.
@@ -26,32 +19,71 @@ Tags:
 - `yagni:` abstraction with one implementation, config nobody sets, layer with one caller.
 - `shrink:` same logic, fewer lines. Show the shorter form.
 
-## Examples
+## Output Format — MANDATORY
 
-❌ "This EmailValidator class might be more complex than necessary, have you
-considered whether all these validation rules are needed at this stage?"
+For each finding, use this **multi-line block** format. DO NOT collapse to one-liners.
 
-✅ `L12-38: stdlib: 27-line validator class. "@" in email, 1 line, real validation is the confirmation mail.`
+```
+### <N>. [tag] <file>:L<line> — <short title>
 
-✅ `L4: native: moment.js imported for one format call. Intl.DateTimeFormat, 0 deps.`
+**What it is:** 1–2 sentences explaining what the code currently does.
+**Why it's bloat:** 1–2 sentences explaining why it's over-engineered.
+**Fix:** Concrete replacement — show the short version inline when ≤5 lines, or describe it precisely.
+**Impact:** -<N> lines / -<M> dep / [perf note]
+```
 
-✅ `repo.py:L88: yagni: AbstractRepository with one implementation. Inline it until a second one exists.`
+Group findings by severity:
+- 🔴 **HIGH** — dead deps, dead files, security-gap from over-engineering
+- 🟡 **MEDIUM** — redundant abstractions, duplicate logic, wrappers that only delegate
+- 🟢 **LOW** — minor shrinks, cosmetic dead code
 
-✅ `L52-71: delete: retry wrapper around an idempotent local call. Nothing replaces it.`
+Always include a **Summary Table** at the end:
 
-✅ `L30-44: shrink: manual loop builds dict. dict(zip(keys, values)), 1 line.`
+| # | Tag | File | Finding | Impact |
+|---|-----|------|---------|--------|
+| 1 | shrink | file.ts:L12 | description | -N lines |
 
-## Scoring
+End with: `net: -<N> lines possible.`
 
-End with the only metric that matters: `net: -<N> lines possible.`
+If nothing to cut: `Lean already. Ship.`
 
-If there is nothing to cut, say `Lean already. Ship.` and stop.
+## Bad vs Good Example
+
+❌ BAD (too terse, Gemini falls into this):
+```
+src/lib/apiBase.ts:L1-43: shrink: 43 lines of env-sniffing. NEXT_PUBLIC_API_URL || fallback, ~8 lines.
+```
+
+✅ GOOD (required format):
+```
+### 1. [shrink] src/lib/apiBase.ts:L1–43 — Over-engineered URL resolver
+
+**What it is:** 43-line function that checks `window.location.hostname` at
+runtime to detect localhost, LAN IPs, Vercel domains, and falls back to a
+hardcoded URL.
+
+**Why it's bloat:** This is what `NEXT_PUBLIC_API_URL` is for. All the
+runtime hostname-sniffing is dead flexibility — the env var already covers
+every environment. The LAN IP detection is speculative: it only fires if
+someone tests from a mobile on the same Wi-Fi AND forgot to set the env var.
+
+**Fix:**
+```ts
+export function getApiBase(): string {
+  if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL;
+  if (process.env.NODE_ENV === "development") return "http://localhost:5000";
+  return "https://online-shopping-backend-liart.vercel.app";
+}
+```
+
+**Impact:** -35 lines
+```
 
 ## Boundaries
 
 Scope: over-engineering and complexity only. Correctness bugs, security holes,
-and performance are explicitly out of scope. Route them to a normal review
-pass, not this one. A single smoke test or `assert`-based
-self-check is the ponytail minimum, not bloat, never flag it for deletion.
-Does not apply the fixes, only lists them.
-"stop ponytail-review" or "normal mode": revert to verbose review style.
+and performance are explicitly out of scope — route them to a normal review.
+A single smoke test or assert-based self-check is the ponytail minimum, never
+flag it for deletion. Does not apply the fixes, only lists them.
+
+"stop ponytail-review" or "normal mode": revert to regular review style.
