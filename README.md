@@ -23,6 +23,7 @@
 
 <p align="center">
   <a href="#-executive-summary">Executive Summary</a> •
+  <a href="#-application-previews">Screenshots</a> •
   <a href="#-system-architecture">System Architecture</a> •
   <a href="#-core-modules--feature-matrix">Feature Matrix</a> •
   <a href="#-security--compliance-architecture">Security</a> •
@@ -50,6 +51,26 @@ The platform delivers a frictionless customer shopping journey alongside an oper
 * **📊 Live Operations Analytics**: Real-time sales telemetry, order trend graphs, and inventory metrics via Recharts.
 * **📑 Automated PDF Invoicing**: High-fidelity dynamic PDF generation built with PDFKit for immediate customer receipts and warehouse dispatch.
 * **👗 Interactive Virtual Try-On**: Dedicated studio interface for interactive apparel preview.
+
+---
+
+## 📸 Application Previews
+
+### 🛍️ 1. Storefront (Customer Experience)
+*Ultra-fast, responsive storefront with minimalist aesthetics, dynamic mega-categories, smart promo banners, and instant product discovery.*
+
+<div align="center">
+  <img src="screenshots/frontend.png" alt="ShajSutro Frontend Storefront" width="100%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12);" />
+</div>
+
+<br/>
+
+### 🛡️ 2. Admin Operations Portal (Executive Control Suite)
+*Sleek dark-mode back-office dashboard featuring live sales velocity graphs, order fulfillment breakdown, revenue telemetry, and inventory management.*
+
+<div align="center">
+  <img src="screenshots/admin-dashboard.png" alt="ShajSutro Admin Dashboard" width="100%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.35);" />
+</div>
 
 ---
 
@@ -163,25 +184,86 @@ flowchart TB
 
 ## 🔒 Security & Compliance Architecture
 
+ShajSutro is engineered with a **Defense-in-Depth** multi-layered security model across client, gateway, service, database, and file storage layers to safeguard customer credentials, prevent unauthorized access, and protect financial transaction integrity.
+
 ```
-                                    Security Defense In-Depth
- ┌─────────────────────────────────────────────────────────────────────────────────────────┐
- │ 1. Boundary Defense: Helmet.js HTTP Headers + Strict Cross-Origin Policies              │
- ├─────────────────────────────────────────────────────────────────────────────────────────┤
- │ 2. Denial-of-Service Defense: Tiered Rate Limiting (General: 500/15m | Auth: 25/15m)   │
- ├─────────────────────────────────────────────────────────────────────────────────────────┤
- │ 3. Authentication: Cryptographic Bcrypt Salting (10 Rounds) + JWT with expiry validation│
- ├─────────────────────────────────────────────────────────────────────────────────────────┤
- │ 4. Authorization: Role-Based Access Control (RBAC) across User, Admin, Superadmin       │
- ├─────────────────────────────────────────────────────────────────────────────────────────┤
- │ 5. Data Sanitization: Parameter verification, Mongoose schema casting, XSS mitigation   │
- └─────────────────────────────────────────────────────────────────────────────────────────┘
+                                      Security Defense In-Depth
+ ┌───────────────────────────────────────────────────────────────────────────────────────────────────┐
+ │ 1. Perimeter & Boundary Defense: Helmet.js Security Headers + Strict CORS + Disabled X-Powered-By │
+ ├───────────────────────────────────────────────────────────────────────────────────────────────────┤
+ │ 2. DoS & Brute-Force Defense: Multi-Tier Rate Limiting (General, Auth Guards, Order Tracking)     │
+ ├───────────────────────────────────────────────────────────────────────────────────────────────────┤
+ │ 3. Identity & Credential Security: Bcrypt (12 Salt Rounds) + Signed JWT + Double-Opt-In OTP       │
+ ├───────────────────────────────────────────────────────────────────────────────────────────────────┤
+ │ 4. Authorization & RBAC: Customer ↔ Sub-Admin (9 Granular Module Permissions) ↔ Root Admin        │
+ ├───────────────────────────────────────────────────────────────────────────────────────────────────┤
+ │ 5. Transaction & Financial Anti-Tampering: Server-Side Price Verification + Atomic Stock Check    │
+ ├───────────────────────────────────────────────────────────────────────────────────────────────────┤
+ │ 6. Input & Upload Hygiene: Mongoose Schema Sanitization + Multer MIME Whitelist + Path Traversal  │
+ └───────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-1. **Anti-Brute Force Protection**: Dedicated rate limiter on `/api/auth/*` prevents dictionary and credential-stuffing attacks.
-2. **Double-Opt-In Verification**: New customer registrations are held in a staging collection (`PendingUser`) and committed to the main `User` collection only upon valid OTP validation.
-3. **CORS Governance**: Dynamic whitelisting supporting localhost, production domains, and preview subdomains (`*.vercel.app`).
-4. **Credential Isolation**: Zero plaintext password exposure; sensitive tokens sanitized from all API responses.
+### 🛡️ 1. Multi-Tier Rate Limiting & Anti-Brute Force Protection
+*Implemented via `express-rate-limit` with reverse proxy IP resolution (`trust proxy: 1`):*
+* **Authentication Gatekeeper (`authLimiter`)**: Strictly restricted to **25 attempts per 15-minute window** on `/api/auth/login`, `/api/auth/register`, `/api/auth/verify-email`, `/api/auth/forgot-password`, and `/api/auth/reset-password`. Thwarts credential stuffing, dictionary attacks, and automated OTP guessing.
+* **OTP Enumeration Lockout**: Both email verification and password reset enforce a hard limit of **5 maximum incorrect attempts** (`attempts >= 5`). Once reached, the code is purged from the database and the request is locked with HTTP 429.
+* **Order Tracking Safeguard (`trackLimiter`)**: Capped at **100 queries per 15 minutes** on the public `/api/orders/track` endpoint, preventing automated scrapers from mining customer phone numbers or order IDs.
+* **General API Throttling (`generalLimiter`)**: Standard traffic limiter allowing **500 requests per 15 minutes** per IP to defend against Denial-of-Service (DoS) attacks.
+
+### 🔐 2. Cryptographic Authentication & Account Lifecycle
+* **12-Round Bcrypt Password Hashing**: Passwords are never saved in plaintext; hashed using `bcrypt.genSalt(12)` before saving. Password comparisons are executed using constant-time cryptographic comparisons.
+* **Stateless JWT Authorization**: Stateless authentication via signed JSON Web Tokens (`jsonwebtoken`) with configurable expiration (`JWT_EXPIRES_IN=7d`) and server-side secret verification.
+* **Staging Sandbox Registration (Double-Opt-In)**: Unverified signups are kept in an isolated `PendingUser` collection with temporary TTL. Accounts only migrate to the primary `User` collection upon valid 6-digit OTP verification.
+* **Token Invalidation on Password Change**: Tracks `passwordChangedAt` timestamp. If a user updates their password, previously issued JWT tokens become immediately obsolete.
+* **Cryptographically Verified Google OAuth 2.0**: Validates token authenticity against Google's OAuth2 endpoints (`https://oauth2.googleapis.com/tokeninfo`). Auto-generates a secure 32-byte cryptographic password (`crypto.randomBytes(32).toString('hex')`) for Google users.
+* **Instant Account Revocation (`isBlocked`)**: Any user blocked by an administrator is immediately rejected upon login and on every authenticated API call with HTTP 403 Forbidden.
+
+### 👑 3. Role-Based Access Control (RBAC) & Principle of Least Privilege
+* **Layered Route Guards**:
+  - `protect`: Validates the Bearer token, decodes payload, and injects the active user into `req.user` while omitting sensitive fields.
+  - `adminOnly`: Restricts access strictly to administrative personnel (`admin` and `sub-admin`).
+  - `rootAdminOnly`: Dedicated guard enforcing root-admin exclusive privileges for managing administrative team members and modifying privilege matrices.
+* **Granular Sub-Admin Permissions Matrix**: Sub-administrators can be restricted individually per functional module:
+  - `dashboard` • `products` • `orders` • `users` • `categories` • `promoCodes` • `notifications` • `jobs` • `messages`
+* **Horizontal Privilege Separation (IDOR Prevention)**: Customers can only query, inspect, cancel, or download PDF invoices for orders that belong strictly to their own user ID (`req.user._id === order.user`).
+
+### 💰 4. Transaction Integrity & E-Commerce Anti-Tampering
+* **Zero-Trust Pricing Architecture**: Client-side prices in cart and checkout payloads are **completely ignored**. The backend fetches each SKU directly from MongoDB and recalculates item subtotals, VAT, shipping tiers, and discounts strictly from verified database records.
+* **Atomic Stock Reservation**: Verifies real-time stock levels before accepting orders; prevents negative stock levels or race conditions during flash sales.
+* **Server-Side Promo Code Governance**: Validates coupon codes against minimum order requirements, valid date windows, expiry dates, and total usage caps server-side before applying discounts.
+* **Immutable Payment Transaction Audit**: Mobile banking payment transaction IDs (`bkash`, `nagad`, `rocket`) and payment verification states are permanently logged in the order lifecycle.
+
+### 🌐 5. Perimeter Defense & HTTP Security Headers
+* **Helmet.js Protection**: Automatically sets secure HTTP response headers (`X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Cross-Origin-Resource-Policy: cross-origin`, etc.) to defend against MIME sniffing, Clickjacking, and Cross-Site Scripting (XSS).
+* **Information Disclosure Prevention**: `app.disable("x-powered-by")` removes the Express fingerprint from all HTTP responses to reduce reconnaissance attack surfaces.
+* **Dynamic CORS Whitelisting**: Strict Cross-Origin Resource Sharing policy validating incoming origins against environment-defined URLs (`CLIENT_URL`), production domains, and authorized Vercel preview environments with credentials support.
+
+### 📦 6. Input Sanitization & File Upload Defense
+* **Sensitive Field Protection (`select: false`)**: Fields like `password`, `verificationCode`, `verificationCodeExpiry`, `verificationAttempts`, `passwordResetCode`, and `passwordResetAttempts` are excluded by default in Mongoose queries, preventing accidental exposure in JSON API payloads.
+* **Strict MIME-Type File Whitelist**: Job application CV uploads via Multer are strictly restricted to `application/pdf`, `application/msword`, and `application/vnd.openxmlformats-officedocument.wordprocessingml.document`. Executables and scripts are rejected immediately.
+* **File Size Constraint**: Multipart uploads are hard-capped at **8 MB** to protect storage and network bandwidth.
+* **Path Traversal & Filename Sanitization**: Uploaded files have their names sanitized using regex `replace(/[^\w.\-]+/g, "_")` to prevent directory traversal (`../../`) and special-character injection attacks.
+* **React/Next.js Client-Side Sanitization**: Automatic JSX string escaping prevents Stored and Reflected XSS across all customer and admin views.
+
+---
+
+### 📋 সিকিউরিটি ফিচারের সারাংশ (Security Highlights at a Glance)
+
+| সিকিউরিটি ক্যাটাগরি | ব্যবহৃত প্রযুক্তি / মেকানিজম | কাজের ভূমিকা ও নিরাপত্তা সুবিধা |
+|---|---|---|
+| **পাসওয়ার্ড হ্যাশিং** | `bcryptjs` (12 Salt Rounds) | পাসওয়ার্ড প্লেইন টেক্সটে সংরক্ষিত হয় না; ১২ রাউন্ড সল্টিংয়ের মাধ্যমে রেইনবো টেবিল ও ব্রুট-ফোর্স রোধ। |
+| **অথেনটিকেশন ও সেশন** | JWT (JSON Web Tokens) | সিক্রেট কি দ্বারা সাইন করা স্টেটলেস টোকেন ও এক্সপায়ারি ম্যানেজমেন্ট। |
+| **ব্রুট-ফোর্স প্রতিরোধ** | `express-rate-limit` | লগইন ও রেজিস্ট্রেশন এন্ডপয়েন্টে ১৫ মিনিটে সর্বোচ্চ ২৫ বার চেষ্টার লিমিট। |
+| **OTP নিরাপত্তা ও লকআউট** | 6-Digit OTP + 5-Attempt Lockout | সর্বোচ্চ ৫ বার ভুল কোড দিলে OTP স্বয়ংক্রিয়ভাবে বাতিল হয়ে রিকোয়েস্ট ব্লক হয়। |
+| **অর্ডার রেট লিমিটিং** | `trackLimiter` (100 req / 15 min) | পাবলিক অর্ডার ট্র্যাকিং এপিআই থেকে ডেটা স্ক্র্যাপিং ও স্প্যামিং প্রতিরোধ। |
+| **অ্যাডমিন রোল ও পারমিশন** | RBAC (`root_admin`, `sub_admin`, `user`) | রুট অ্যাডমিন ছাড়া সাব-অ্যাডমিন পারমিশন পরিবর্তন অসম্ভব; ৯টি মডিউলের আলাদা কন্ট্রোল। |
+| **মূল্য কারচুপি প্রতিরোধ** | Server-Side Price Verification | ফ্রন্টএন্ড থেকে পাঠানো প্রাইস অগ্রাহ্য করে ডাটাবেজ থেকে আসল প্রাইস দিয়ে টোটাল হিসাব। |
+| **স্টক ওভারসেলিং প্রতিরোধ** | Atomic Stock Check & Reservation | স্টক ০ হলে অর্ডার ব্লক করা এবং একই সাথে একাধিক অর্ডারে স্টক নেগেটিভ হওয়া বন্ধ রাখা। |
+| **এইচটিটিপি হেডার ও ফিল্টারিং** | `helmet` + `cors` | ক্লিকজ্যাকিং, মাইম স্নিফিং ও অননুমোদিত ডোমেইন থেকে এপিআই কল প্রতিরোধ। |
+| **সার্ভার ফিঙ্গারপ্রিন্ট হাইডিং** | `disable("x-powered-by")` | সার্ভার যে Express বা Node-এ চলছে তা এক্সপোজ না করে সাইবার হামলাকারীদের তথ্য গোপন রাখা। |
+| **ফাইল আপলোড নিরাপত্তা** | `multer` Whitelist + Regex Sanitize | সিভি আপলোডে কেবল PDF/DOC/DOCX অনুমতি; ফাইল সাইজ ৮ এমবি লিমিট এবং পাথ ট্রাভার্সাল রোধ। |
+| **ডাটাবেজ সেনসিটিভ ডাটা প্রটেকশন** | Mongoose `select: false` | কুয়েরি করার সময় পাসওয়ার্ড ও ওটিপি কোড যাতে ভুলে এপিআই রেসপন্সে না যায় তা নিশ্চিত করা। |
+| **অ্যাকাউন্ট ব্লক সিস্টেম** | `isBlocked` Middleware Validation | অ্যাডমিন কোনো সন্দেহজনক ইউজার ব্লক করলে সাথে সাথে তার সমস্ত এক্সেস বন্ধ হওয়া। |
 
 ---
 

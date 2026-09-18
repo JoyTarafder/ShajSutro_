@@ -85,7 +85,6 @@ const BEFORE_CATS = [
   { label: "Shop", href: "/shop" },
 ];
 const AFTER_CATS = [
-  { label: "Track Order", href: "/track-order" },
   { label: "Virtual Try-On", href: "/virtual-try-on", badge: "AI" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
