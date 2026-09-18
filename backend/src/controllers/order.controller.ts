@@ -1,5 +1,5 @@
 import { Response } from "express";
-import asyncHandler from "express-async-handler";
+import asyncHandler from "../utils/asyncHandler";
 import mongoose from "mongoose";
 import PDFDocument from "pdfkit";
 import Order from "../models/Order";
@@ -58,13 +58,7 @@ export const placeOrder = asyncHandler(
 
       const product = mongoose.isValidObjectId(rawId)
         ? await Product.findById(rawId)
-        : (await Product.findOne({ slug: rawId.toLowerCase() })) ??
-          (await Product.findOne({
-            name: { $regex: `^${rawId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" },
-          })) ??
-          (await Product.findOne({
-            name: { $regex: `^${itemName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" },
-          }));
+        : await Product.findOne({ slug: rawId.toLowerCase() });
 
       if (!product) {
         throw new AppError(`Product "${itemName}" is invalid or no longer available`, 400);

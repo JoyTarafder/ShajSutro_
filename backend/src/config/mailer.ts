@@ -9,34 +9,26 @@ export function getTransporter(): Transporter {
   const emailUser = (process.env.EMAIL_USER || "").trim();
   const emailPass = (process.env.EMAIL_PASS || "").replace(/\s+/g, "");
 
-  cachedTransporter = nodemailer.createTransport(
-    isCustomSmtp
+  cachedTransporter = nodemailer.createTransport({
+    ...(isCustomSmtp
       ? {
           host: process.env.EMAIL_HOST,
           port: Number(process.env.EMAIL_PORT) || 465,
-          secure: (process.env.EMAIL_PORT || "465") === "465",
-          auth: {
-            user: emailUser,
-            pass: emailPass,
-          },
-          tls: {
-            rejectUnauthorized: false,
-          },
         }
       : {
           service: "gmail",
           host: "smtp.gmail.com",
           port: 465,
-          secure: true,
-          auth: {
-            user: emailUser,
-            pass: emailPass,
-          },
-          tls: {
-            rejectUnauthorized: false,
-          },
-        }
-  );
+        }),
+    secure: (process.env.EMAIL_PORT || "465") === "465",
+    auth: {
+      user: emailUser,
+      pass: emailPass,
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
 
   return cachedTransporter;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 type FavoritesContextType = {
   favorites: Set<string>;
@@ -56,12 +56,11 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
     persist(new Set());
   }, [persist]);
 
-  const value = useMemo(
-    () => ({ favorites, isFavorite, toggleFavorite, clearFavorites }),
-    [favorites, isFavorite, toggleFavorite, clearFavorites],
+  return (
+    <FavoritesContext.Provider value={{ favorites, isFavorite, toggleFavorite, clearFavorites }}>
+      {children}
+    </FavoritesContext.Provider>
   );
-
-  return <FavoritesContext.Provider value={value}>{children}</FavoritesContext.Provider>;
 }
 
 export function useFavorites() {

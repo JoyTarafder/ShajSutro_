@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import asyncHandler from "express-async-handler";
+import asyncHandler from "../utils/asyncHandler";
 import Subscriber from "../models/Subscriber";
 import { AppError } from "../middleware/error.middleware";
 import { sendNewsletterWelcomeEmail } from "../services/emailService";

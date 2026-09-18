@@ -11,10 +11,7 @@ import { useRouter } from "next/navigation";
 
 import { getApiBase } from "@/lib/apiBase";
 
-function getAdminApiBase(): string {
-  const base = getApiBase();
-  return base ? `${base}/api` : "/api";
-}
+const ADMIN_API = `${getApiBase()}/api`;
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -94,7 +91,7 @@ export const AdminAuthProvider = ({
   const apiFetch = useCallback(
     async <T,>(path: string, options: RequestInit = {}): Promise<T> => {
       const storedToken = localStorage.getItem("admin_token");
-      const res = await fetch(`${getAdminApiBase()}${path}`, {
+      const res = await fetch(`${ADMIN_API}${path}`, {
         ...options,
         headers: {
           "Content-Type": "application/json",
@@ -126,7 +123,7 @@ export const AdminAuthProvider = ({
 
   const login = useCallback(
     async (email: string, password: string) => {
-      const res = await fetch(`${getAdminApiBase()}/auth/login`, {
+      const res = await fetch(`${ADMIN_API}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

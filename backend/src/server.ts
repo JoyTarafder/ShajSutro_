@@ -124,7 +124,7 @@ app.use("/api/auth/forgot-password", authLimiter);
 app.use("/api/auth/reset-password", authLimiter);
 app.use("/api/orders/track", trackLimiter);
 
-// CORS — allow localhost, *.vercel.app, and any origins in CLIENT_URL (comma-separated)
+// CORS — allow configured origins, Vercel deployments, or reflect origin
 const allowedOrigins = (process.env.CLIENT_URL ?? "")
   .split(",")
   .map((u) => u.trim())
@@ -132,26 +132,14 @@ const allowedOrigins = (process.env.CLIENT_URL ?? "")
 
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (curl, Postman, server-to-server)
-      if (!origin) return callback(null, true);
-      // Allow any localhost / 127.0.0.1 or local LAN IP (e.g. 192.168.x.x, 10.x.x.x for mobile testing) regardless of port
-      if (
-        /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?$/i.test(
-          origin
-        )
-      ) {
-        return callback(null, true);
-      }
-      // Allow all Vercel deployment URLs (*.vercel.app)
-      if (/^https:\/\/[^.]+\.vercel\.app$/i.test(origin)) {
-        return callback(null, true);
-      }
-      // Allow any explicitly listed origin
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      // Default: allow origin
-      return callback(null, true);
-    },
+    origin: allowedOrigins.length > 0
+      ? (origin, callback) => {
+          if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
+            return callback(null, true);
+          }
+          return callback(null, true);
+        }
+      : true,
     credentials: true,
   }),
 );

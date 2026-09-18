@@ -1,5 +1,5 @@
 import { Response } from "express";
-import asyncHandler from "express-async-handler";
+import asyncHandler from "../utils/asyncHandler";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
 import PendingUser from "../models/PendingUser";

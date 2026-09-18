@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import asyncHandler from "express-async-handler";
+import asyncHandler from "../utils/asyncHandler";
 import PromoCode from "../models/PromoCode";
 import Order from "../models/Order";
 import { AppError } from "../middleware/error.middleware";

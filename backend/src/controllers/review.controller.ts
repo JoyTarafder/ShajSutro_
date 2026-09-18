@@ -1,4 +1,4 @@
-import asyncHandler from "express-async-handler";
+import asyncHandler from "../utils/asyncHandler";
 import { Request, Response } from "express";
 import { AppError } from "../middleware/error.middleware";
 import { AuthRequest } from "../types";
