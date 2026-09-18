@@ -77,74 +77,121 @@ The platform delivers a frictionless customer shopping journey alongside an oper
 ## 🏗️ System Architecture
 
 ```mermaid
-flowchart TB
-    subgraph ClientLayer ["Client Presentation Layer (Next.js 14 App Router)"]
-        Browser["🌐 Web Browser / Mobile Responsive PWA"]
-        Storefront["🛍️ Storefront Application ((store))"]
-        AdminDashboard["🛡️ Admin Management Portal (/admin)"]
-        Browser --> Storefront
-        Browser --> AdminDashboard
-    end
+flowchart TD
 
-    subgraph GatewayLayer ["API Gateway & Security Layer (Express 4.19)"]
-        RateLimiter["🛡️ Tiered Rate Limiters (General & Auth Guards)"]
-        HelmetCORS["🔒 Helmet Security Headers & Dynamic CORS"]
-        JWTAuth["🔑 JWT Authentication & Role-Based RBAC Guards"]
-        Router["⚡ Modular API Router (/api/*)"]
-        
-        Storefront -->|REST / HTTPS| RateLimiter
-        AdminDashboard -->|REST / HTTPS| RateLimiter
-        RateLimiter --> HelmetCORS
-        HelmetCORS --> JWTAuth
-        JWTAuth --> Router
-    end
+subgraph group_presentation["Customer and Admin UI"]
+  node_storefront["Storefront UI<br/>[layout.tsx]"]
+  node_admin_ui["Admin Portal<br/>[layout.tsx]"]
+  node_tryon_ui["Virtual Try-On<br/>[page.tsx]"]
+end
 
-    subgraph ServiceLayer ["Core Business Logic & Services"]
-        AuthService["🔐 Auth & Verification Engine"]
-        ProductService["📦 Product & Inventory Engine"]
-        CategoryService["🗂️ Category & Navigation Manager"]
-        OrderService["🛒 Order & Checkout Workflow"]
-        PromoService["🏷️ Promotions & Coupon Validator"]
-        ReviewService["⭐ Review & Rating Processor"]
-        InvoiceService["📑 PDFKit Invoice Generator"]
-        MailService["✉️ Nodemailer SMTP Dispatcher"]
-        CareerService["💼 Job & Applicant Processor"]
-        CacheService["⚡ Redis Cache Manager (ioredis)"]
-        
-        Router --> AuthService
-        Router --> ProductService
-        Router --> CategoryService
-        Router --> OrderService
-        Router --> PromoService
-        Router --> ReviewService
-        Router --> CareerService
-        
-        ProductService <--> CacheService
-        CategoryService <--> CacheService
-        OrderService --> InvoiceService
-        OrderService --> MailService
-        AuthService --> MailService
-    end
+subgraph group_gateway["API Gateway"]
+  node_product_proxy["Product API Proxy<br/>[route.ts]"]
+  node_tryon_submit["Try-On Submit API<br/>[route.ts]"]
+  node_tryon_status["Try-On Status API<br/>[route.ts]"]
+  node_express_api["Express API<br/>[server.ts]"]
+  node_auth_routes["Auth Routes<br/>[auth.routes.ts]"]
+  node_commerce_routes["Commerce Routes<br/>[product.routes.ts]"]
+  node_admin_routes["Admin Routes<br/>[admin.routes.ts]"]
+end
 
-    subgraph PersistenceLayer ["Persistence & External Cloud Services"]
-        MongoDB[("🍃 MongoDB Atlas Database")]
-        RedisCache[("⚡ Redis In-Memory Cache (Optional / Upstash)")]
-        GoogleOAuth["🔑 Google OAuth 2.0 Identity API"]
-        SMTPServer["✉️ SMTP Relay Server (Gmail / SendGrid)"]
-        LocalStorage["📁 File Storage (CV Resumes & Uploads)"]
-        
-        CacheService <--> RedisCache
-        ProductService --> MongoDB
-        CategoryService --> MongoDB
-        OrderService --> MongoDB
-        AuthService --> MongoDB
-        PromoService --> MongoDB
-        ReviewService --> MongoDB
-        CareerService --> MongoDB
-        CareerService --> LocalStorage
-        AuthService -.-> GoogleOAuth
-        MailService -.-> SMTPServer
-    end
+subgraph group_commerce["Commerce Domains"]
+  node_auth_controller["Auth Controller<br/>[auth.controller.ts]"]
+  node_catalog_controller["Catalog Controller"]
+  node_order_controller["Order Checkout"]
+  node_review_controller["Review Processor"]
+  node_promo_controller["Promotion Manager"]
+end
+
+subgraph group_operations["Operations Services"]
+  node_admin_controller["Admin Operations"]
+  node_career_controller["Career Processor"]
+  node_email_service["Email Dispatcher<br/>[emailService.ts]"]
+  node_cache_service["Cache Manager<br/>[cache.service.ts]"]
+end
+
+subgraph group_persistence["Persistence Integrations"]
+  node_mongodb[("MongoDB Database<br/>[db.ts]")]
+  node_redis[("Redis Cache<br/>[redis.ts]")]
+end
+
+node_browser(("Web Browser"))
+node_smtp["SMTP Relay"]
+node_lightx["LightX Try-On"]
+node_google_oauth["Google Identity"]
+node_upload_storage[("Resume Storage")]
+
+node_browser -->|"opens"| node_storefront
+node_browser -->|"opens"| node_admin_ui
+node_storefront -->|"fetches catalog"| node_product_proxy
+node_product_proxy -->|"proxies products"| node_express_api
+node_product_proxy -.->|"falls back"| node_catalog_controller
+node_storefront -->|"calls API"| node_express_api
+node_admin_ui -->|"calls API"| node_express_api
+node_tryon_ui -->|"submits images"| node_tryon_submit
+node_tryon_ui -->|"polls status"| node_tryon_status
+node_tryon_submit -.->|"starts job"| node_lightx
+node_tryon_status -.->|"checks job"| node_lightx
+node_express_api -->|"dispatches"| node_auth_routes
+node_express_api -->|"dispatches"| node_commerce_routes
+node_express_api -->|"dispatches"| node_admin_routes
+node_auth_routes -->|"routes requests"| node_auth_controller
+node_commerce_routes -->|"routes catalog"| node_catalog_controller
+node_commerce_routes -->|"routes orders"| node_order_controller
+node_commerce_routes -->|"routes reviews"| node_review_controller
+node_commerce_routes -->|"routes promotions"| node_promo_controller
+node_admin_routes -->|"routes operations"| node_admin_controller
+node_auth_controller -->|"reads and writes"| node_mongodb
+node_auth_controller -->|"sends verification"| node_email_service
+node_auth_controller -.->|"authenticates with"| node_google_oauth
+node_catalog_controller -->|"reads catalog"| node_mongodb
+node_catalog_controller -->|"uses cache"| node_cache_service
+node_order_controller -->|"persists orders"| node_mongodb
+node_order_controller -->|"sends updates"| node_email_service
+node_review_controller -->|"stores reviews"| node_mongodb
+node_review_controller -->|"clears product cache"| node_cache_service
+node_promo_controller -->|"stores promotions"| node_mongodb
+node_admin_controller -->|"manages records"| node_mongodb
+node_admin_controller -->|"broadcasts email"| node_email_service
+node_career_controller -->|"stores applications"| node_mongodb
+node_career_controller -->|"stores resumes"| node_upload_storage
+node_email_service -.->|"delivers mail"| node_smtp
+node_cache_service -.->|"reads and writes"| node_redis
+
+click node_storefront "https://github.com/joytarafder/shajsutro_/blob/main/src/app/(store)/layout.tsx"
+click node_admin_ui "https://github.com/joytarafder/shajsutro_/blob/main/src/app/admin/layout.tsx"
+click node_tryon_ui "https://github.com/joytarafder/shajsutro_/blob/main/src/app/(store)/virtual-try-on/page.tsx"
+click node_product_proxy "https://github.com/joytarafder/shajsutro_/blob/main/src/app/api/products/route.ts"
+click node_tryon_submit "https://github.com/joytarafder/shajsutro_/blob/main/src/app/api/virtual-try-on/route.ts"
+click node_tryon_status "https://github.com/joytarafder/shajsutro_/blob/main/src/app/api/virtual-try-on/status/route.ts"
+click node_express_api "https://github.com/joytarafder/shajsutro_/blob/main/backend/src/server.ts"
+click node_auth_routes "https://github.com/joytarafder/shajsutro_/blob/main/backend/src/routes/auth.routes.ts"
+click node_commerce_routes "https://github.com/joytarafder/shajsutro_/blob/main/backend/src/routes/product.routes.ts"
+click node_admin_routes "https://github.com/joytarafder/shajsutro_/blob/main/backend/src/routes/admin.routes.ts"
+click node_auth_controller "https://github.com/joytarafder/shajsutro_/blob/main/backend/src/controllers/auth.controller.ts"
+click node_catalog_controller "https://github.com/joytarafder/shajsutro_/blob/main/backend/src/controllers/product.controller.ts"
+click node_order_controller "https://github.com/joytarafder/shajsutro_/blob/main/backend/src/controllers/order.controller.ts"
+click node_review_controller "https://github.com/joytarafder/shajsutro_/blob/main/backend/src/controllers/review.controller.ts"
+click node_promo_controller "https://github.com/joytarafder/shajsutro_/blob/main/backend/src/controllers/promoCode.controller.ts"
+click node_admin_controller "https://github.com/joytarafder/shajsutro_/blob/main/backend/src/controllers/admin.controller.ts"
+click node_career_controller "https://github.com/joytarafder/shajsutro_/blob/main/backend/src/controllers/jobApplication.controller.ts"
+click node_email_service "https://github.com/joytarafder/shajsutro_/blob/main/backend/src/services/emailService.ts"
+click node_cache_service "https://github.com/joytarafder/shajsutro_/blob/main/backend/src/services/cache.service.ts"
+click node_mongodb "https://github.com/joytarafder/shajsutro_/blob/main/backend/src/config/db.ts"
+click node_redis "https://github.com/joytarafder/shajsutro_/blob/main/backend/src/config/redis.ts"
+
+classDef toneNeutral fill:#f8fafc,stroke:#334155,stroke-width:1.5px,color:#0f172a
+classDef toneBlue fill:#dbeafe,stroke:#2563eb,stroke-width:1.5px,color:#172554
+classDef toneAmber fill:#fef3c7,stroke:#d97706,stroke-width:1.5px,color:#78350f
+classDef toneMint fill:#dcfce7,stroke:#16a34a,stroke-width:1.5px,color:#14532d
+classDef toneRose fill:#ffe4e6,stroke:#e11d48,stroke-width:1.5px,color:#881337
+classDef toneIndigo fill:#e0e7ff,stroke:#4f46e5,stroke-width:1.5px,color:#312e81
+classDef toneTeal fill:#ccfbf1,stroke:#0f766e,stroke-width:1.5px,color:#134e4a
+class node_storefront,node_admin_ui,node_tryon_ui,node_browser toneBlue
+class node_product_proxy,node_tryon_submit,node_tryon_status,node_express_api,node_auth_routes,node_commerce_routes,node_admin_routes,node_upload_storage toneAmber
+class node_auth_controller,node_catalog_controller,node_order_controller,node_review_controller,node_promo_controller toneMint
+class node_admin_controller,node_career_controller,node_email_service,node_cache_service toneRose
+class node_mongodb,node_redis,node_smtp,node_lightx,node_google_oauth toneIndigo
 ```
 
 ---
