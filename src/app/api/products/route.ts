@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { products } from "@/data/products";
+import { getApiBase } from "@/lib/apiBase";
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
-  const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  const backendUrl = getApiBase();
 
   try {
     const res = await fetch(`${backendUrl}/api/products${url.search}`, {

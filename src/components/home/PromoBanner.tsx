@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { getApiBase } from "@/lib/apiBase";
 import { Copy, Check, ChevronRight } from "lucide-react";
@@ -59,10 +60,12 @@ export default function PromoBanner() {
     <section className="relative w-full overflow-hidden bg-charcoal-950 py-16 sm:py-20 lg:py-24 border-y border-charcoal-900 shadow-2xl group">
       {/* Full-Width Poster Image Background */}
       <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
-        <img
+        <Image
           src={posterImage}
           alt={title}
-          className="w-full h-full object-cover object-center transition-transform duration-1000 ease-out group-hover:scale-105"
+          fill
+          sizes="100vw"
+          className="object-cover object-center transition-transform duration-1000 ease-out group-hover:scale-105"
         />
         {/* Full-width gradient overlays for text readability and premium aesthetic */}
         <div className="absolute inset-0 bg-gradient-to-r from-charcoal-950/95 via-charcoal-950/80 to-charcoal-950/40 sm:from-charcoal-950/95 sm:via-charcoal-950/70 sm:to-transparent" />

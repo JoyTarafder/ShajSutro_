@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getApiBase } from "@/lib/apiBase";
 
 type HeroStats = {
   productsCount: number;
@@ -7,8 +8,7 @@ type HeroStats = {
 };
 
 function getBackendBase(): string {
-  const raw = (process.env.NEXT_PUBLIC_API_URL ?? "").trim();
-  return raw.replace(/\/api\/?$/, "").replace(/\/$/, "");
+  return getApiBase();
 }
 
 function toNumber(value: unknown, fallback = 0): number {

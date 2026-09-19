@@ -146,7 +146,6 @@ export default function PromoGrid() {
                   fill
                   className="object-cover object-top transition-transform duration-700 ease-premium group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 50vw"
-                  priority
                 />
                 {/* Visual rich vignette overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/90 via-charcoal-950/20 to-transparent" />
