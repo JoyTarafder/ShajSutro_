@@ -83,6 +83,10 @@ ShajSutro achieves top-tier scores in Google Lighthouse production audits, meeti
 | **Cumulative Layout Shift (CLS)** | **0.002** | `< 0.1` | 🟢 Rock-Solid Visual Stability |
 | **Speed Index (SI)** | **1.1 s** | `< 3.4 s` | 🟢 Rapid Perceived Page Completion |
 
+<div align="center">
+  <img src="screenshots/lighthouse-score.png" alt="ShajSutro Google Lighthouse Audit 99% Performance Proof" width="100%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); margin-top: 16px; margin-bottom: 24px;" />
+</div>
+
 #### 🛠️ Key Performance Optimizations Implemented:
 * **Next.js 14 Image Engine**: Dynamic responsive sizes (`sizes="100vw"` / `sizes="(max-width: 640px) 50vw, 25vw"`), automatic conversion to AVIF/WebP, and local asset fallbacks.
 * **Layout Stability**: Zero layout shifts (`CLS: 0.002`) by eliminating non-composited infinite CSS transforms from critical above-the-fold hero elements.
@@ -107,6 +111,15 @@ ShajSutro achieves top-tier scores in Google Lighthouse production audits, meeti
 
 <div align="center">
   <img src="screenshots/admin-dashboard.png" alt="ShajSutro Admin Dashboard" width="100%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.35);" />
+</div>
+
+<br/>
+
+### 🏆 3. Google Lighthouse 99% Performance Audit Proof
+*Verified production performance audit: 99 Performance, 96 Accessibility, 100 Best Practices, 100 SEO, and 0.3s FCP.*
+
+<div align="center">
+  <img src="screenshots/lighthouse-score.png" alt="ShajSutro Lighthouse Score Proof" width="100%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.15);" />
 </div>
 
 ---
