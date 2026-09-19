@@ -54,12 +54,9 @@ export default function HeroSection() {
 
   return (
     <section className="relative bg-warm-50 overflow-hidden py-10 lg:py-16">
-      {/* Premium Ambient Background Blur Blobs */}
-      <div className="absolute top-[15%] left-[-10%] w-[550px] h-[550px] bg-gradient-to-tr from-accent-200/15 to-transparent rounded-full filter blur-[120px] pointer-events-none animate-float" />
-      <div
-        className="absolute bottom-[10%] right-[-5%] w-[650px] h-[650px] bg-gradient-to-bl from-warm-200/20 to-transparent rounded-full filter blur-[140px] pointer-events-none animate-pulse"
-        style={{ animationDuration: "8s" }}
-      />
+      {/* Premium Ambient Background Glow */}
+      <div className="absolute top-[15%] left-[-10%] w-[550px] h-[550px] bg-gradient-to-tr from-accent-200/15 to-transparent rounded-full filter blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-[10%] right-[-5%] w-[650px] h-[650px] bg-gradient-to-bl from-warm-200/20 to-transparent rounded-full filter blur-[100px] pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full z-10">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
@@ -127,7 +124,7 @@ export default function HeroSection() {
           {/* Grid visual side */}
           <div className="lg:col-span-6 order-1 lg:order-2 grid grid-cols-2 gap-4 h-[480px] sm:h-[550px] lg:h-[620px] w-full animate-fade-in">
             {/* Tall Image - Saree */}
-            <div className="relative rounded-[2.5rem] overflow-hidden mt-8 shadow-soft-lg border-4 border-white animate-float">
+            <div className="relative rounded-[2.5rem] overflow-hidden mt-8 shadow-soft-lg border-4 border-white">
               <Image
                 src="https://zaribanaras.com/cdn/shop/products/BF-183E.jpg?v=1756359508"
                 alt="Woman wearing elegant luxury Saree"
@@ -142,10 +139,7 @@ export default function HeroSection() {
             {/* Split Images */}
             <div className="space-y-4 h-full flex flex-col justify-between">
               {/* Top Split Image - Panjabi */}
-              <div
-                className="relative rounded-[2rem] overflow-hidden h-[48%] shadow-soft-lg border-4 border-white animate-float"
-                style={{ animationDelay: "1.5s", animationDuration: "7s" }}
-              >
+              <div className="relative rounded-[2rem] overflow-hidden h-[48%] shadow-soft-lg border-4 border-white">
                 <Image
                   src="https://www.yellowclothing.net/cdn/shop/files/DSC09746_bda242ed-87fc-4756-9bd1-53ef63dbaead.jpg?v=1784004255"
                   alt="Man wearing traditional Panjabi"
@@ -156,10 +150,7 @@ export default function HeroSection() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
               </div>
               {/* Bottom Split Image - Kids */}
-              <div
-                className="relative rounded-[2rem] overflow-hidden h-[48%] shadow-soft-lg border-4 border-white animate-float"
-                style={{ animationDelay: "3s", animationDuration: "5s" }}
-              >
+              <div className="relative rounded-[2rem] overflow-hidden h-[48%] shadow-soft-lg border-4 border-white">
                 <Image
                   src="https://i.pinimg.com/originals/61/ae/35/61ae35b0305e8e20a3d4127530049bb4.jpg"
                   alt="Kids traditional and luxury wear"

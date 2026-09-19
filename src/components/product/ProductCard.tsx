@@ -29,6 +29,7 @@ function formatProductTitle(title: string): string {
 export default function ProductCard({ product }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [imgSrc, setImgSrc] = useState<string>(product.images[0] || "/placeholder.png");
   const { addItem } = useCart();
   const { isFavorite, toggleFavorite } = useFavorites();
 
@@ -56,9 +57,10 @@ export default function ProductCard({ product }: ProductCardProps) {
       <Link href={`/product/${product.id}`} className="block flex-1 no-underline group-hover:no-underline">
         <div className="relative overflow-hidden rounded-2xl bg-emerald-50/40 aspect-[3/4] shadow-soft transition-shadow duration-500 group-hover:shadow-soft-lg">
           <Image
-            src={isHovered && product.images[1] ? product.images[1] : product.images[0]}
+            src={isHovered && product.images[1] ? product.images[1] : imgSrc}
             alt={product.name}
             fill
+            onError={() => setImgSrc("/placeholder.png")}
             className="object-cover transition-all duration-700 ease-premium group-hover:scale-105"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
