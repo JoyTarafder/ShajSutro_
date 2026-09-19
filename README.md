@@ -21,11 +21,11 @@
   <b>Enterprise-ready, cloud-native digital storefront and back-office management suite tailored for high-scale fashion and lifestyle commerce.</b>
 </p>
 
-### 🏆 Google Lighthouse Production Audit Scores
+### 🏆 Google PageSpeed Insights Production Audit Scores
 
 [![Performance](https://img.shields.io/badge/Performance-99%2F100-00CC66?style=for-the-badge&logo=googlechrome&logoColor=white)](#-performance--core-web-vitals)
 [![Accessibility](https://img.shields.io/badge/Accessibility-96%2F100-00CC66?style=for-the-badge&logo=w3c&logoColor=white)](#-performance--core-web-vitals)
-[![Best Practices](https://img.shields.io/badge/Best_Practices-100%2F100-00CC66?style=for-the-badge&logo=lighthouse&logoColor=white)](#-performance--core-web-vitals)
+[![Best Practices](https://img.shields.io/badge/Best_Practices-100%2F100-00CC66?style=for-the-badge&logo=google&logoColor=white)](#-performance--core-web-vitals)
 [![SEO](https://img.shields.io/badge/SEO-100%2F100-00CC66?style=for-the-badge&logo=google&logoColor=white)](#-performance--core-web-vitals)
 
 <p align="center">
@@ -64,9 +64,9 @@ The platform delivers a frictionless customer shopping journey alongside an oper
 
 ## ⚡ Performance & Core Web Vitals
 
-ShajSutro achieves top-tier scores in Google Lighthouse production audits, meeting the highest standards for modern e-commerce speed, accessibility, security, and search engine optimization.
+ShajSutro achieves top-tier scores in Google PageSpeed Insights production audits, meeting the highest standards for modern e-commerce speed, accessibility, security, and search engine optimization.
 
-| Lighthouse Category | Score | Status |
+| Category | Score | Status |
 |---|---|---|
 | **⚡ Performance** | **99 / 100** | 🟢 Exceptional (All Web Vitals Green) |
 | **♿ Accessibility** | **96 / 100** | 🟢 Fully Accessible (WCAG 2.1 AA Compliant) |
@@ -84,7 +84,7 @@ ShajSutro achieves top-tier scores in Google Lighthouse production audits, meeti
 | **Speed Index (SI)** | **1.1 s** | `< 3.4 s` | 🟢 Rapid Perceived Page Completion |
 
 <div align="center">
-  <img src="screenshots/lighthouse-score.png" alt="ShajSutro Google Lighthouse Audit 99% Performance Proof" width="100%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); margin-top: 16px; margin-bottom: 24px;" />
+  <img src="screenshots/pagespeed-score.png" alt="ShajSutro Google PageSpeed Insights 99% Performance Proof" width="100%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); margin-top: 16px; margin-bottom: 24px;" />
 </div>
 
 #### 🛠️ Key Performance Optimizations Implemented:
@@ -115,11 +115,11 @@ ShajSutro achieves top-tier scores in Google Lighthouse production audits, meeti
 
 <br/>
 
-### 🏆 3. Google Lighthouse 99% Performance Audit Proof
+### 🏆 3. Google PageSpeed Insights 99% Performance Audit Proof
 *Verified production performance audit: 99 Performance, 96 Accessibility, 100 Best Practices, 100 SEO, and 0.3s FCP.*
 
 <div align="center">
-  <img src="screenshots/lighthouse-score.png" alt="ShajSutro Lighthouse Score Proof" width="100%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.15);" />
+  <img src="screenshots/pagespeed-score.png" alt="ShajSutro PageSpeed Insights Score Proof" width="100%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.15);" />
 </div>
 
 ---
