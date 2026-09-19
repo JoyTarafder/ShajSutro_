@@ -38,7 +38,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 lg:gap-16 text-center sm:text-left">
           <div className="col-span-2 md:col-span-1 flex flex-col items-center sm:items-start text-center sm:text-left">
             <Logo size="md" />
-            <p className="mt-3 text-xs sm:text-sm text-charcoal-400 leading-relaxed font-light max-w-sm sm:max-w-none">
+            <p className="mt-3 text-xs sm:text-sm text-charcoal-600 leading-relaxed font-normal max-w-sm sm:max-w-none">
               Thoughtfully crafted clothing for the modern wardrobe. Quality over quantity.
             </p>
             <div className="flex items-center gap-3 mt-4">
@@ -78,7 +78,7 @@ export default function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-xs sm:text-sm text-charcoal-500 hover:text-charcoal-950 transition-colors duration-300 font-light"
+                      className="text-xs sm:text-sm text-charcoal-600 hover:text-charcoal-950 transition-colors duration-300 font-medium"
                     >
                       {link.label}
                     </Link>
@@ -99,7 +99,7 @@ export default function Footer() {
           />
         </div>
         <div className="mt-8 pt-6 border-t border-charcoal-100/50 flex justify-center">
-          <p className="text-sm text-charcoal-400 font-light text-center">
+          <p className="text-sm text-charcoal-600 font-normal text-center">
             &copy; {new Date().getFullYear()} ShajSutro. All rights reserved.
           </p>
         </div>

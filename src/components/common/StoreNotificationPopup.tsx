@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getApiBase } from "@/lib/apiBase";
 import Link from "next/link";
 import { X, ArrowRight, Copy, Check } from "lucide-react";
@@ -100,10 +100,13 @@ export default function StoreNotificationPopup() {
         const json = await res.json();
         if (json.success && json.data && json.data.length > 0) {
           const latest: NotificationItem = json.data[0];
+          if (typeof window !== "undefined" && sessionStorage.getItem("shajsutro_popup_dismissed") === latest._id) {
+            return;
+          }
           setNotification(latest);
           setTimeout(() => {
             setVisible(true);
-          }, 350);
+          }, 4000);
         }
       } catch {
         // Silently ignore if backend offline
@@ -112,6 +115,16 @@ export default function StoreNotificationPopup() {
 
     fetchActiveNotification();
   }, []);
+
+  const handleClose = useCallback(() => {
+    if (typeof window !== "undefined" && notification?._id) {
+      sessionStorage.setItem("shajsutro_popup_dismissed", notification._id);
+    }
+    setClosing(true);
+    setTimeout(() => {
+      setVisible(false);
+    }, 250);
+  }, [notification?._id]);
 
   useEffect(() => {
     if (!visible || !notification) return;
@@ -126,14 +139,7 @@ export default function StoreNotificationPopup() {
     }, durationSeconds * 1000);
 
     return () => clearTimeout(timer);
-  }, [visible, notification]);
-
-  const handleClose = () => {
-    setClosing(true);
-    setTimeout(() => {
-      setVisible(false);
-    }, 250);
-  };
+  }, [visible, notification, handleClose]);
 
   if (!visible || !notification) return null;
 

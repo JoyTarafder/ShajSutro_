@@ -50,8 +50,8 @@ function mapProduct(p: ApiProduct): Product {
 }
 
 export default function BestSellerSection() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<Product[]>(() => fallbackProducts.slice(4, 8));
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetch(`${getApiBase()}/api/products?badge=Best+Seller&limit=4`)

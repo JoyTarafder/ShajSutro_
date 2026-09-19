@@ -297,18 +297,22 @@ export default function ReviewSection() {
         </div>
 
         {/* Carousel Indicator Dots */}
-        <div className="flex items-center justify-center gap-2 mt-10">
+        <div className="flex items-center justify-center gap-1 mt-10">
           {REVIEWS.map((_, idx) => (
             <button
               key={idx}
               onClick={() => setCurrentIndex(idx)}
               aria-label={`Go to slide ${idx + 1}`}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                currentIndex === idx
-                  ? "w-8 bg-charcoal-950"
-                  : "w-2 bg-charcoal-200 hover:bg-charcoal-400"
-              }`}
-            />
+              className="p-2 min-w-[28px] min-h-[28px] flex items-center justify-center transition-all duration-300 focus:outline-none"
+            >
+              <span
+                className={`h-2 rounded-full transition-all duration-300 block ${
+                  currentIndex === idx
+                    ? "w-8 bg-charcoal-950"
+                    : "w-2 bg-charcoal-200 hover:bg-charcoal-400"
+                }`}
+              />
+            </button>
           ))}
         </div>
       </div>

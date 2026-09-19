@@ -402,18 +402,22 @@ export default function CategorySection() {
         {/* ─── Pagination Dots & Bottom Action ─── */}
         <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-charcoal-100/70">
           {/* Dots */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1">
             {Array.from({ length: maxIndex + 1 }).map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setCurrentIndex(idx)}
                 aria-label={`Go to slide ${idx + 1}`}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  currentIndex === idx
-                    ? "w-8 bg-charcoal-950"
-                    : "w-2 bg-charcoal-200 hover:bg-charcoal-400"
-                }`}
-              />
+                className="p-2 min-w-[28px] min-h-[28px] flex items-center justify-center transition-all duration-300 focus:outline-none"
+              >
+                <span
+                  className={`h-2 rounded-full transition-all duration-300 block ${
+                    currentIndex === idx
+                      ? "w-8 bg-charcoal-950"
+                      : "w-2 bg-charcoal-200 hover:bg-charcoal-400"
+                  }`}
+                />
+              </button>
             ))}
           </div>
 

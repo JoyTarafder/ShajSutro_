@@ -115,7 +115,7 @@ export default function Logo({
     <Link
       href={href}
       className="group focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-lg inline-flex items-center shrink-0"
-      aria-label="ShajSutro — Happy Shopping"
+      aria-label="ShajSutro"
     >
       {mark}
     </Link>

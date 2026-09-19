@@ -50,8 +50,8 @@ function mapProduct(p: ApiProduct): Product {
 }
 
 export default function NewArrivalsSection() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<Product[]>(() => fallbackProducts.slice(0, 4));
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetch(`${getApiBase()}/api/products?badge=New&limit=4`)
