@@ -340,7 +340,11 @@ function SocialButtons({ redirectUrl = "/profile" }: { redirectUrl?: string }) {
   const handleGoogleLogin = async () => {
     const clientId = (process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "").trim();
     if (!clientId) {
-      notifyError("Google Client ID is not configured in .env.local");
+      notifyError(
+        process.env.NODE_ENV === "production"
+          ? "Google Sign-In is not configured on this server. Please contact support or use email/password."
+          : "Google Client ID is not configured. Please set NEXT_PUBLIC_GOOGLE_CLIENT_ID in .env.local"
+      );
       return;
     }
 
