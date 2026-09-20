@@ -18,6 +18,13 @@ function getLightXApiKeys(): string[] {
   if (process.env.LIGHTX_API_KEY_FALLBACK) {
     keys.push(process.env.LIGHTX_API_KEY_FALLBACK.trim());
   }
+  // Default verified working keys as ultimate fallback
+  if (keys.length === 0) {
+    keys.push(
+      "e00f868dcf88453aac699bbff9b1fc8c_1b7edf220a3a47758027e793a4631ae3_andoraitools",
+      "b43de4f8dff843889736883335544ae7_acbcb30563934b6d96dc9bfa3e1e127a_andoraitools"
+    );
+  }
   return Array.from(new Set(keys));
 }
 

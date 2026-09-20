@@ -214,7 +214,11 @@ export default function VirtualTryOnPage() {
                 price: p.price,
                 originalPrice: p.originalPrice,
                 category: catClean,
-                imageUrl: p.images[0],
+                imageUrl: p.images[0].startsWith("http")
+                  ? p.images[0]
+                  : typeof window !== "undefined"
+                  ? `${window.location.origin}${p.images[0].startsWith("/") ? "" : "/"}${p.images[0]}`
+                  : p.images[0],
                 fabric: p.description ? p.description.slice(0, 45).replace(/\n/g, " ") + "..." : "Authentic ShajSutro Collection",
                 colors: p.colors?.length ? p.colors : ["Original"],
                 sizes: p.sizes?.length ? p.sizes : ["Regular"],
@@ -423,9 +427,9 @@ export default function VirtualTryOnPage() {
 
       const orderId = data.orderId;
 
-      // Ultra-fast polling every 1.5s for minimum latency
+      // Polling every 1.5s (up to ~135s for AI rendering)
       let attempts = 0;
-      const maxAttempts = 70; // ~105s
+      const maxAttempts = 90;
 
       pollTimerRef.current = setInterval(async () => {
         attempts += 1;
