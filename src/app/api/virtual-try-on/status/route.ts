@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+export const maxDuration = 60;
+
 function getLightXApiKeys(): string[] {
   const keys: string[] = [];
   if (process.env.LIGHTX_API_KEY) {

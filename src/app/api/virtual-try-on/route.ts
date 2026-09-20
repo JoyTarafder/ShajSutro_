@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+export const maxDuration = 60;
+
 async function ensurePublicUrl(imageUrl: string): Promise<string> {
   if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
     return imageUrl;
@@ -16,26 +18,51 @@ async function ensurePublicUrl(imageUrl: string): Promise<string> {
         const ext = mime.includes("png") ? "png" : mime.includes("webp") ? "webp" : "jpg";
         const blob = new Blob([buffer], { type: mime });
 
-        const form = new FormData();
-        form.append("files[]", blob, `user_photo_${Date.now()}.${ext}`);
-
         // Primary Host: Uguu
-        const ugRes = await fetch("https://uguu.se/upload.php", {
-          method: "POST",
-          body: form,
-        });
+        try {
+          const form = new FormData();
+          form.append("files[]", blob, `user_photo_${Date.now()}.${ext}`);
+          const ugRes = await fetch("https://uguu.se/upload.php", {
+            method: "POST",
+            body: form,
+          });
 
-        if (ugRes.ok) {
-          const ugData = await ugRes.json();
-          const publicUrl = ugData.files?.[0]?.url;
-          if (publicUrl && publicUrl.startsWith("http")) {
-            console.log("Uploaded user image to public URL for LightX:", publicUrl);
-            return publicUrl;
+          if (ugRes.ok) {
+            const ugData = await ugRes.json();
+            const publicUrl = ugData.files?.[0]?.url;
+            if (publicUrl && publicUrl.startsWith("http")) {
+              console.log("Uploaded user image to public URL (Uguu):", publicUrl);
+              return publicUrl;
+            }
           }
+        } catch (ugErr) {
+          console.warn("Uguu upload failed, trying fallback host:", ugErr);
+        }
+
+        // Secondary Fallback Host: tmpfiles.org
+        try {
+          const tfForm = new FormData();
+          tfForm.append("file", blob, `user_photo_${Date.now()}.${ext}`);
+          const tfRes = await fetch("https://tmpfiles.org/api/v1/upload", {
+            method: "POST",
+            body: tfForm,
+          });
+
+          if (tfRes.ok) {
+            const tfData = await tfRes.json();
+            const rawUrl = tfData?.data?.url;
+            if (rawUrl && typeof rawUrl === "string") {
+              const directUrl = rawUrl.replace("tmpfiles.org/", "tmpfiles.org/dl/");
+              console.log("Uploaded user image to public URL (tmpfiles):", directUrl);
+              return directUrl;
+            }
+          }
+        } catch (tfErr) {
+          console.warn("tmpfiles upload failed:", tfErr);
         }
       }
     } catch (err) {
-      console.warn("Primary image upload failed, trying fallback:", err);
+      console.warn("All public image upload attempts failed:", err);
     }
   }
 
