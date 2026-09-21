@@ -37,6 +37,7 @@
   <a href="#-security--compliance-architecture">Security</a> •
   <a href="#-data-models--entity-relationships">Data Models</a> •
   <a href="#-rest-api-specification">REST API</a> •
+  <a href="APIDocumentation.md">API Documentation</a> •
   <a href="#-environment-configuration">Configuration</a> •
   <a href="#-getting-started--deployment">Deployment</a>
 </p>
@@ -491,6 +492,9 @@ erDiagram
 ---
 
 ## 🔌 REST API Specification
+
+> 📖 **Full API Documentation & Endpoints Reference:**
+> For exhaustive details on endpoint payloads, request/response bodies, query parameters, and error codes, see the dedicated [APIDocumentation.md](APIDocumentation.md) guide.
 
 ### Authentication & User Lifecycle (`/api/auth`)
 
