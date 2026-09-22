@@ -87,7 +87,7 @@ function LoginContent() {
 
   return (
     <div className="min-h-screen bg-[#faf8f5] relative overflow-x-clip flex items-center justify-center p-3 sm:p-6 lg:p-10 font-sans selection:bg-emerald-900 selection:text-white">
-      <Script src="https://accounts.google.com/gsi/client" strategy="lazyOnload" />
+      <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
 
       {/* Atmospheric Luxury Ambient Gradients */}
       <div className="absolute -top-32 -left-32 w-96 h-96 bg-emerald-900/5 rounded-full blur-[140px] pointer-events-none" />
@@ -299,53 +299,24 @@ function LoginContent() {
 function SocialButtons({ redirectUrl = "/profile" }: { redirectUrl?: string }) {
   const router = useRouter();
   const [googleLoading, setGoogleLoading] = useState(false);
+  const tokenClientRef = useRef<any>(null);
 
-  const ensureGoogleScript = (): Promise<any> => {
-    return new Promise((resolve, reject) => {
-      const g = typeof window !== "undefined" ? (window as any).google : null;
-      if (g?.accounts?.oauth2) return resolve(g);
-      const existing = document.getElementById("google-jssdk");
-      if (existing) {
-        existing.addEventListener("load", () => resolve((window as any).google));
-        existing.addEventListener("error", () => reject(new Error("Failed to load Google SDK")));
-        return;
-      }
-      const script = document.createElement("script");
-      script.id = "google-jssdk";
-      script.src = "https://accounts.google.com/gsi/client";
-      script.async = true;
-      script.defer = true;
-      script.onload = () => {
-        setTimeout(() => resolve((window as any).google), 150);
-      };
-      script.onerror = () => reject(new Error("Failed to load Google SDK script"));
-      document.head.appendChild(script);
-    });
-  };
+  // Initialize or retrieve pre-configured Google OAuth Token Client
+  const getOrInitTokenClient = useCallback(() => {
+    const google = typeof window !== "undefined" ? (window as any).google : null;
+    if (!google?.accounts?.oauth2) return null;
+    if (tokenClientRef.current) return tokenClientRef.current;
 
-  const handleGoogleLogin = async () => {
     const clientId = (
       process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
       "30233845656-lmb96sgoph6u4ug4olhedr5bmcfp5jr8.apps.googleusercontent.com"
     ).trim();
 
     try {
-      setGoogleLoading(true);
-      const google = await ensureGoogleScript();
-      if (!google?.accounts?.oauth2) {
-        notifyError("Google Sign-In is unavailable. Please try again in a moment.");
-        setGoogleLoading(false);
-        return;
-      }
-
-      let removeFocusListener: (() => void) | null = null;
-
-      const tokenClient = google.accounts.oauth2.initTokenClient({
+      const client = google.accounts.oauth2.initTokenClient({
         client_id: clientId,
         scope: "email profile",
         callback: async (tokenResponse: any) => {
-          if (removeFocusListener) removeFocusListener();
-
           if (tokenResponse.error) {
             notifyError("Google authentication failed. Please try again.");
             setGoogleLoading(false);
@@ -384,32 +355,55 @@ function SocialButtons({ redirectUrl = "/profile" }: { redirectUrl?: string }) {
           }
         },
         error_callback: (err: any) => {
-          if (removeFocusListener) removeFocusListener();
           setGoogleLoading(false);
           if (err?.type === "popup_failed_to_open") {
             notifyError("Google popup was blocked. Please allow popups for this site.");
           } else if (err?.type === "popup_closed") {
-            // Popup closed by user before finishing authentication - cleanly stop loading
             console.log("Google Sign-In popup closed by user.");
           }
         },
       });
 
-      // Window focus safety net: if user closes popup without completion, stop spinner
-      const handleFocus = () => {
-        setTimeout(() => {
-          setGoogleLoading(false);
-          window.removeEventListener("focus", handleFocus);
-        }, 1200);
-      };
-      window.addEventListener("focus", handleFocus);
-      removeFocusListener = () => window.removeEventListener("focus", handleFocus);
-
-      tokenClient.requestAccessToken();
-    } catch (err) {
-      notifyError("An error occurred starting Google Sign-In.");
-      setGoogleLoading(false);
+      tokenClientRef.current = client;
+      return client;
+    } catch (e) {
+      console.warn("Could not init Google tokenClient:", e);
+      return null;
     }
+  }, [redirectUrl, router]);
+
+  // Pre-initialize on mount so requestAccessToken can be called synchronously on user click
+  useEffect(() => {
+    getOrInitTokenClient();
+    const interval = setInterval(() => {
+      if (getOrInitTokenClient()) {
+        clearInterval(interval);
+      }
+    }, 200);
+    return () => clearInterval(interval);
+  }, [getOrInitTokenClient]);
+
+  // Synchronous Click Handler: MUST be 100% synchronous to preserve browser user gesture
+  const handleGoogleLogin = () => {
+    const client = getOrInitTokenClient();
+    if (!client) {
+      notifyInfo("Initializing Google Sign-In... Please click again in a second.");
+      return;
+    }
+
+    setGoogleLoading(true);
+
+    // Fallback safety net if window regains focus without response
+    const handleFocus = () => {
+      setTimeout(() => {
+        setGoogleLoading(false);
+        window.removeEventListener("focus", handleFocus);
+      }, 1200);
+    };
+    window.addEventListener("focus", handleFocus);
+
+    // Trigger popup directly within user click gesture context (prevents browser popup blocking)
+    client.requestAccessToken();
   };
 
   return (
