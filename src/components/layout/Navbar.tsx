@@ -86,8 +86,6 @@ const BEFORE_CATS = [
 ];
 const AFTER_CATS = [
   { label: "Virtual Try-On", href: "/virtual-try-on", badge: "AI" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
 ];
 
 function CopyPromoButton({ code }: { code: string }) {
@@ -385,7 +383,7 @@ export default function Navbar() {
                 </div>
               ))}
 
-              {/* After cats (Virtual Try-On, About, Contact) */}
+              {/* After cats (Virtual Try-On) */}
               {AFTER_CATS.map((link) => (
                 <Link
                   key={link.href}
@@ -755,7 +753,7 @@ export default function Navbar() {
             </div>
           ))}
 
-          {/* About, Contact, Virtual Try-On */}
+          {/* Virtual Try-On */}
           {AFTER_CATS.map((link) => (
             <Link
               key={link.href}
