@@ -338,10 +338,14 @@ function SocialButtons({ redirectUrl = "/profile" }: { redirectUrl?: string }) {
         return;
       }
 
+      let removeFocusListener: (() => void) | null = null;
+
       const tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: clientId,
         scope: "email profile",
         callback: async (tokenResponse: any) => {
+          if (removeFocusListener) removeFocusListener();
+
           if (tokenResponse.error) {
             notifyError("Google authentication failed. Please try again.");
             setGoogleLoading(false);
@@ -379,7 +383,27 @@ function SocialButtons({ redirectUrl = "/profile" }: { redirectUrl?: string }) {
             setGoogleLoading(false);
           }
         },
+        error_callback: (err: any) => {
+          if (removeFocusListener) removeFocusListener();
+          setGoogleLoading(false);
+          if (err?.type === "popup_failed_to_open") {
+            notifyError("Google popup was blocked. Please allow popups for this site.");
+          } else if (err?.type === "popup_closed") {
+            // Popup closed by user before finishing authentication - cleanly stop loading
+            console.log("Google Sign-In popup closed by user.");
+          }
+        },
       });
+
+      // Window focus safety net: if user closes popup without completion, stop spinner
+      const handleFocus = () => {
+        setTimeout(() => {
+          setGoogleLoading(false);
+          window.removeEventListener("focus", handleFocus);
+        }, 1200);
+      };
+      window.addEventListener("focus", handleFocus);
+      removeFocusListener = () => window.removeEventListener("focus", handleFocus);
 
       tokenClient.requestAccessToken();
     } catch (err) {
