@@ -75,7 +75,6 @@ function LoginContent() {
   }, [redirectUrl, router]);
 
   const isCheckoutRedirect = redirectUrl.includes("checkout");
-  const isTryOnRedirect = redirectUrl.includes("virtual-try-on");
 
   if (isAlreadyLoggedIn) {
     return (
@@ -204,20 +203,7 @@ function LoginContent() {
               </div>
             )}
 
-            {/* Special Virtual Try-On Notice Ribbon */}
-            {isTryOnRedirect && (
-              <div className="mb-6 p-4 rounded-2xl bg-emerald-50/80 border border-emerald-200/80 flex items-center gap-3.5 text-stone-900 shadow-xs">
-                <span className="w-9 h-9 rounded-xl bg-emerald-950 text-amber-300 flex items-center justify-center flex-shrink-0 text-sm shadow-xs">
-                  ✨
-                </span>
-                <div>
-                  <p className="text-xs font-bold text-emerald-950 tracking-tight">AI Virtual Try-On Access</p>
-                  <p className="text-xs text-stone-600 mt-0.5">
-                    Please sign in or create an account to experience the AI Virtual Try-On studio.
-                  </p>
-                </div>
-              </div>
-            )}
+
 
             {/* Dynamic View Header with Semantic H1 for accessibility */}
             <div className="mb-7">

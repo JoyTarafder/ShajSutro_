@@ -390,18 +390,6 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  onClick={(e) => {
-                    if (link.href === "/virtual-try-on") {
-                      const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-                      const adminToken = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null;
-                      const hasAuth = Boolean(token || adminToken || isLoggedIn);
-                      if (!hasAuth) {
-                        e.preventDefault();
-                        notifyInfo("Please log in to access AI Virtual Try-On.");
-                        router.push("/login?redirect=/virtual-try-on");
-                      }
-                    }
-                  }}
                   className={`relative inline-flex items-center gap-1.5 text-sm font-medium tracking-[0.04em] text-charcoal-400 hover:text-charcoal-950 transition-colors pb-1 ${
                     isStaticActive(link.href)
                       ? "text-charcoal-950 after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:w-6 after:bg-charcoal-950"
@@ -772,19 +760,7 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              onClick={(e) => {
-                if (link.href === "/virtual-try-on") {
-                  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-                  const adminToken = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null;
-                  const hasAuth = Boolean(token || adminToken || isLoggedIn);
-                  if (!hasAuth) {
-                    e.preventDefault();
-                    setIsMobileMenuOpen(false);
-                    notifyInfo("Please log in to access AI Virtual Try-On.");
-                    router.push("/login?redirect=/virtual-try-on");
-                    return;
-                  }
-                }
+              onClick={() => {
                 setIsMobileMenuOpen(false);
               }}
               className={`flex items-center justify-between px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-300 ${isStaticActive(link.href) ? "bg-charcoal-50 text-charcoal-950" : "text-charcoal-600 hover:bg-charcoal-50 hover:text-charcoal-950"}`}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -23,6 +23,8 @@ import {
   Loader2,
   AlertCircle,
   Search,
+  Lock,
+  X,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useFavorites } from "@/context/FavoritesContext";
@@ -121,22 +123,39 @@ export default function VirtualTryOnPage() {
   const { addItem, openCart } = useCart();
   const { isFavorite, toggleFavorite } = useFavorites();
 
-  // Authentication Guard: Disallow unauthenticated visitors
+  // Authentication state & Interactive Auth Modal
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isCheckingAuth, setIsCheckingAuth] = useState<boolean>(true);
+  const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
+  const [authModalReason, setAuthModalReason] = useState<string>(
+    "Please sign in or create an account to use the AI Virtual Try-On studio."
+  );
 
-  useEffect(() => {
+  const checkAuth = useCallback((): boolean => {
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
     const adminToken = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null;
-    const hasAuth = Boolean(token || adminToken);
-    if (!hasAuth) {
-      notifyInfo("Please log in to access AI Virtual Try-On.");
-      router.replace("/login?redirect=/virtual-try-on");
-    } else {
-      setIsAuthenticated(true);
-      setIsCheckingAuth(false);
-    }
-  }, [router]);
+    const authed = Boolean(token || adminToken);
+    setIsAuthenticated(authed);
+    return authed;
+  }, []);
+
+  useEffect(() => {
+    checkAuth();
+    const handleAuthChange = () => checkAuth();
+    window.addEventListener("storage", handleAuthChange);
+    window.addEventListener("user_avatar_updated", handleAuthChange);
+    return () => {
+      window.removeEventListener("storage", handleAuthChange);
+      window.removeEventListener("user_avatar_updated", handleAuthChange);
+    };
+  }, [checkAuth]);
+
+  const requireAuth = (reason?: string): boolean => {
+    if (checkAuth()) return true;
+    if (reason) setAuthModalReason(reason);
+    setShowAuthModal(true);
+    notifyInfo("Please sign in to use AI Virtual Try-On.");
+    return false;
+  };
 
   // All Website Products state
   const [garments, setGarments] = useState<GarmentOption[]>(INITIAL_GARMENTS);
@@ -310,6 +329,9 @@ export default function VirtualTryOnPage() {
 
   // Helper to process photo file (from file input or drag-and-drop)
   const processPhotoFile = async (file: File) => {
+    if (!requireAuth("Sign in or create an account to upload your photo and try on outfits with AI.")) {
+      return;
+    }
     if (!file.type.startsWith("image/")) {
       notifyInfo("Please select an image file (JPG, PNG, or WEBP).");
       return;
@@ -350,6 +372,10 @@ export default function VirtualTryOnPage() {
 
   // Handle user photo upload via file picker
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!requireAuth("Sign in or create an account to upload your photo and try on outfits with AI.")) {
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
     const file = e.target.files?.[0];
     if (file) {
       await processPhotoFile(file);
@@ -377,6 +403,9 @@ export default function VirtualTryOnPage() {
 
   // Main Action: TRY ON
   const handleGenerateTryOn = async () => {
+    if (!requireAuth("Sign in or create an account to generate your AI Virtual Try-On look.")) {
+      return;
+    }
     if (!uploadedPhotoBase64) {
       notifyInfo("Please upload your photo first!");
       fileInputRef.current?.click();
@@ -558,23 +587,7 @@ export default function VirtualTryOnPage() {
     return aiResultUrl || null;
   }, [activeView, aiResultUrl, uploadedPhotoBase64, selectedGarment, showOriginalComparison]);
 
-  if (isCheckingAuth) {
-    return (
-      <div className="min-h-[75vh] flex flex-col items-center justify-center gap-4 px-4">
-        <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center shadow-xs">
-          <Sparkles className="w-7 h-7 text-emerald-600 animate-spin" style={{ animationDuration: "3s" }} />
-        </div>
-        <div className="text-center space-y-1">
-          <p className="text-base font-semibold text-emerald-950 font-serif">Verifying Access</p>
-          <p className="text-xs text-charcoal-400">Please wait while we verify your login credentials...</p>
-        </div>
-      </div>
-    );
-  }
 
-  if (!isAuthenticated) {
-    return null;
-  }
 
   return (
     <div className="min-h-screen bg-[#fafbfc] text-slate-900 selection:bg-amber-100 selection:text-amber-900 pb-28">
@@ -606,6 +619,36 @@ export default function VirtualTryOnPage() {
 
       {/* ─── Main Content ─── */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8">
+        {/* Unauthenticated User Welcome Banner */}
+        {!isAuthenticated && (
+          <div className="mb-6 p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#061e14] via-[#0a271b] to-[#14231b] text-white border border-emerald-800/50 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <div className="w-11 h-11 rounded-2xl bg-amber-400/20 border border-amber-400/40 flex items-center justify-center flex-shrink-0 text-amber-300 shadow-inner">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-white tracking-tight flex items-center gap-2">
+                  <span>AI Virtual Try-On Studio</span>
+                  <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full bg-amber-400 text-emerald-950 text-[10px] font-bold uppercase tracking-wider">
+                    Sign In to Try On
+                  </span>
+                </p>
+                <p className="text-xs text-emerald-100/75 mt-0.5 font-light">
+                  Browse outfits freely. When you are ready to upload your photo and generate AI fits, please sign in or register.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 sm:self-center flex-shrink-0">
+              <Link
+                href="/login?redirect=/virtual-try-on"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-emerald-950 font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all active:scale-95"
+              >
+                <span>Sign In to Use AI</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+        )}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           {/* ══════════════════════════════════════════════════════════════
               LEFT: PREVIEW STAGE (col-span-6)
@@ -622,6 +665,7 @@ export default function VirtualTryOnPage() {
                       if (aiResultUrl) {
                         setActiveView("result");
                       } else if (!uploadedPhotoBase64) {
+                        if (!requireAuth("Sign in or create an account to upload your photo for AI Virtual Try-On.")) return;
                         notifyInfo("Please upload your photo first!");
                         fileInputRef.current?.click();
                       } else {
@@ -802,7 +846,10 @@ export default function VirtualTryOnPage() {
                 ) : !stageImageSrc ? (
                   /* Case 2: No photo uploaded yet */
                   <div
-                    onClick={() => fileInputRef.current?.click()}
+                    onClick={() => {
+                    if (!requireAuth("Sign in or create an account to upload your photo for AI Virtual Try-On.")) return;
+                    fileInputRef.current?.click();
+                  }}
                     className="flex flex-col items-center justify-center p-8 text-center cursor-pointer group"
                   >
                     <div className="w-20 h-20 rounded-2xl bg-white border-2 border-dashed border-slate-300 group-hover:border-emerald-500 group-hover:bg-emerald-50/40 flex items-center justify-center text-slate-400 group-hover:text-emerald-600 mb-4 transition-all shadow-2xs">
@@ -1045,7 +1092,10 @@ export default function VirtualTryOnPage() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => fileInputRef.current?.click()}
+                    onClick={() => {
+                    if (!requireAuth("Sign in or create an account to upload your photo for AI Virtual Try-On.")) return;
+                    fileInputRef.current?.click();
+                  }}
                     className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 border border-slate-200 transition-colors shadow-2xs cursor-pointer"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
@@ -1055,7 +1105,10 @@ export default function VirtualTryOnPage() {
               ) : (
                 /* Empty Upload Dropzone with Full Drag & Drop Support */
                 <div
-                  onClick={() => fileInputRef.current?.click()}
+                  onClick={() => {
+                    if (!requireAuth("Sign in or create an account to upload your photo for AI Virtual Try-On.")) return;
+                    fileInputRef.current?.click();
+                  }}
                   onDragOver={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -1228,6 +1281,12 @@ export default function VirtualTryOnPage() {
                     <Loader2 className="w-5 h-5 animate-spin" />
                     <span>TRYING ON ({elapsedSeconds}s)...</span>
                   </>
+                ) : !isAuthenticated ? (
+                  <>
+                    <Lock className="w-4 h-4 text-amber-300" />
+                    <span>SIGN IN &amp; TRY ON</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5 text-amber-300" />
@@ -1240,6 +1299,88 @@ export default function VirtualTryOnPage() {
           </div>
         </div>
       </div>
+
+      {/* Luxury Auth Modal */}
+      {showAuthModal && (
+        <div
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
+          onClick={() => setShowAuthModal(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-stone-200 overflow-hidden animate-in zoom-in-95 duration-200 text-stone-900"
+          >
+            {/* Atmospheric ambient glow */}
+            <div className="absolute -top-20 -right-20 w-44 h-44 bg-emerald-900/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-20 -left-20 w-44 h-44 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
+            {/* Close button */}
+            <button
+              type="button"
+              onClick={() => setShowAuthModal(false)}
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-500 hover:text-stone-800 flex items-center justify-center transition-colors cursor-pointer"
+              aria-label="Close modal"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            {/* Luxury Badge */}
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-950 to-stone-900 text-amber-300 flex items-center justify-center mx-auto mb-4 shadow-lg border border-emerald-800/40">
+              <Sparkles className="w-7 h-7" />
+            </div>
+
+            <div className="text-center mb-6">
+              <h3 className="text-xl sm:text-2xl font-serif font-bold text-emerald-950 tracking-tight">
+                Sign In to Use Virtual Try-On
+              </h3>
+              <p className="text-xs text-stone-600 mt-2 leading-relaxed">
+                {authModalReason}
+              </p>
+            </div>
+
+            {/* Feature Perks */}
+            <div className="bg-stone-50/80 rounded-2xl p-4 border border-stone-200/80 mb-6 space-y-2.5 text-xs text-stone-700">
+              <div className="flex items-center gap-2.5">
+                <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center flex-shrink-0 text-[11px] font-bold">
+                  ✓
+                </div>
+                <span>Upload your portrait &amp; fit any ShajSutro outfit in seconds</span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center flex-shrink-0 text-[11px] font-bold">
+                  ✓
+                </div>
+                <span>Save your generated looks to your private history</span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center flex-shrink-0 text-[11px] font-bold">
+                  ✓
+                </div>
+                <span>Direct 1-click cart checkout with accurate sizing</span>
+              </div>
+            </div>
+
+            {/* Action buttons */}
+            <div className="space-y-3">
+              <Link
+                href="/login?redirect=/virtual-try-on"
+                className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-emerald-900 via-emerald-950 to-stone-900 hover:from-emerald-800 hover:to-stone-800 text-white font-bold text-xs sm:text-sm uppercase tracking-wider transition-all shadow-md hover:shadow-xl active:scale-[0.98] text-center flex items-center justify-center gap-2"
+              >
+                <span>Sign In / Register</span>
+                <ArrowRight className="w-4 h-4 text-amber-400" />
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => setShowAuthModal(false)}
+                className="w-full py-2.5 px-4 text-xs font-medium text-stone-500 hover:text-stone-800 hover:bg-stone-100 rounded-xl transition-colors cursor-pointer"
+              >
+                Continue Browsing Outfits
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
